@@ -1,0 +1,12 @@
+version: '3.1'
+services:
+  db:
+    image: mysql:8.0.26
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123rootpassword
+      MYSQL_DATABASE: capa
+      MYSQL_USER: capa_user
+      MYSQL_PASSWORD: 123userpassword
+    ports:
+      - 3306:3306
