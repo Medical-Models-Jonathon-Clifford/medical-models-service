@@ -1,6 +1,7 @@
 package org.jono.medicalmodelsservice;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jono.medicalmodelsservice.model.Pet;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Value;
 

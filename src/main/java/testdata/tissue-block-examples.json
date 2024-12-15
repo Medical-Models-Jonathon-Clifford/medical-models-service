@@ -1,0 +1,178 @@
+[
+  {
+    "type": "dielectric",
+    "tissue": "Aorta"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Bladder"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Blood"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Bone (Cancellous)"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Bone (Cortical)"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Bone Marrow (Infiltrated)"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Bone Marrow (Not Infiltrated)"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Brain (Grey Matter)"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Brain (White Matter)"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Breast fat"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Cartilage"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Cerebellum"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Cerebro Spinal Fluid"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Cervix"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Colon"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Cornea"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Dura"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Eye Tissues (Sclera)"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Fat (Average Infiltrated)"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Fat (Not Infiltrated)"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Gall Bladder"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Gall Bladder Bile"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Heart"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Kidney"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Lens Cortex"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Lens Nucleus"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Liver"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Lung (Deflated)"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Lung (Inflated)"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Muscle"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Nerve"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Ovary"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Skin (Dry)"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Skin (Wet)"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Small Intestine"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Spleen"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Stomach"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Tendon"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Testis"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Thyroid"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Tongue"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Trachea"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Uterus"
+  },
+  {
+    "type": "dielectric",
+    "tissue": "Vitreous Humor"
+  }
+]

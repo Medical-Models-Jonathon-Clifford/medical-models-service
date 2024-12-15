@@ -1,4 +1,4 @@
-package org.jono.medicalmodelsservice;
+package org.jono.medicalmodelsservice.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
