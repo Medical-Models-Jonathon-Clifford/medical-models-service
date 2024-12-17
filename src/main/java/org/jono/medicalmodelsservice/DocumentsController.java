@@ -6,6 +6,7 @@ import org.jono.medicalmodelsservice.model.Document;
 import org.jono.medicalmodelsservice.model.DocumentChild;
 import org.jono.medicalmodelsservice.model.DocumentDto;
 import org.jono.medicalmodelsservice.model.DocumentState;
+import org.jono.medicalmodelsservice.model.NewDocNameDto;
 import org.jono.medicalmodelsservice.usecases.NavTreeDocInfo;
 import org.jono.medicalmodelsservice.model.NewDocument;
 import org.jono.medicalmodelsservice.model.Pet;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
@@ -29,6 +31,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import static org.springframework.data.relational.core.query.Criteria.where;
 import static org.springframework.data.relational.core.query.Query.query;
@@ -74,7 +77,28 @@ public class DocumentsController {
     @PostMapping(path = "/documents/new",
             produces = "application/json")
     @ResponseBody
-    public Mono<Document> handleDocumentsNewPost() {
+    public Mono<Document> handleDocumentsNewPost(@RequestParam Optional<String> parentId) {
+        R2dbcEntityTemplate template = new R2dbcEntityTemplate(connectionFactory);
+
+        Document document = Document.draftDocument();
+
+        Mono<Document> newDoc = template.insert(Document.class)
+                .using(document);
+
+        return parentId
+                .map(id ->
+                        newDoc.flatMap(doc ->
+                                template.insert(DocumentChild.class)
+                                        .using(new DocumentChild(id, doc.getId()))
+                                        .map(_ -> doc)))
+                .orElse(newDoc);
+    }
+
+    @CrossOrigin
+    @PostMapping(path = "/documents/name",
+            produces = "application/json")
+    @ResponseBody
+    public Mono<Document> handleDocumentsNamePost(NewDocNameDto newDocName) {
         R2dbcEntityTemplate template = new R2dbcEntityTemplate(connectionFactory);
 
         Document document = Document.draftDocument();
