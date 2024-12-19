@@ -6,6 +6,7 @@ import org.jono.medicalmodelsservice.model.Comment;
 import org.jono.medicalmodelsservice.model.CommentChild;
 import org.jono.medicalmodelsservice.model.EditCommentDto;
 import org.jono.medicalmodelsservice.model.NewComment;
+import org.jono.medicalmodelsservice.service.CommentService;
 import org.jono.medicalmodelsservice.usecases.CommentGraph;
 import org.jono.medicalmodelsservice.usecases.CommentNodeData;
 import org.jono.medicalmodelsservice.usecases.CommentNode;
@@ -24,9 +25,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -43,10 +45,12 @@ import static org.springframework.data.relational.core.query.Query.query;
 public class CommentController {
 
     private final ConnectionFactory connectionFactory;
+    private final CommentService commentService;
 
     @Autowired
-    public CommentController(ConnectionFactory connectionFactory) {
+    public CommentController(ConnectionFactory connectionFactory, CommentService commentService) {
         this.connectionFactory = connectionFactory;
+        this.commentService = commentService;
     }
 
     @CrossOrigin
@@ -105,6 +109,7 @@ public class CommentController {
 
         Map<SqlIdentifier, Object> updateMap = new LinkedHashMap<>();
         updateMap.put(SqlIdentifier.unquoted("body"), editCommentDto.getBody());
+        updateMap.put(SqlIdentifier.unquoted("modified_date"), LocalDateTime.now());
 
         return template.update(Comment.class)
                 .matching(query(where("id").is(id)))
@@ -121,40 +126,6 @@ public class CommentController {
             produces = "application/json")
     @ResponseBody
     public Mono<Long> deleteComment(@PathVariable String id) {
-        R2dbcEntityTemplate template = new R2dbcEntityTemplate(connectionFactory);
-
-        return findAllChildCommentIds(id).collectList().map(this::deduplicate)
-                .flatMap(commentChildList -> {
-                    log.info("commentChildList: {}", commentChildList);
-                    return template.delete(CommentChild.class).matching(query(where("id").in(justIds(commentChildList)))).all().map(affectedRows -> {
-                        log.info("affectedRows: {}", affectedRows);
-                        return commentChildList;
-                    });
-                })
-                .flatMap(commentChildList -> template.delete(Comment.class).matching(query(where("id").in(allCommentIds(commentChildList)))).all());
-    }
-
-    private Flux<CommentChild> findAllChildCommentIds(String commentId) {
-        R2dbcEntityTemplate template = new R2dbcEntityTemplate(connectionFactory);
-
-        return template.select(CommentChild.class).matching(query(where("comment_id").is(commentId))).all().expand(commentId1 -> findAllChildCommentIds(commentId1.getChildCommentId()));
-    }
-
-    private List<CommentChild> deduplicate(List<CommentChild> withDuplicates) {
-        Set<CommentChild> set = new HashSet<>(withDuplicates);
-        return new ArrayList<>(set);
-    }
-
-    private List<String> justIds(List<CommentChild> commentChildList) {
-        return commentChildList.stream().map(CommentChild::getId).collect(toList());
-    }
-
-    private List<String> allCommentIds(List<CommentChild> commentChildList) {
-        List<String> parentCommentIds = commentChildList.stream().map(CommentChild::getCommentId).toList();
-        List<String> childCommentIds = commentChildList.stream().map(CommentChild::getChildCommentId).toList();
-        List<String> allCommentIds = new ArrayList<>(parentCommentIds);
-        allCommentIds.addAll(childCommentIds);
-        Set<String> set = new HashSet<>(allCommentIds);
-        return new ArrayList<>(set);
+        return commentService.deleteComment(id);
     }
 }
