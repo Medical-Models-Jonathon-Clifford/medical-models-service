@@ -30,6 +30,28 @@ CREATE TABLE document_child
     FOREIGN KEY (child_id) REFERENCES document (id)
 );
 
+CREATE TABLE comment
+(
+    id            INT AUTO_INCREMENT PRIMARY KEY,
+    document_id   INT,
+    created_date  DATETIME,
+    modified_date DATETIME,
+    body          VARCHAR(10000),
+    creator       INT,
+    FOREIGN KEY (creator) REFERENCES user (id)
+);
+
+CREATE TABLE comment_child
+(
+    id               INT AUTO_INCREMENT PRIMARY KEY,
+    document_id      INT,
+    comment_id       INT,
+    child_comment_id INT,
+    FOREIGN KEY (document_id) REFERENCES document (id),
+    FOREIGN KEY (comment_id) REFERENCES comment (id),
+    FOREIGN KEY (child_comment_id) REFERENCES comment (id)
+);
+
 INSERT INTO user (email, profile_picture, name, created_date, password, state)
 VALUES ('user1@example.com', 'aGVsbG93b3JsZA==', 'User One', '2023-09-01 12:00:00', 'password1', 'Active'),
        ('user2@example.com', 'aGVsbG93b3JsZA==', 'User Two', '2023-09-02 12:00:00', 'password2', 'Active'),
@@ -61,7 +83,11 @@ VALUES (1,
             "type": "text",
             "text": "(Side note: Raven has to be the most boring hero I have ever encountered. And he smells like a damp, wingless pigeon.)"
           },
-          { "type": "half-life", "drug": "Paracetamol", "dose": 1 }
+          {
+            "type": "half-life",
+            "drug": "Paracetamol",
+            "dose": 1
+          }
         ]',
         1,
         'ACTIVE'),
@@ -78,7 +104,11 @@ VALUES (1,
             "type": "dielectric",
             "tissue": "Skin (Wet)"
           },
-          { "type": "half-life", "drug": "Finasteride", "dose": 1 }
+          {
+            "type": "half-life",
+            "drug": "Finasteride",
+            "dose": 1
+          }
         ]',
         1,
         'ACTIVE'),
@@ -91,7 +121,11 @@ VALUES (1,
             "type": "dielectric",
             "tissue": "Gall Bladder Bile"
           },
-          { "type": "half-life", "drug": "Diazepam", "dose": 1 },
+          {
+            "type": "half-life",
+            "drug": "Diazepam",
+            "dose": 1
+          },
           {
             "type": "text",
             "text": "Symptoms indicate potential psionic interference."
@@ -112,7 +146,11 @@ VALUES (1,
             "type": "dielectric",
             "tissue": "Dura"
           },
-          { "type": "half-life", "drug": "Human Growth Hormone", "dose": 1 }
+          {
+            "type": "half-life",
+            "drug": "Human Growth Hormone",
+            "dose": 1
+          }
         ]',
         1,
         'ACTIVE'),
@@ -129,7 +167,11 @@ VALUES (1,
             "type": "text",
             "text": "Possible irritant contact dermatitis suspected."
           },
-          { "type": "half-life", "drug": "Sudocrem", "dose": 1 }
+          {
+            "type": "half-life",
+            "drug": "Sudocrem",
+            "dose": 1
+          }
         ]',
         1,
         'ACTIVE'),
@@ -146,7 +188,11 @@ VALUES (1,
             "type": "dielectric",
             "tissue": "Trachea"
           },
-          { "type": "half-life", "drug": "Nicotine", "dose": 1 }
+          {
+            "type": "half-life",
+            "drug": "Nicotine",
+            "dose": 1
+          }
         ]',
         1,
         'ACTIVE'),
@@ -163,7 +209,11 @@ VALUES (1,
             "type": "dielectric",
             "tissue": "Skin (Dry)"
           },
-          { "type": "half-life", "drug": "Germolene", "dose": 1 }
+          {
+            "type": "half-life",
+            "drug": "Germolene",
+            "dose": 1
+          }
         ]',
         1,
         'ACTIVE'),
@@ -176,7 +226,11 @@ VALUES (1,
             "type": "text",
             "text": "Confirmed: Carpal tunnel syndrome on right side."
           },
-          { "type": "half-life", "drug": "Ibuprofen", "dose": 1 },
+          {
+            "type": "half-life",
+            "drug": "Ibuprofen",
+            "dose": 1
+          },
           {
             "type": "dielectric",
             "tissue": "Tendon"
@@ -193,7 +247,11 @@ VALUES (1,
             "type": "text",
             "text": "Phenomenon under xenobiological investigation."
           },
-          { "type": "half-life", "drug": "Lysergic acid diethylamide", "dose": 1 },
+          {
+            "type": "half-life",
+            "drug": "Lysergic acid diethylamide",
+            "dose": 1
+          },
           {
             "type": "dielectric",
             "tissue": "Thyroid"
@@ -210,7 +268,11 @@ VALUES (1,
             "type": "text",
             "text": "Tibial stress syndrome confirmed."
           },
-          { "type": "half-life", "drug": "Zoledronic acid", "dose": 1 },
+          {
+            "type": "half-life",
+            "drug": "Zoledronic acid",
+            "dose": 1
+          },
           {
             "type": "dielectric",
             "tissue": "Bone (Cortical)"
@@ -235,7 +297,11 @@ VALUES (1,
             "type": "dielectric",
             "tissue": "Cornea"
           },
-          { "type": "half-life", "drug": "Diazepam", "dose": 1 }
+          {
+            "type": "half-life",
+            "drug": "Diazepam",
+            "dose": 1
+          }
         ]',
         1,
         'ACTIVE'),
@@ -252,7 +318,11 @@ VALUES (1,
             "type": "dielectric",
             "tissue": "Lens Cortex"
           },
-          { "type": "half-life", "drug": "Cisplatin", "dose": 1 }
+          {
+            "type": "half-life",
+            "drug": "Cisplatin",
+            "dose": 1
+          }
         ]',
         1,
         'ACTIVE'),
@@ -269,7 +339,11 @@ VALUES (1,
             "type": "dielectric",
             "tissue": "Fat (Average Infiltrated)"
           },
-          { "type": "half-life", "drug": "Ozempic", "dose": 1 }
+          {
+            "type": "half-life",
+            "drug": "Ozempic",
+            "dose": 1
+          }
         ]',
         1,
         'ACTIVE');
@@ -280,3 +354,52 @@ VALUES (2, 3),
        (2, 5),
        (11, 12),
        (11, 13);
+
+INSERT INTO comment (id, document_id, created_date, modified_date, body, creator)
+VALUES (1, 9,'2023-09-01 12:00:00',
+        '2023-09-01 12:00:00',
+        'Mostly I agree with your method and conclusion. I\'d add that given the high heritability of horns that we should check the patient\'s parents for horns.',
+        1),
+       (2, 9, '2023-09-01 12:00:00',
+        '2023-09-01 12:00:00',
+        'The patient is Loki, we all know his parents don\'t have horns.',
+        2),
+       (3, 9, '2023-09-01 12:00:00',
+        '2023-09-01 12:00:00',
+        'We shouldn\'t be treating celebrities any differently.',
+        1),
+       (4, 9, '2023-09-01 12:00:00',
+        '2023-09-01 12:00:00',
+        'Look, fair enough, but his parent\'s are Odin and Gaea. They don\'t have horns.',
+        2),
+       (5, 9, '2023-09-01 12:00:00',
+        '2023-09-01 12:00:00',
+        'Loki\'s parents are actually two of those big blue ice people. Who knows what\'s going on with them in regards to horns.',
+        1),
+       (6, 2, '2023-09-01 12:00:00',
+        '2023-09-01 12:00:00',
+        'Do we know if The Masters of the Mystic Arts have any research on the influence of magic use on male pattern baldness?',
+        3),
+       (7, 2, '2023-09-01 12:00:00',
+        '2023-09-01 12:00:00',
+        'I emailed them and received the following response - "The Masters of the Mystic Arts concern ourselves with matters of interdimensional importance, not vanity."',
+        1),
+       (8, 2, '2023-09-01 12:00:00',
+        '2023-09-01 12:00:00',
+        'Ok, just got another response 2 mins later - "If you do find any research or learn of any ways to counteract the effects of magic on male hair loss, please let us know. For purely academic purposes of course."',
+        1),
+       (9, 9, '2023-09-01 12:00:00',
+        '2023-09-01 12:00:00',
+        'I do not like it when you are right. Anyway, I pinged Dr Guslaug of the Frost Giants on Slack. I received the response - "Frost Giants are a proud, civilised people. We do not have horns like common beasts. How dare you even ask!.". Happy?',
+        2);
+
+INSERT INTO comment_child (document_id, comment_id, child_comment_id)
+VALUES (9, 1, 2),
+       (9, 2, 3),
+       (9, 3, 4),
+       (9, 4, 5),
+       (9, 5, 9),
+       (2, 6, 7),
+       (2, 7, 8);
+
+
