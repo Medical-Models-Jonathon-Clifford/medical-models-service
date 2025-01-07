@@ -1,9 +1,8 @@
 package org.jono.medicalmodelsservice.usecases;
 
 import lombok.Getter;
-import org.jono.medicalmodelsservice.model.Comment;
+import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.CommentChild;
-import org.jono.medicalmodelsservice.model.DocumentChild;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +13,7 @@ import java.util.Objects;
 import java.util.Set;
 
 // TODO: Deduplicate with DocumentGraph
+@Slf4j
 public class CommentGraph {
     @Getter
     private final List<CommentNode> topLevelComments;
@@ -37,6 +37,9 @@ public class CommentGraph {
                 added.add(parentComment.getId());
                 added.add(childComment.getId());
                 addDocumentNode(parentComment, childComment);
+            } else {
+                log.warn("There is a CommentChild with a parent or child not in the comment list. It will be ignored. commentId: {}, childCommentId: {}, parentComment: {}, childComment: {}",
+                        commentChild.getCommentId(), commentChild.getChildCommentId(), parentComment, childComment);
             }
         }
         addRemainingDocuments();
