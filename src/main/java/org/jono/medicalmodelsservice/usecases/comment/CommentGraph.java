@@ -1,4 +1,4 @@
-package org.jono.medicalmodelsservice.usecases;
+package org.jono.medicalmodelsservice.usecases.comment;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

@@ -17,11 +17,11 @@ public class Comment {
     @Id
     private String id;
     private String documentId;
+    private String creator;
+    private String body;
     // TODO: Use a better DateTime that includes a TimeZone
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
-    private String body;
-    private String creator;
 
     public Comment(NewComment newComment) {
         this.documentId = newComment.getDocumentId();

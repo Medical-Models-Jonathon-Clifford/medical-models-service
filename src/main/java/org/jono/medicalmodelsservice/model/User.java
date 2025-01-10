@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @Data
 public class User {
@@ -12,7 +14,7 @@ public class User {
     private String email;
     private String profilePicture;
     private String name;
-    private String createdDate;
+    private LocalDateTime createdDate;
     private String password;
     private String state;
 }

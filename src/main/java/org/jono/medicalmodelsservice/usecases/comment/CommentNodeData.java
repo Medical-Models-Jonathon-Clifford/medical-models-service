@@ -1,4 +1,4 @@
-package org.jono.medicalmodelsservice.usecases;
+package org.jono.medicalmodelsservice.usecases.comment;
 
 import lombok.Data;
 import org.jono.medicalmodelsservice.model.Comment;
