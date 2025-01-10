@@ -1,4 +1,4 @@
-package org.jono.medicalmodelsservice;
+package org.jono.medicalmodelsservice.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.Pet;
@@ -6,13 +6,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Value;
 
 @Slf4j
+@CrossOrigin
 @RestController
 public class HelloController {
 
     @Value("${snake.name}")
     private String snakeName;
 
-    @CrossOrigin
     @GetMapping(path = "/hello",
             produces = "application/json")
     @ResponseBody
@@ -20,7 +20,6 @@ public class HelloController {
         return new Pet("Coppy", "Snake");
     }
 
-    @CrossOrigin
     @PostMapping(path = "/hello")
     public void handlePost(@RequestBody Pet pet) {
         System.out.println("Name");
@@ -29,7 +28,6 @@ public class HelloController {
         System.out.println(pet.getSpecies());
     }
 
-    @CrossOrigin
     @GetMapping(path = "/hello2",
             produces = "application/json")
     @ResponseBody

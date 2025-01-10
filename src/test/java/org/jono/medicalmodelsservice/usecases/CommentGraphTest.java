@@ -2,6 +2,9 @@ package org.jono.medicalmodelsservice.usecases;
 
 import org.jono.medicalmodelsservice.model.Comment;
 import org.jono.medicalmodelsservice.model.CommentChild;
+import org.jono.medicalmodelsservice.usecases.comment.CommentGraph;
+import org.jono.medicalmodelsservice.usecases.comment.CommentNode;
+import org.jono.medicalmodelsservice.usecases.comment.CommentNodeData;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

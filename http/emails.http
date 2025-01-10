@@ -1,15 +1,15 @@
 ### Simple Email
-POST http://localhost:8081/email/simple
+POST http://localhost:8081/emails/simple
 Content-Type: application/json
 
 ### Simple Email using a template
-POST http://localhost:8081/email/simpletemplate
+POST http://localhost:8081/emails/simpletemplate
 Content-Type: application/json
 
 ### Simple Email with an attachment
-POST http://localhost:8081/email/simpleattachment
+POST http://localhost:8081/emails/simpleattachment
 Content-Type: application/json
 
 ### HTML Email with an attachment
-POST http://localhost:8081/email/htmlattachment
+POST http://localhost:8081/emails/htmlattachment
 Content-Type: application/json

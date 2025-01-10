@@ -1,6 +1,7 @@
 package org.jono.medicalmodelsservice.repository;
 
 import io.r2dbc.spi.ConnectionFactory;
+import org.jono.medicalmodelsservice.model.Comment;
 import org.jono.medicalmodelsservice.model.CommentChild;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;

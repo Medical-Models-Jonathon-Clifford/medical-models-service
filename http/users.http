@@ -3,7 +3,7 @@ GET https://examples.http-client.intellij.net/get
     ?generated-in=IntelliJ IDEA
 
 ###
-POST http://localhost:8081/user
+POST http://localhost:8081/users
 Content-Type: application/json
 
 {
@@ -14,4 +14,8 @@ Content-Type: application/json
   "password": "werwerwer",
   "state": "werewrwerwe"
 }
+
+###
+GET http://localhost:8081/users/1
+Content-Type: application/json
 

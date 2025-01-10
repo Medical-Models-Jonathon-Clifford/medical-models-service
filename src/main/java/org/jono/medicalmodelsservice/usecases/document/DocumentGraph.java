@@ -1,6 +1,7 @@
-package org.jono.medicalmodelsservice.usecases;
+package org.jono.medicalmodelsservice.usecases.document;
 
 import lombok.Getter;
+import org.jono.medicalmodelsservice.model.Document;
 import org.jono.medicalmodelsservice.model.DocumentChild;
 
 import java.util.ArrayList;
@@ -16,9 +17,9 @@ public class DocumentGraph {
     private final List<DocumentNode> topLevelDocs;
     private final Map<String, DocumentNode> allDocumentNodes;
     private final Set<String> added;
-    private final List<NavTreeDocInfo> documentList;
+    private final List<Document> documentList;
 
-    public DocumentGraph(List<NavTreeDocInfo> documentList, List<DocumentChild> documentChildList) {
+    public DocumentGraph(List<Document> documentList, List<DocumentChild> documentChildList) {
         System.out.println(documentList);
         System.out.println(documentChildList);
 
@@ -26,10 +27,10 @@ public class DocumentGraph {
         this.allDocumentNodes = new HashMap<>();
         this.added = new HashSet<>();
         this.documentList = documentList;
-        Map<String, NavTreeDocInfo> docMap = listToMap(documentList);
+        Map<String, Document> docMap = listToMap(documentList);
         for (DocumentChild documentChild : documentChildList) {
-            NavTreeDocInfo parentDoc = docMap.get(documentChild.getDocumentId());
-            NavTreeDocInfo childDoc = docMap.get(documentChild.getChildId());
+            Document parentDoc = docMap.get(documentChild.getDocumentId());
+            Document childDoc = docMap.get(documentChild.getChildId());
             if (Objects.nonNull(parentDoc) && Objects.nonNull(childDoc)) {
                 added.add(parentDoc.getId());
                 added.add(childDoc.getId());
@@ -39,15 +40,15 @@ public class DocumentGraph {
         addRemainingDocuments();
     }
 
-    private Map<String, NavTreeDocInfo> listToMap(List<NavTreeDocInfo> documentList) {
-        Map<String, NavTreeDocInfo> docMap = new HashMap<>();
-        for (NavTreeDocInfo doc : documentList) {
+    private Map<String, Document> listToMap(List<Document> documentList) {
+        Map<String, Document> docMap = new HashMap<>();
+        for (Document doc : documentList) {
             docMap.put(doc.getId(), doc);
         }
         return docMap;
     }
 
-    private void addDocumentNode(NavTreeDocInfo parentDoc, NavTreeDocInfo childDoc) {
+    private void addDocumentNode(Document parentDoc, Document childDoc) {
         if (allDocumentNodes.containsKey(parentDoc.getId())) {
             allDocumentNodes.get(parentDoc.getId()).getChildDocs().add(new DocumentNode(childDoc));
         } else {
@@ -60,7 +61,7 @@ public class DocumentGraph {
     }
 
     private void addRemainingDocuments() {
-        for (NavTreeDocInfo doc : documentList) {
+        for (Document doc : documentList) {
             if (!added.contains(doc.getId())) {
                 DocumentNode docNode = new DocumentNode(doc);
                 topLevelDocs.add(docNode);

@@ -1,4 +1,4 @@
-package org.jono.medicalmodelsservice;
+package org.jono.medicalmodelsservice.controller;
 
 import io.r2dbc.spi.ConnectionFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -7,11 +7,9 @@ import org.jono.medicalmodelsservice.model.DocumentChild;
 import org.jono.medicalmodelsservice.model.DocumentDto;
 import org.jono.medicalmodelsservice.model.DocumentState;
 import org.jono.medicalmodelsservice.model.NewDocNameDto;
-import org.jono.medicalmodelsservice.usecases.NavTreeDocInfo;
 import org.jono.medicalmodelsservice.model.NewDocument;
-import org.jono.medicalmodelsservice.model.Pet;
-import org.jono.medicalmodelsservice.usecases.DocumentGraph;
-import org.jono.medicalmodelsservice.usecases.DocumentNode;
+import org.jono.medicalmodelsservice.usecases.document.DocumentGraph;
+import org.jono.medicalmodelsservice.usecases.document.DocumentNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.relational.core.query.Update;
@@ -22,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,54 +36,34 @@ import static org.springframework.data.relational.core.query.Criteria.where;
 import static org.springframework.data.relational.core.query.Query.query;
 
 @Slf4j
+@CrossOrigin
 @RestController
-public class DocumentsController {
+@RequestMapping("/documents")
+public class DocumentController {
 
     private final ConnectionFactory connectionFactory;
 
     @Autowired
-    public DocumentsController(ConnectionFactory connectionFactory) {
+    public DocumentController(ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
     }
 
-    @CrossOrigin
-    @GetMapping(path = "/documents/hello",
-            produces = "application/json")
-    @ResponseBody
-    public Pet handleGet() {
-        return new Pet("Doc", "Cobra");
-    }
-
-    @CrossOrigin
-    @PostMapping(path = "/documents",
-            produces = "application/json")
+    @PostMapping(produces = "application/json")
     @ResponseBody
     public Mono<Document> handleDocumentsPost(@RequestBody NewDocument newDocument) {
-        log.info("parentId");
-        log.info(newDocument.getParentId());
-        log.info("creatorId");
-        log.info(newDocument.getCreatorId());
-
         R2dbcEntityTemplate template = new R2dbcEntityTemplate(connectionFactory);
-
         Document document = new Document(newDocument);
-
         return template.insert(Document.class)
                 .using(document);
     }
 
-    @CrossOrigin
-    @PostMapping(path = "/documents/new",
+    @PostMapping(path = "/new",
             produces = "application/json")
     @ResponseBody
     public Mono<Document> handleDocumentsNewPost(@RequestParam Optional<String> parentId) {
         R2dbcEntityTemplate template = new R2dbcEntityTemplate(connectionFactory);
-
         Document document = Document.draftDocument();
-
-        Mono<Document> newDoc = template.insert(Document.class)
-                .using(document);
-
+        Mono<Document> newDoc = template.insert(Document.class).using(document);
         return parentId
                 .map(id ->
                         newDoc.flatMap(doc ->
@@ -94,21 +73,7 @@ public class DocumentsController {
                 .orElse(newDoc);
     }
 
-    @CrossOrigin
-    @PostMapping(path = "/documents/name",
-            produces = "application/json")
-    @ResponseBody
-    public Mono<Document> handleDocumentsNamePost(NewDocNameDto newDocName) {
-        R2dbcEntityTemplate template = new R2dbcEntityTemplate(connectionFactory);
-
-        Document document = Document.draftDocument();
-
-        return template.insert(Document.class)
-                .using(document);
-    }
-
-    @CrossOrigin
-    @PutMapping(path = "/documents/{id}",
+    @PutMapping(path = "/{id}",
             produces = "application/json")
     @ResponseBody
     public Mono<Document> handleDocumentsPut(@PathVariable String id,
@@ -142,8 +107,7 @@ public class DocumentsController {
                 );
     }
 
-    @CrossOrigin
-    @GetMapping(path = "/documents/{id}",
+    @GetMapping(path = "/{id}",
             produces = "application/json")
     @ResponseBody
     public Mono<Document> handleDocumentsGet(@PathVariable String id) {
@@ -153,8 +117,7 @@ public class DocumentsController {
                 .one();
     }
 
-    @CrossOrigin
-    @GetMapping(path = "/documents/all/navigation",
+    @GetMapping(path = "/all/navigation",
             produces = "application/json")
     @ResponseBody
     public Mono<List<DocumentNode>> handleDocumentsGetAllNavigation() {
@@ -164,7 +127,7 @@ public class DocumentsController {
                 .select(DocumentChild.class)
                 .all()
                 .collectList()
-                .zipWith(template.select(Document.class).all().map(NavTreeDocInfo::new).collectList())
+                .zipWith(template.select(Document.class).all().collectList())
                 .map(tuple -> new DocumentGraph(tuple.getT2(), tuple.getT1()).getTopLevelDocs());
     }
 }
