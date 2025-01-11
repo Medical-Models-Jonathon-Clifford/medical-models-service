@@ -1,4 +1,4 @@
-package org.jono.medicalmodelsservice.model;
+package org.jono.medicalmodelsservice.model.dto;
 
 import lombok.Data;
 

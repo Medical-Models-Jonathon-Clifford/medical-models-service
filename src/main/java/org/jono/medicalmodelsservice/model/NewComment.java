@@ -3,8 +3,6 @@ package org.jono.medicalmodelsservice.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.Optional;
-
 @AllArgsConstructor
 @Data
 public class NewComment {

@@ -1,97 +1,75 @@
-package org.jono.medicalmodelsservice.service;
+package org.jono.medicalmodelsservice.service.comment;
 
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
-import org.jono.medicalmodelsservice.model.Comment;
 import org.jono.medicalmodelsservice.model.CommentChild;
-import org.jono.medicalmodelsservice.model.EditCommentDto;
-import org.jono.medicalmodelsservice.model.NewComment;
 import org.jono.medicalmodelsservice.repository.CommentChildRepository;
-import org.jono.medicalmodelsservice.repository.CommentRepository;
-import org.jono.medicalmodelsservice.usecases.comment.CommentNode;
 import org.jono.medicalmodelsservice.utils.ListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.relational.core.sql.SqlIdentifier;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 
 @Slf4j
-@Service
-public class CommentService {
+@Component
+class CommentInvestigator {
 
-    private final CommentRepository commentRepository;
     private final CommentChildRepository commentChildRepository;
 
     @Autowired
-    public CommentService(CommentRepository commentRepository, CommentChildRepository commentChildRepository) {
-        this.commentRepository = commentRepository;
+    CommentInvestigator(CommentChildRepository commentChildRepository) {
         this.commentChildRepository = commentChildRepository;
     }
 
-    public Mono<Comment> createComment(NewComment newComment) {
-        return commentRepository.create(newComment);
-    }
-
-    public Mono<List<CommentNode>> getComments(String documentId) {
-        return commentRepository.getById(documentId);
-    }
-
-    public Mono<Comment> updateComment(String id, EditCommentDto editCommentDto) {
-        Map<SqlIdentifier, Object> updateMap = new LinkedHashMap<>();
-        updateMap.put(SqlIdentifier.unquoted("body"), editCommentDto.getBody());
-        updateMap.put(SqlIdentifier.unquoted("modified_date"), LocalDateTime.now());
-        return commentRepository.updateById(id, updateMap);
-    }
-
-    public Mono<Long> deleteComment(String id) {
-        Mono<Tuple2<List<CommentChild>, List<CommentChild>>> tuple2 = commentChildRepository.findByCommentId(id)
-                .zipWith(commentChildRepository.findListByChildCommentId(id));
-
+    Mono<CommentsToDelete> findNodesToDelete(String id, Mono<Tuple2<List<CommentChild>, List<CommentChild>>> tuple2) {
         return tuple2
                 .filter(this::isRootNode).flatMap(_ -> deleteRootNode(id))
                 .switchIfEmpty(tuple2.filter(this::isInternalNode).flatMap(_ -> deleteInternalNode(id)))
                 .switchIfEmpty(tuple2.filter(this::isLeafNode).flatMap(_ -> deleteLeafNode(id)))
-                .switchIfEmpty(tuple2.flatMap(_ -> deleteNodeWithNoChildren(id)));
+                .switchIfEmpty(tuple2.map(_ -> deleteIsolatedNode(id)));
     }
 
-    private Mono<Long> deleteRootNode(String id) {
+    private CommentsToDelete deleteIsolatedNode(String id) {
+        log.info("isolated node condition");
+        return CommentsToDelete.builder()
+                .childCommentIds(new ArrayList<>())
+                .commentIds(List.of(id))
+                .build();
+    }
+
+    private Mono<CommentsToDelete> deleteRootNode(String id) {
         log.info("root node condition");
         return commentChildRepository.findCommentChildrenByCommentId(id).collectList().map(ListUtils::deduplicate)
-                .flatMap(commentChildList -> commentChildRepository.deleteByIds(justIds(commentChildList)).map(_ -> commentChildList))
-                .map(commentChildList -> {
-                    return allCommentIds(commentChildList, id);
-                })
-                .flatMap(commentRepository::deleteByIds);
+                .map(commentChildList -> CommentsToDelete.builder()
+                           .childCommentIds(justIds(commentChildList))
+                        .commentIds(allCommentIds(commentChildList, id))
+                        .build());
     }
 
-    private Mono<Long> deleteInternalNode(String id) {
+    private Mono<CommentsToDelete> deleteInternalNode(String id) {
         log.info("internal node condition");
         return findCommentChildrenByCommentIdOrChildCommentId(id)
-                .flatMap(commentChildData -> commentChildRepository.deleteByIds(justIds(commentChildData.getAllToDelete())).map(_ -> commentChildData))
-                .map(commentChildData -> allCommentIds(commentChildData.targetAndDescendants, id))
-                .flatMap(commentRepository::deleteByIds);
+                .map(commentChildData -> CommentsToDelete.builder()
+                        .childCommentIds(justIds(commentChildData.getAllToDelete()))
+                        .commentIds(allCommentIds(commentChildData.targetAndDescendants, id))
+                        .build()
+                );
     }
 
-    private Mono<Long> deleteLeafNode(String id) {
+    private Mono<CommentsToDelete> deleteLeafNode(String id) {
         log.info("leaf node condition");
         return commentChildRepository.findLeafNodesParentConnection(id)
                 .map(CommentChild::getId)
-                .flatMap(commentChildRepository::deleteById)
-                .flatMap(_ -> commentRepository.deleteById(id));
-    }
-
-    private Mono<Long> deleteNodeWithNoChildren(String id) {
-        log.info("no children condition");
-        return commentRepository.deleteById(id);
+                .map(id1 -> CommentsToDelete.builder()
+                        .childCommentIds(Collections.singletonList(id1))
+                        .commentIds(Collections.singletonList(id))
+                        .build());
     }
 
     private boolean isRootNode(Tuple2<List<CommentChild>, List<CommentChild>> tuple) {

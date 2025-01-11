@@ -2,9 +2,8 @@ package org.jono.medicalmodelsservice.usecases;
 
 import org.jono.medicalmodelsservice.model.Comment;
 import org.jono.medicalmodelsservice.model.CommentChild;
-import org.jono.medicalmodelsservice.usecases.comment.CommentGraph;
-import org.jono.medicalmodelsservice.usecases.comment.CommentNode;
-import org.jono.medicalmodelsservice.usecases.comment.CommentNodeData;
+import org.jono.medicalmodelsservice.service.comment.CommentGraph;
+import org.jono.medicalmodelsservice.service.comment.CommentNode;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -25,7 +24,7 @@ class CommentGraphTest {
 
     @Test
     public void noComments() {
-        List<CommentNodeData> emptyCommentNodeDataList = Collections.emptyList();
+        List<Comment> emptyCommentNodeDataList = Collections.emptyList();
         List<CommentChild> emptyCommentChildList = Collections.emptyList();
 
         var commentGraph = new CommentGraph(emptyCommentNodeDataList, emptyCommentChildList);
@@ -36,7 +35,7 @@ class CommentGraphTest {
 
     @Test
     public void oneCommentNoChildren() {
-        List<CommentNodeData> emptyCommentNodeDataList = createCommentNodeDataList("41");
+        List<Comment> emptyCommentNodeDataList = createCommentNodeDataList("41");
         List<CommentChild> emptyCommentChildList = Collections.emptyList();
 
         var commentGraph = new CommentGraph(emptyCommentNodeDataList, emptyCommentChildList);
@@ -51,7 +50,7 @@ class CommentGraphTest {
 
     @Test
     public void twoCommentsWithChildRelationship() {
-        List<CommentNodeData> commentNodeDataList = createCommentNodeDataList("41", "42");
+        List<Comment> commentNodeDataList = createCommentNodeDataList("41", "42");
         var singleCommentChildList = List.of(new CommentChild("97", "41", "42"));
 
         var commentGraph = new CommentGraph(commentNodeDataList, singleCommentChildList);
@@ -69,7 +68,7 @@ class CommentGraphTest {
 
     @Test
     public void chainOfComments() {
-        List<CommentNodeData> commentNodeDataList = createCommentNodeDataList("41", "43", "46", "49");
+        List<Comment> commentNodeDataList = createCommentNodeDataList("41", "43", "46", "49");
         var commentChildList = List.of(
                 new CommentChild("97", "41", "43"),
                 new CommentChild("97", "43", "46"),
@@ -79,19 +78,19 @@ class CommentGraphTest {
         var commentGraph = new CommentGraph(commentNodeDataList, commentChildList);
         List<CommentNode> actualCommentNodes = commentGraph.getTopLevelComments();
 
-        CommentNodeData firstLevel = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("41")).getComment();
+        Comment firstLevel = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("41")).getComment();
         assertThat(firstLevel)
                 .extracting("id", "body", "documentId")
                 .containsExactly("41", "Test comment 41", "97");
-        CommentNodeData secondLevel = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("41", "43")).getComment();
+        Comment secondLevel = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("41", "43")).getComment();
         assertThat(secondLevel)
                 .extracting("id", "body", "documentId")
                 .containsExactly("43", "Test comment 43", "97");
-        CommentNodeData thirdLevel = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("41", "43", "46")).getComment();
+        Comment thirdLevel = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("41", "43", "46")).getComment();
         assertThat(thirdLevel)
                 .extracting("id", "body", "documentId")
                 .containsExactly("46", "Test comment 46", "97");
-        CommentNodeData fourthLevel = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("41", "43", "46", "49")).getComment();
+        Comment fourthLevel = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("41", "43", "46", "49")).getComment();
         assertThat(fourthLevel)
                 .extracting("id", "body", "documentId")
                 .containsExactly("49", "Test comment 49", "97");
@@ -99,7 +98,7 @@ class CommentGraphTest {
 
     @Test
     public void treeOfComments() {
-        List<CommentNodeData> commentNodeDataList = createCommentNodeDataList("43", "49", "50", "59", "66", "68");
+        List<Comment> commentNodeDataList = createCommentNodeDataList("43", "49", "50", "59", "66", "68");
         var commentChildList = List.of(
                 new CommentChild("97", "49", "50"),
                 new CommentChild("97", "49", "59"),
@@ -110,27 +109,27 @@ class CommentGraphTest {
         var commentGraph = new CommentGraph(commentNodeDataList, commentChildList);
         List<CommentNode> actualCommentNodes = commentGraph.getTopLevelComments();
 
-        CommentNodeData firstLevelFirstComment = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("43")).getComment();
+        Comment firstLevelFirstComment = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("43")).getComment();
         assertThat(firstLevelFirstComment)
                 .extracting("id", "body", "documentId")
                 .containsExactly("43", "Test comment 43", "97");
-        CommentNodeData firstLevelSecond = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("49")).getComment();
+        Comment firstLevelSecond = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("49")).getComment();
         assertThat(firstLevelSecond)
                 .extracting("id", "body", "documentId")
                 .containsExactly("49", "Test comment 49", "97");
-        CommentNodeData secondLevelFirstComment = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("49", "50")).getComment();
+        Comment secondLevelFirstComment = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("49", "50")).getComment();
         assertThat(secondLevelFirstComment)
                 .extracting("id", "body", "documentId")
                 .containsExactly("50", "Test comment 50", "97");
-        CommentNodeData secondLevelSecondComment = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("49", "59")).getComment();
+        Comment secondLevelSecondComment = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("49", "59")).getComment();
         assertThat(secondLevelSecondComment)
                 .extracting("id", "body", "documentId")
                 .containsExactly("59", "Test comment 59", "97");
-        CommentNodeData thirdLevelFirstComment = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("49", "50", "66")).getComment();
+        Comment thirdLevelFirstComment = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("49", "50", "66")).getComment();
         assertThat(thirdLevelFirstComment)
                 .extracting("id", "body", "documentId")
                 .containsExactly("66", "Test comment 66", "97");
-        CommentNodeData thirdLevelSecondComment = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("49", "59", "68")).getComment();
+        Comment thirdLevelSecondComment = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("49", "59", "68")).getComment();
         assertThat(thirdLevelSecondComment)
                 .extracting("id", "body", "documentId")
                 .containsExactly("68", "Test comment 68", "97");
@@ -139,7 +138,7 @@ class CommentGraphTest {
     @ParameterizedTest
     @MethodSource("provideChildCommentIds")
     public void gracefullyHandlesInvalidChildComments(String parentId, String childId) {
-        List<CommentNodeData> commentNodeDataList = createCommentNodeDataList("41", "42", "43");
+        List<Comment> commentNodeDataList = createCommentNodeDataList("41", "42", "43");
         var commentChildList = List.of(
                 new CommentChild("97", "41", "42"),
                 new CommentChild("97", "42", "43"),
@@ -190,17 +189,17 @@ class CommentGraphTest {
         return first.get();
     }
 
-    private List<CommentNodeData> createCommentNodeDataList(String... commentIds) {
-        List<CommentNodeData> commentNodeDataList = new ArrayList<>();
+    private List<Comment> createCommentNodeDataList(String... commentIds) {
+        List<Comment> commentNodeDataList = new ArrayList<>();
         for (String commentId : commentIds) {
-            commentNodeDataList.add(new CommentNodeData(Comment.builder()
+            commentNodeDataList.add(Comment.builder()
                     .id(commentId)
                     .documentId("97")
                     .createdDate(LocalDateTime.of(2024, Month.AUGUST, 3, 4, 23))
                     .modifiedDate(LocalDateTime.of(2024, Month.AUGUST, 3, 4, 27))
                     .body("Test comment " + commentId)
                     .creator("1")
-                    .build()));
+                    .build());
         }
         return commentNodeDataList;
     }

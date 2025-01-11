@@ -1,7 +1,8 @@
-package org.jono.medicalmodelsservice.usecases.comment;
+package org.jono.medicalmodelsservice.service.comment;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.jono.medicalmodelsservice.model.Comment;
 import org.jono.medicalmodelsservice.model.CommentChild;
 
 import java.util.ArrayList;
@@ -19,20 +20,20 @@ public class CommentGraph {
     private final List<CommentNode> topLevelComments;
     private final Map<String, CommentNode> allCommentNodes;
     private final Set<String> added;
-    private final List<CommentNodeData> commentList;
+    private final List<Comment> commentList;
 
-    public CommentGraph(List<CommentNodeData> commentList, List<CommentChild> commentChildList) {
-        System.out.println(commentList);
-        System.out.println(commentChildList);
+    public CommentGraph(List<Comment> commentList, List<CommentChild> commentChildList) {
+        log.info(commentList.toString());
+        log.info(commentChildList.toString());
 
         this.topLevelComments = new ArrayList<>();
         this.allCommentNodes = new HashMap<>();
         this.added = new HashSet<>();
         this.commentList = commentList;
-        Map<String, CommentNodeData> docMap = listToMap(commentList);
+        Map<String, Comment> docMap = listToMap(commentList);
         for (CommentChild commentChild : commentChildList) {
-            CommentNodeData parentComment = docMap.get(commentChild.getCommentId());
-            CommentNodeData childComment = docMap.get(commentChild.getChildCommentId());
+            Comment parentComment = docMap.get(commentChild.getCommentId());
+            Comment childComment = docMap.get(commentChild.getChildCommentId());
             if (Objects.nonNull(parentComment) && Objects.nonNull(childComment)) {
                 added.add(parentComment.getId());
                 added.add(childComment.getId());
@@ -45,17 +46,17 @@ public class CommentGraph {
         addRemainingDocuments();
     }
 
-    private Map<String, CommentNodeData> listToMap(List<CommentNodeData> commentList) {
-        Map<String, CommentNodeData> commentMap = new HashMap<>();
-        for (CommentNodeData comment : commentList) {
+    private Map<String, Comment> listToMap(List<Comment> commentList) {
+        Map<String, Comment> commentMap = new HashMap<>();
+        for (Comment comment : commentList) {
             commentMap.put(comment.getId(), comment);
         }
         return commentMap;
     }
 
-    private void addDocumentNode(CommentNodeData parentComment, CommentNodeData childComment) {
+    private void addDocumentNode(Comment parentComment, Comment childComment) {
         if (allCommentNodes.containsKey(parentComment.getId())) {
-            CommentNode childNode = new CommentNode(childComment);
+            var childNode = new CommentNode(childComment);
             allCommentNodes.get(parentComment.getId()).getChildComments().add(childNode);
             allCommentNodes.put(childComment.getId(), childNode);
         } else {
@@ -69,7 +70,7 @@ public class CommentGraph {
     }
 
     private void addRemainingDocuments() {
-        for (CommentNodeData comment : commentList) {
+        for (Comment comment : commentList) {
             if (!added.contains(comment.getId())) {
                 CommentNode commentNode = new CommentNode(comment);
                 topLevelComments.add(commentNode);
