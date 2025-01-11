@@ -2,10 +2,10 @@ package org.jono.medicalmodelsservice.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.Comment;
-import org.jono.medicalmodelsservice.model.EditCommentDto;
+import org.jono.medicalmodelsservice.model.dto.EditCommentDto;
 import org.jono.medicalmodelsservice.model.NewComment;
-import org.jono.medicalmodelsservice.service.CommentService;
-import org.jono.medicalmodelsservice.usecases.comment.CommentNode;
+import org.jono.medicalmodelsservice.service.comment.CommentService;
+import org.jono.medicalmodelsservice.service.comment.CommentNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;

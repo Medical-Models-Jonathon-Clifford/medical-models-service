@@ -1,6 +1,7 @@
 package org.jono.medicalmodelsservice.usecases.document;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.Document;
 import org.jono.medicalmodelsservice.model.DocumentChild;
 
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+@Slf4j
 public class DocumentGraph {
     @Getter
     private final List<DocumentNode> topLevelDocs;
@@ -20,8 +22,8 @@ public class DocumentGraph {
     private final List<Document> documentList;
 
     public DocumentGraph(List<Document> documentList, List<DocumentChild> documentChildList) {
-        System.out.println(documentList);
-        System.out.println(documentChildList);
+        log.info(documentList.toString());
+        log.info(documentChildList.toString());
 
         this.topLevelDocs = new ArrayList<>();
         this.allDocumentNodes = new HashMap<>();

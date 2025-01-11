@@ -1,6 +1,4 @@
-package org.jono.medicalmodelsservice.model;
-
-// TODO: Is Dto the right way to describe this class? Data Transfer Object?
+package org.jono.medicalmodelsservice.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @NoArgsConstructor
 @AllArgsConstructor
