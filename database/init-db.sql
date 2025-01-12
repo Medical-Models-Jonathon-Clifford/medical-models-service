@@ -351,7 +351,7 @@ VALUES (1,
 INSERT INTO document_child (document_id, child_id)
 VALUES (2, 3),
        (2, 4),
-       (2, 5),
+       (4, 5),
        (11, 12),
        (11, 13);
 

@@ -43,7 +43,7 @@ public class CommentService {
         return commentRepository
                 .getById(documentId)
                 .map(tuple ->
-                        new CommentGraph(tuple.getT2(), tuple.getT1()).getTopLevelComments());
+                        CommentGraph.buildGraph(tuple.getT2(), tuple.getT1()));
     }
 
     public Mono<Comment> updateComment(String id, EditCommentDto editCommentDto) {

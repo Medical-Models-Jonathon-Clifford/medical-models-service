@@ -1,12 +1,10 @@
-package org.jono.medicalmodelsservice.service;
+package org.jono.medicalmodelsservice.service.document;
 
 import org.jono.medicalmodelsservice.model.Document;
 import org.jono.medicalmodelsservice.model.dto.DocumentDto;
 import org.jono.medicalmodelsservice.model.DocumentState;
 import org.jono.medicalmodelsservice.repository.DocumentChildRepository;
 import org.jono.medicalmodelsservice.repository.DocumentRepository;
-import org.jono.medicalmodelsservice.usecases.document.DocumentGraph;
-import org.jono.medicalmodelsservice.usecases.document.DocumentNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.relational.core.sql.SqlIdentifier;
 import org.springframework.stereotype.Service;
@@ -73,6 +71,6 @@ public class DocumentService {
         return documentRepository
                 .getDocsAndDocChildren()
                 .map(tuple ->
-                        new DocumentGraph(tuple.getT2(), tuple.getT1()).getTopLevelDocs());
+                        DocumentGraph.buildGraph(tuple.getT2(), tuple.getT1()));
     }
 }
