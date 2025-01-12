@@ -1,4 +1,4 @@
-package org.jono.medicalmodelsservice.usecases.document;
+package org.jono.medicalmodelsservice.service.document;
 
 import lombok.Data;
 import org.jono.medicalmodelsservice.model.Document;
@@ -13,13 +13,15 @@ public class DocumentNode {
     private String title;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
-    private List<DocumentNode> childDocs;
+    private Document document;
+    private List<DocumentNode> children;
 
     public DocumentNode(Document document) {
         this.id = document.getId();
         this.title = document.getTitle();
         this.createdDate = document.getCreatedDate();
         this.modifiedDate = document.getModifiedDate();
-        this.childDocs = new ArrayList<>();
+        this.document = document;
+        this.children = new ArrayList<>();
     }
 }

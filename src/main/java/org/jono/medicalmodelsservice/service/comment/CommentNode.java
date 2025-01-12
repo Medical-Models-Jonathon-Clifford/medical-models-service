@@ -9,10 +9,10 @@ import java.util.List;
 @Data
 public class CommentNode {
     private Comment comment;
-    private List<CommentNode> childComments;
+    private List<CommentNode> children;
 
     public CommentNode(Comment comment) {
         this.comment = comment;
-        this.childComments = new ArrayList<>();
+        this.children = new ArrayList<>();
     }
 }

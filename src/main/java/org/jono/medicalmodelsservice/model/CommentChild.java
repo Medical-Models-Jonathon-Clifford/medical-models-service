@@ -1,10 +1,11 @@
 package org.jono.medicalmodelsservice.model;
 
 import lombok.Data;
+import org.jono.medicalmodelsservice.service.NodeRelationship;
 import org.springframework.data.annotation.Id;
 
 @Data
-public class CommentChild {
+public class CommentChild implements NodeRelationship {
     @Id
     private String id;
     private String documentId;
@@ -15,5 +16,15 @@ public class CommentChild {
         this.documentId = documentId;
         this.commentId = commentId;
         this.childCommentId = childCommentId;
+    }
+
+    @Override
+    public String getParentId() {
+        return commentId;
+    }
+
+    @Override
+    public String getChildId() {
+        return childCommentId;
     }
 }
