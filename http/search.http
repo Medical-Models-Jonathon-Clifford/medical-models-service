@@ -1,0 +1,3 @@
+### Test GET for /search
+GET http://localhost:8081/search
+Content-Type: application/json
