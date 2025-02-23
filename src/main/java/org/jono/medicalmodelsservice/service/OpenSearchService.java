@@ -1,11 +1,8 @@
-package org.jono.medicalmodelsservice;
+package org.jono.medicalmodelsservice.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.config.OpenSearchClientConfig;
 import org.jono.medicalmodelsservice.model.IndexData;
-import org.jono.medicalmodelsservice.service.OpenSearchService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.opensearch.core.IndexRequest;
 import org.opensearch.client.opensearch.core.SearchResponse;
@@ -15,9 +12,7 @@ import org.opensearch.client.opensearch.indices.DeleteIndexResponse;
 import org.opensearch.client.opensearch.indices.IndexSettings;
 import org.opensearch.client.opensearch.indices.PutIndicesSettingsRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.security.KeyManagementException;
@@ -25,31 +20,19 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
 @Slf4j
-@SpringBootTest
-@TestPropertySource(locations = "classpath:application-test.properties")
-@ComponentScan(basePackages = "org.jono.medicalmodelsservice")
-class MedicalModelsServiceApplicationTests {
+@Service
+public class OpenSearchService {
+
+    private final OpenSearchClientConfig openSearchClientConfig;
 
     @Autowired
-    private OpenSearchService openSearchService;
-
-    @Autowired
-    private OpenSearchClientConfig openSearchClientConfig;
-
-    private static OpenSearchClient client;
-
-    @BeforeEach
-    void beforeEach() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        client = this.openSearchClientConfig.openSearchClient();
+    public OpenSearchService(OpenSearchClientConfig openSearchClientConfig) {
+        this.openSearchClientConfig = openSearchClientConfig;
     }
 
-    @Test
-    void secondTest() throws NoSuchAlgorithmException, KeyStoreException, IOException, KeyManagementException {
-        openSearchService.runOpenSearchStuff();
-    }
+    public void runOpenSearchStuff() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, IOException {
+        OpenSearchClient client = openSearchClientConfig.openSearchClient();
 
-    @Test
-    void thirdTest() throws IOException {
         // ------ Creating an Index --------
         log.info("----- Creating an index -----");
         String index = "sample-index3";
@@ -73,7 +56,7 @@ class MedicalModelsServiceApplicationTests {
         log.info("----- Searching for a document -----");
         SearchResponse<IndexData> searchResponse = client.search(s -> s.index(index), IndexData.class);
         for (int i = 0; i< searchResponse.hits().hits().size(); i++) {
-            System.out.println(searchResponse.hits().hits().get(i).source());
+            log.info(String.valueOf(searchResponse.hits().hits().get(i).source()));
         }
 
         //Delete the document
