@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
-import static org.jono.medicalmodelsservice.utils.ListUtils.listToMapFn;
+import static org.jono.medicalmodelsservice.utils.ListUtils.listToMapOfIdToItem;
 
 @Slf4j
 public class GraphBuilder<N, R extends NodeRelationship, D extends NodeData> {
@@ -65,7 +65,7 @@ public class GraphBuilder<N, R extends NodeRelationship, D extends NodeData> {
     }
 
     private Map<String, D> listToMap(List<D> nodeDataList) {
-        return listToMapFn(nodeDataList, NodeData::getId);
+        return listToMapOfIdToItem(nodeDataList, NodeData::getId);
     }
 
     private void addNode(D parentNodeData, D childNodeData) {
