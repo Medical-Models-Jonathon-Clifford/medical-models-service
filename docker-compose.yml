@@ -4,8 +4,8 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: 123rootpassword
-      MYSQL_DATABASE: capa
-      MYSQL_USER: capa_user
+      MYSQL_DATABASE: mm-admin
+      MYSQL_USER: mm-admin-user
       MYSQL_PASSWORD: 123userpassword
     ports:
       - 3306:3306
