@@ -10,6 +10,7 @@ pipeline {
             steps {
                 sh 'echo helloworld from medical-models-service'
                 sh 'java -version'
+                sh 'echo firstchange'
             }
         }
     }
