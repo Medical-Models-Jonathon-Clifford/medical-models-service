@@ -12,7 +12,7 @@ pipeline {
                 sh 'java -version'
                 sh 'echo thirdchange'
                 sh './mvnw -v'
-                sh './mvnw clean install -DskipTests=true'
+                sh './dockerbuild.sh'
             }
         }
     }
