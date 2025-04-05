@@ -11,6 +11,7 @@ pipeline {
                 sh 'echo helloworld from medical-models-service'
                 sh 'java -version'
                 sh 'echo thirdchange'
+                sh './mvnw -v'
             }
         }
     }
