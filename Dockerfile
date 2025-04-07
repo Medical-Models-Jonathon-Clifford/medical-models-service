@@ -1,4 +1,4 @@
-FROM amazoncorretto:22-alpine
+FROM amazoncorretto:23-alpine
 
 # Set the working directory inside the container
 WORKDIR /app
