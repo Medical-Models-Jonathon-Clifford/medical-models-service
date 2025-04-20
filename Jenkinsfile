@@ -34,7 +34,7 @@ pipeline {
                 echo '------ kubectl version ------'
                 sh 'kubectl version --client'
                 echo '------ Delete current mm-models-service pods ------'
-                sh 'kubectl --kubeconfig $MY_KUBECONFIG delete deployment deployment-mm-models-service'
+                sh 'kubectl --kubeconfig $MY_KUBECONFIG delete deployment deployment-mm-models-service --ignore-not-found'
                 echo '------ Deploying new version of mm-models-service ------'
                 sh 'kubectl --kubeconfig $MY_KUBECONFIG apply -f mm-models.yaml'
             }
