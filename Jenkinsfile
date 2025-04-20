@@ -1,18 +1,44 @@
 pipeline {
     agent any
     environment {
-        AWS_ACCESS_KEY_ID     = credentials('jenkins-aws-secret-key-id')
-        AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws-secret-access-key')
-        AWS_REGION = 'us-west-2'
+        DOCKER_CREDENTIALS = credentials('dockerHubCredentials') // ID of your Docker Hub credentials in Jenkins
+        MY_KUBECONFIG = credentials('kubeConfigFile')
     }
     stages {
-        stage('Build') {
+        stage('Build medical-models-service') {
             steps {
-                sh 'echo helloworld from medical-models-service'
+                echo '------ Java Version ------'
                 sh 'java -version'
+                echo '------ Building the application into a docker image ------'
+                sh './dockerbuild.sh'
+                echo '------ Pushing the docker image to artifact store ------'
+                sh 'echo "$DOCKER_CREDENTIALS_PSW" | docker login -u "$DOCKER_CREDENTIALS_USR" --password-stdin'
+                sh './dockerpush.sh'
+            }
+        }
+        stage('Checkout medical-models-k8s') {
+            steps {
+                echo '------ Checking out additional repository: medical-models-k8s ------'
+                checkout scmGit(
+                    branches: [[name: '*/main']],
+                    extensions: [],
+                    userRemoteConfigs: [[
+                        credentialsId: 'gitea-jenkins-user-and-pass',
+                        url: 'http://gitea.busybunyip.com/medical-models/medical-models-k8s.git'
+                    ]]
+                )
+            }
+        }
+        stage('Deploy to Prod') {
+            steps {
+                echo '------ kubectl version ------'
+                sh 'kubectl version --client'
+                echo '------ Delete current mm-models-service pods ------'
+                sh 'kubectl --kubeconfig $MY_KUBECONFIG delete deployment deployment-mm-models-service'
+                echo '------ Deploying new version of mm-models-service ------'
+                sh 'kubectl --kubeconfig $MY_KUBECONFIG apply -f mm-models.yaml'
             }
         }
     }
 }
-
 
