@@ -1,71 +1,17 @@
-CREATE TABLE user
-(
-    id              INT AUTO_INCREMENT PRIMARY KEY,
-    email           VARCHAR(255),
-    profile_picture TEXT,
-    name            VARCHAR(250),
-    created_date    DATETIME,
-    password        VARCHAR(250),
-    state           VARCHAR(20)
-);
-
-CREATE TABLE document
-(
-    id            INT AUTO_INCREMENT PRIMARY KEY,
-    title         VARCHAR(255),
-    created_date  DATETIME,
-    modified_date DATETIME,
-    body          JSON,
-    creator       INT,
-    state         VARCHAR(20),
-    FOREIGN KEY (creator) REFERENCES user (id)
-);
-
-CREATE TABLE document_child
-(
-    id          INT AUTO_INCREMENT PRIMARY KEY,
-    document_id INT,
-    child_id    INT,
-    FOREIGN KEY (document_id) REFERENCES document (id),
-    FOREIGN KEY (child_id) REFERENCES document (id)
-);
-
-CREATE TABLE comment
-(
-    id            INT AUTO_INCREMENT PRIMARY KEY,
-    document_id   INT,
-    created_date  DATETIME,
-    modified_date DATETIME,
-    body          VARCHAR(10000),
-    creator       INT,
-    FOREIGN KEY (creator) REFERENCES user (id)
-);
-
-CREATE TABLE comment_child
-(
-    id               INT AUTO_INCREMENT PRIMARY KEY,
-    document_id      INT,
-    comment_id       INT,
-    child_comment_id INT,
-    FOREIGN KEY (document_id) REFERENCES document (id),
-    FOREIGN KEY (comment_id) REFERENCES comment (id),
-    FOREIGN KEY (child_comment_id) REFERENCES comment (id)
-);
-
-INSERT INTO user (email, profile_picture, name, created_date, password, state)
-VALUES ('user1@example.com', 'aGVsbG93b3JsZA==', 'User One', '2023-09-01 12:00:00', 'password1', 'Active'),
-       ('user2@example.com', 'aGVsbG93b3JsZA==', 'User Two', '2023-09-02 12:00:00', 'password2', 'Active'),
-       ('user3@example.com', 'aGVsbG93b3JsZA==', 'User Three', '2023-09-03 12:00:00', 'password3', 'Active'),
-       ('user4@example.com', 'aGVsbG93b3JsZA==', 'User Four', '2023-09-04 12:00:00', 'password4', 'Active'),
-       ('user5@example.com', 'aGVsbG93b3JsZA==', 'User Five', '2023-09-05 12:00:00', 'password5', 'Active'),
-       ('user6@example.com', 'aGVsbG93b3JsZA==', 'User Six', '2023-09-06 12:00:00', 'password6', 'Active'),
-       ('user7@example.com', 'aGVsbG93b3JsZA==', 'User Seven', '2023-09-07 12:00:00', 'password7', 'Active'),
-       ('user8@example.com', 'aGVsbG93b3JsZA==', 'User Eight', '2023-09-08 12:00:00', 'password8', 'Active'),
-       ('user9@example.com', 'aGVsbG93b3JsZA==', 'User Nine', '2023-09-09 12:00:00', 'password9', 'Active'),
-       ('user10@example.com', 'aGVsbG93b3JsZA==', 'User Ten', '2023-09-10 12:00:00', 'password10', 'Active');
+INSERT IGNORE INTO user (id, email, profile_picture, name, created_date, password, state)
+VALUES (1, 'user1@example.com', 'aGVsbG93b3JsZA==', 'User One', '2023-09-01 12:00:00', 'password1', 'Active'),
+       (2, 'user2@example.com', 'aGVsbG93b3JsZA==', 'User Two', '2023-09-02 12:00:00', 'password2', 'Active'),
+       (3, 'user3@example.com', 'aGVsbG93b3JsZA==', 'User Three', '2023-09-03 12:00:00', 'password3', 'Active'),
+       (4, 'user4@example.com', 'aGVsbG93b3JsZA==', 'User Four', '2023-09-04 12:00:00', 'password4', 'Active'),
+       (5, 'user5@example.com', 'aGVsbG93b3JsZA==', 'User Five', '2023-09-05 12:00:00', 'password5', 'Active'),
+       (6, 'user6@example.com', 'aGVsbG93b3JsZA==', 'User Six', '2023-09-06 12:00:00', 'password6', 'Active'),
+       (7, 'user7@example.com', 'aGVsbG93b3JsZA==', 'User Seven', '2023-09-07 12:00:00', 'password7', 'Active'),
+       (8, 'user8@example.com', 'aGVsbG93b3JsZA==', 'User Eight', '2023-09-08 12:00:00', 'password8', 'Active'),
+       (9, 'user9@example.com', 'aGVsbG93b3JsZA==', 'User Nine', '2023-09-09 12:00:00', 'password9', 'Active'),
+       (10, 'user10@example.com', 'aGVsbG93b3JsZA==', 'User Ten', '2023-09-10 12:00:00', 'password10', 'Active');
 
 
-INSERT INTO document (id, title, created_date, modified_date, body, creator, state)
+INSERT IGNORE INTO document (id, title, created_date, modified_date, body, creator, state)
 VALUES (1,
         'Raven has no wings left',
         '2023-09-01 12:00:00',
@@ -348,14 +294,14 @@ VALUES (1,
         1,
         'ACTIVE');
 
-INSERT INTO document_child (document_id, child_id)
-VALUES (2, 3),
-       (2, 4),
-       (4, 5),
-       (11, 12),
-       (11, 13);
+INSERT IGNORE INTO document_child (id, document_id, child_id)
+VALUES (1, 2, 3),
+       (2, 2, 4),
+       (3, 4, 5),
+       (4, 11, 12),
+       (5, 11, 13);
 
-INSERT INTO comment (id, document_id, created_date, modified_date, body, creator)
+INSERT IGNORE INTO comment (id, document_id, created_date, modified_date, body, creator)
 VALUES (1, 9,'2023-09-01 12:00:00',
         '2023-09-01 12:00:00',
         'Mostly I agree with your method and conclusion. I\'d add that given the high heritability of horns that we should check the patient\'s parents for horns.',
@@ -393,13 +339,11 @@ VALUES (1, 9,'2023-09-01 12:00:00',
         'I do not like it when you are right. Anyway, I pinged Dr Guslaug of the Frost Giants on Slack. I received the response - "Frost Giants are a proud, civilised people. We do not have horns like common beasts. How dare you even ask!.". Happy?',
         2);
 
-INSERT INTO comment_child (document_id, comment_id, child_comment_id)
-VALUES (9, 1, 2),
-       (9, 2, 3),
-       (9, 3, 4),
-       (9, 4, 5),
-       (9, 5, 9),
-       (2, 6, 7),
-       (2, 7, 8);
-
-
+INSERT IGNORE INTO comment_child (id, document_id, comment_id, child_comment_id)
+VALUES (1, 9, 1, 2),
+       (2, 9, 2, 3),
+       (3, 9, 3, 4),
+       (4, 9, 4, 5),
+       (5, 9, 5, 9),
+       (6, 2, 6, 7),
+       (7, 2, 7, 8);
