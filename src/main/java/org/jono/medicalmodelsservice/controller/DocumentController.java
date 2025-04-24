@@ -6,6 +6,8 @@ import org.jono.medicalmodelsservice.model.dto.DocumentDto;
 import org.jono.medicalmodelsservice.service.document.DocumentService;
 import org.jono.medicalmodelsservice.service.document.DocumentNode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,14 +38,14 @@ public class DocumentController {
     @PostMapping(path = "/new",
             produces = "application/json")
     @ResponseBody
-    public Mono<Document> handleDocumentsNewPost(@RequestParam Optional<String> parentId) {
+    public Document handleDocumentsNewPost(@RequestParam Optional<String> parentId) {
         return documentService.createDocument(parentId);
     }
 
     @PutMapping(path = "/{id}",
             produces = "application/json")
     @ResponseBody
-    public Mono<Document> handleDocumentsPut(@PathVariable String id,
+    public Document handleDocumentsPut(@PathVariable String id,
                                              @RequestBody DocumentDto documentDto) {
         return documentService.updateDocument(id, documentDto);
     }
@@ -52,14 +53,16 @@ public class DocumentController {
     @GetMapping(path = "/{id}",
             produces = "application/json")
     @ResponseBody
-    public Mono<Document> handleDocumentsGet(@PathVariable String id) {
-        return documentService.getDocumentById(id);
+    public ResponseEntity<Document> handleDocumentsGet(@PathVariable String id) {
+        return documentService.getDocumentById(id)
+                .map(ResponseEntity::ok) // If document is present, return 200 with the document
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build()); // If empty, return 404
     }
 
     @GetMapping(path = "/all/navigation",
             produces = "application/json")
     @ResponseBody
-    public Mono<List<DocumentNode>> handleDocumentsGetAllNavigation() {
+    public List<DocumentNode> handleDocumentsGetAllNavigation() {
         return documentService.getAllNavigation();
     }
 }

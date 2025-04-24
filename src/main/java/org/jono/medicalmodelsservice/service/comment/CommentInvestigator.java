@@ -3,16 +3,16 @@ package org.jono.medicalmodelsservice.service.comment;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.CommentChild;
-import org.jono.medicalmodelsservice.repository.CommentChildRepository;
+import org.jono.medicalmodelsservice.model.Tuple2;
+import org.jono.medicalmodelsservice.repository.jdbc.CommentChildRepository;
 import org.jono.medicalmodelsservice.utils.ListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple2;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
@@ -27,12 +27,16 @@ class CommentInvestigator {
         this.commentChildRepository = commentChildRepository;
     }
 
-    Mono<CommentsToDelete> findNodesToDelete(String id, Mono<Tuple2<List<CommentChild>, List<CommentChild>>> tuple2) {
-        return tuple2
-                .filter(this::isRootNode).flatMap(_ -> deleteRootNode(id))
-                .switchIfEmpty(tuple2.filter(this::isInternalNode).flatMap(_ -> deleteInternalNode(id)))
-                .switchIfEmpty(tuple2.filter(this::isLeafNode).flatMap(_ -> deleteLeafNode(id)))
-                .switchIfEmpty(tuple2.map(_ -> deleteIsolatedNode(id)));
+    CommentsToDelete findNodesToDelete(String id, Tuple2<List<CommentChild>, List<CommentChild>> tuple2) {
+        if (this.isRootNode(tuple2)) {
+            return deleteRootNode(id);
+        } else if (this.isInternalNode(tuple2)) {
+            return deleteInternalNode(id);
+        } else if (this.isLeafNode(tuple2)) {
+            return deleteLeafNode(id);
+        } else {
+            return deleteIsolatedNode(id);
+        }
     }
 
     private CommentsToDelete deleteIsolatedNode(String id) {
@@ -43,33 +47,31 @@ class CommentInvestigator {
                 .build();
     }
 
-    private Mono<CommentsToDelete> deleteRootNode(String id) {
+    private CommentsToDelete deleteRootNode(String id) {
         log.info("root node condition");
-        return commentChildRepository.findCommentChildrenByCommentId(id).collectList().map(ListUtils::deduplicate)
-                .map(commentChildList -> CommentsToDelete.builder()
-                           .childCommentIds(justIds(commentChildList))
-                        .commentIds(allCommentIds(commentChildList, id))
-                        .build());
+        List<CommentChild> commentChildren = ListUtils.deduplicate(commentChildRepository.findCommentChildrenByCommentId(id));
+        return CommentsToDelete.builder()
+                .childCommentIds(justIds(commentChildren))
+                .commentIds(allCommentIds(commentChildren, id))
+                .build();
     }
 
-    private Mono<CommentsToDelete> deleteInternalNode(String id) {
+    private CommentsToDelete deleteInternalNode(String id) {
         log.info("internal node condition");
-        return findCommentChildrenByCommentIdOrChildCommentId(id)
-                .map(commentChildData -> CommentsToDelete.builder()
-                        .childCommentIds(justIds(commentChildData.getAllToDelete()))
-                        .commentIds(allCommentIds(commentChildData.targetAndDescendants, id))
-                        .build()
-                );
+        CommentChildData commentChildDataServlet = findCommentChildrenByCommentIdOrChildCommentId(id);
+        return CommentsToDelete.builder()
+                .childCommentIds(justIds(commentChildDataServlet.getAllToDelete()))
+                .commentIds(allCommentIds(commentChildDataServlet.targetAndDescendants, id))
+                .build();
     }
 
-    private Mono<CommentsToDelete> deleteLeafNode(String id) {
+    private CommentsToDelete deleteLeafNode(String id) {
         log.info("leaf node condition");
-        return commentChildRepository.findLeafNodesParentConnection(id)
-                .map(CommentChild::getId)
-                .map(id1 -> CommentsToDelete.builder()
-                        .childCommentIds(Collections.singletonList(id1))
-                        .commentIds(Collections.singletonList(id))
-                        .build());
+        CommentChild commentChildServlet = commentChildRepository.findLeafNodesParentConnection(id);
+        return CommentsToDelete.builder()
+                .childCommentIds(Collections.singletonList(commentChildServlet.getId()))
+                .commentIds(Collections.singletonList(id))
+                .build();
     }
 
     private boolean isRootNode(Tuple2<List<CommentChild>, List<CommentChild>> tuple) {
@@ -84,16 +86,14 @@ class CommentInvestigator {
         return tuple.getT1().isEmpty() && !tuple.getT2().isEmpty();
     }
 
-    private Mono<CommentChildData> findCommentChildrenByCommentIdOrChildCommentId(String commentId) {
-        Mono<List<CommentChild>> childrenByCommentId = commentChildRepository.findCommentChildrenByCommentId(commentId).collectList().map(ListUtils::deduplicate);
-        Mono<List<CommentChild>> childrenByChildCommentId = commentChildRepository.findCommentChildrenByChildCommentId(commentId).collectList().map(ListUtils::deduplicate);
-
-        return childrenByCommentId.zipWith(childrenByChildCommentId)
-                .map(tuple -> CommentChildData.builder()
-                        .targetAndDescendants(tuple.getT1())
-                        .ancestors(tuple.getT2())
-                        .targetCommentId(commentId)
-                        .build());
+    private CommentChildData findCommentChildrenByCommentIdOrChildCommentId(String commentId) {
+        List<CommentChild> commentChildrenByCommentId = ListUtils.deduplicate(commentChildRepository.findCommentChildrenByCommentId(commentId));
+        List<CommentChild> commentChildrenByChildCommentId = ListUtils.deduplicate(commentChildRepository.findCommentChildrenByChildCommentId(commentId));
+        return CommentChildData.builder()
+                .targetAndDescendants(commentChildrenByCommentId)
+                .ancestors(commentChildrenByChildCommentId)
+                .targetCommentId(commentId)
+                .build();
     }
 
     private List<String> justIds(List<CommentChild> commentChildList) {
@@ -117,12 +117,16 @@ class CommentInvestigator {
 
         public List<CommentChild> getAllToDelete() {
             List<CommentChild> all = new ArrayList<>(targetAndDescendants);
-            all.add(connectionToParent());
+            connectionToParent().ifPresent(all::add);
             return all;
         }
 
-        private CommentChild connectionToParent() {
-            return ancestors.stream().filter(this::targetIsChild).toList().getFirst();
+        private Optional<CommentChild> connectionToParent() {
+            List<CommentChild> list = ancestors.stream().filter(this::targetIsChild).toList();
+            if (list.isEmpty()) {
+                return Optional.empty();
+            }
+            return Optional.of(list.getFirst());
         }
 
         private boolean targetIsChild(CommentChild commentChild) {

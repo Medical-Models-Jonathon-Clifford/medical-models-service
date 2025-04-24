@@ -1,10 +1,11 @@
 package org.jono.medicalmodelsservice.service;
 
 import org.jono.medicalmodelsservice.model.User;
-import org.jono.medicalmodelsservice.repository.UserRepository;
+import org.jono.medicalmodelsservice.repository.jdbc.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -15,11 +16,11 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public Mono<User> createUser(User user) {
+    public User createUser(User user) {
         return userRepository.create(user);
     }
 
-    public Mono<User> getById(String id) {
+    public Optional<User> getById(String id) {
         return userRepository.findById(id);
     }
 }
