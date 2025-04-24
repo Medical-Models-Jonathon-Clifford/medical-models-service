@@ -3,11 +3,11 @@ GET https://examples.http-client.intellij.net/get
     ?generated-in=IntelliJ IDEA
 
 ###
-GET http://localhost:8081/comments/9
+GET http://localhost:8081/comments/documents/9
 Content-Type: application/json
 
 ###
-POST http://localhost:8081/comment
+POST http://localhost:8081/comments
 Content-Type: application/json
 
 {

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.User;
 import org.jono.medicalmodelsservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 @CrossOrigin
@@ -29,14 +29,15 @@ public class UserController {
 
     @PostMapping(produces = "application/json")
     @ResponseBody
-    public Mono<User> handleUserPost(@RequestBody User user) {
+    public User handleUserPost(@RequestBody User user) {
         return userService.createUser(user);
     }
 
     @GetMapping(path = "/{id}",
             produces = "application/json")
     @ResponseBody
-    public Mono<User> handleUserGet(@PathVariable String id) {
-        return userService.getById(id);
+    public ResponseEntity<User> handleUserGet(@PathVariable String id) {
+        return userService.getById(id).map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

@@ -1,20 +1,22 @@
 package org.jono.medicalmodelsservice.service.document;
 
 import org.jono.medicalmodelsservice.model.Document;
-import org.jono.medicalmodelsservice.model.dto.DocumentDto;
+import org.jono.medicalmodelsservice.model.DocumentChild;
 import org.jono.medicalmodelsservice.model.DocumentState;
-import org.jono.medicalmodelsservice.repository.DocumentChildRepository;
-import org.jono.medicalmodelsservice.repository.DocumentRepository;
+import org.jono.medicalmodelsservice.model.Tuple2;
+import org.jono.medicalmodelsservice.model.dto.DocumentDto;
+import org.jono.medicalmodelsservice.repository.jdbc.DocumentChildRepository;
+import org.jono.medicalmodelsservice.repository.jdbc.DocumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.relational.core.sql.SqlIdentifier;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+
 
 @Service
 public class DocumentService {
@@ -23,26 +25,29 @@ public class DocumentService {
     private final DocumentChildRepository documentChildRepository;
 
     @Autowired
-    public DocumentService(DocumentRepository documentRepository, DocumentChildRepository documentChildRepository) {
+    public DocumentService(
+            DocumentRepository documentRepository,
+            DocumentChildRepository documentChildRepository
+    ) {
         this.documentRepository = documentRepository;
         this.documentChildRepository = documentChildRepository;
     }
 
-    public Mono<Document> createDocument(Optional<String> parentId) {
+    public Document createDocument(Optional<String> parentId) {
         Document document = Document.draftDocument();
-        Mono<Document> newDoc = documentRepository.create(document);
+        Document newDoc = documentRepository.create(document);
+
         return parentId
                 .map(id -> addChildAndReturnDoc(id, newDoc))
                 .orElse(newDoc);
     }
 
-    private Mono<Document> addChildAndReturnDoc(String id, Mono<Document> newDoc) {
-        return newDoc.flatMap(doc ->
-                documentChildRepository.create(id, doc.getId())
-                        .flatMap(_ -> newDoc));
+    private Document addChildAndReturnDoc(String id, Document newDoc) {
+        documentChildRepository.create(id, newDoc.getId());
+        return newDoc;
     }
 
-    public Mono<Document> updateDocument(String id, DocumentDto documentDto) {
+    public Document updateDocument(String id, DocumentDto documentDto) {
         if (documentDto.getState().equals(DocumentState.DRAFT)) {
             if (Objects.nonNull(documentDto.getTitle()) && Objects.nonNull(documentDto.getBody())) {
                 documentDto.setState(DocumentState.ACTIVE);
@@ -63,14 +68,12 @@ public class DocumentService {
         return documentRepository.updateById(id, documentDto, updateMap);
     }
 
-    public Mono<Document> getDocumentById(String id) {
+    public Optional<Document> getDocumentById(String id) {
         return documentRepository.findById(id);
     }
 
-    public Mono<List<DocumentNode>> getAllNavigation() {
-        return documentRepository
-                .getDocsAndDocChildren()
-                .map(tuple ->
-                        DocumentGraph.buildGraph(tuple.getT2(), tuple.getT1()));
+    public List<DocumentNode> getAllNavigation() {
+        Tuple2<List<DocumentChild>, List<Document>> docsAndDocChildren = documentRepository.getDocsAndDocChildren();
+        return DocumentGraph.buildGraph(docsAndDocChildren.getT2(), docsAndDocChildren.getT1());
     }
 }

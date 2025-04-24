@@ -3,9 +3,11 @@ package org.jono.medicalmodelsservice.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
 
+@Table("user")
 @AllArgsConstructor
 @Data
 public class User {

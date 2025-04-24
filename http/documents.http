@@ -19,9 +19,9 @@ Content-Type: application/json
   "title": "New Title 6",
   "createdDate": "2024-11-24T17:20:58",
   "modifiedDate": "2024-11-24T18:20:58",
-  "body": null,
+  "body": "[ { \"type\": \"text\", \"text\": \"Extensive contusions documented.\" }]",
   "creator": "1",
-  "state": "NEW"
+  "state": "DRAFT"
 }
 
 ###
