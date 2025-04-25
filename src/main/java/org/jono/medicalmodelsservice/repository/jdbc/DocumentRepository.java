@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.Document;
 import org.jono.medicalmodelsservice.model.DocumentChild;
+import org.jono.medicalmodelsservice.model.DocumentState;
 import org.jono.medicalmodelsservice.model.Tuple2;
 import org.jono.medicalmodelsservice.model.dto.DocumentDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -48,12 +50,19 @@ public class DocumentRepository {
         updateMap.forEach((key, value) -> {
             // Reflectively set fields or use setter methods.
             // Example: Assuming `key` corresponds to existingDocument's fields
+            if (Objects.isNull(value)) {
+                log.info("Field in update map is null: {}", key);
+                return;
+            }
             switch (key.toString()) {
                 case "title":
                     existingDocument.setTitle(value.toString());
                     break;
                 case "body":
                     existingDocument.setBody(value.toString());
+                    break;
+                case "state":
+                    existingDocument.setState((DocumentState)value);
                     break;
                 // Add cases for other fields in the Document model
                 default:
@@ -67,6 +76,9 @@ public class DocumentRepository {
         }
         if (documentDto.getBody() != null) {
             existingDocument.setBody(documentDto.getBody());
+        }
+        if (documentDto.getState() != null) {
+            existingDocument.setState(documentDto.getState());
         }
 
         // Save the updated document back to the repository
