@@ -1,6 +1,6 @@
 services:
   db:
-    image: mysql:8.0.26
+    image: arm64v8/mysql:8.0
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: 123rootpassword
