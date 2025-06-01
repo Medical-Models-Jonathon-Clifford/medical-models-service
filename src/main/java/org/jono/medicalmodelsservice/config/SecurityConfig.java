@@ -164,6 +164,7 @@ public class SecurityConfig {
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .redirectUris(uris -> uris.add("http://localhost:3000/auth/callback/my_authorization_server"))
                 .redirectUris(uris -> uris.add("http://localhost:3001/auth/callback/my_authorization_server"))
+                .redirectUris(uris -> uris.add("https://www.medicalmodels.net/auth/callback/my_authorization_server"))
                 .scope(OidcScopes.OPENID)
                 .scope(OidcScopes.PROFILE)
                 .clientSettings(ClientSettings.builder()
