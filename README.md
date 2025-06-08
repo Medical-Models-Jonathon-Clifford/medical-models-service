@@ -6,3 +6,4 @@ Java Spring Boot application for the backend of the medical models application.
 
 ## Building docker image
 
+test
