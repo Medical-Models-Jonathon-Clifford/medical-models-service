@@ -1,0 +1,23 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+### Authorization by token, part 2. Use token to authorize.
+GET http://[::1]:8081/userinfo
+Authorization: Bearer eyJraWQiOiIyZGU3ZTY4Ny1lYmYwLTQ5OTYtOTNkNy1hYzA2OWFiODcwNDQiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJiaWxsIiwiYXVkIjoibmV4dC1hdXRoLWNsaWVudCIsIm5iZiI6MTc0NTc0NDg0MCwic2NvcGUiOlsib3BlbmlkIl0sInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjcwNzAiLCJleHAiOjE3NDU3NDUxNDAsImlhdCI6MTc0NTc0NDg0MH0.BfhsIC7KrY-kH5glxIxAtmfwjASZ10cmyguPr6jUw218cWlmbPatUAUG1ZqnqlflQpyhav5EmF_h8DHLJoIjmr7MBFEV5AnjtfJp9_kxXV8RPl4lpg0fp6rKH6tjzyix86B-VStFIDydrI0d5ZM_g5At3NlPboTMG9B683vfeZilVgyu3uKGqPw7L3aI4YIjLeQjLLTt70SfohUERnvmOhs_gPmYCbsFGB7kI6jUETabHm_B3ck1Za8za_86ih6afG5WC8Np8JLAQiefpKAzh5BNOlh86KHFmxvw2eAtXhHkoyLPGn9ecmHe0OddsyTYFMJ9EA3yjKbzVhwPm6j5Xg
+
+### POST Login with username and password
+# @no-redirect
+POST http://[::1]:8081/login
+Content-Type: application/x-www-form-urlencoded
+
+username=bill&password=password
+
+### GET Authorization endpoint
+GET http://localhost:8081/oauth2/authorize?scope=openid&response_type=code&client_id=next-auth-client&redirect_uri=http://localhost:3000/auth/callback/my_authorization_server&code_challenge=PjN0A6KawCZa0lllbqm56n2PGVTz4a__fV5rs0QRkFE&code_challenge_method=S256
+
+### GET Well Known OIDC configuration
+GET http://localhost:8081/.well-known/openid-configuration
+
+### Call token endpoint with authorization code
+POST http://localhost:8081/oauth2/token

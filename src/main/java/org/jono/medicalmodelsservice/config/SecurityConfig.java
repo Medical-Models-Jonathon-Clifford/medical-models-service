@@ -5,20 +5,21 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import org.jono.medicalmodelsservice.service.MmUserInfoService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.endpoint.OidcParameterNames;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -92,53 +93,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails userDetails = User.withUsername("bill")
-                .password("password")
-                .roles("USER")
-                .build();
-        var user = User.withUsername("john")
-                .password("12345")
-                .roles("read")
-                .build();
-        var rtrenneman = User.withUsername("rtrenneman")
-                .password("YjzJdH6!G??tntQ#")
-                .roles("SUPPORT")
-                .build();
-        var mmoss = User.withUsername("mmoss")
-                .password("y?jaHKGTaji6xAd9")
-                .roles("SUPPORT")
-                .build();
-        var jbarber = User.withUsername("jbarber")
-                .password("GM!mQn!8K8Db9p#p")
-                .roles("SUPPORT")
-                .build();
-        var lcuddy = User.withUsername("lcuddy")
-                .password("YjzJdH6!G??tntQ#")
-                .roles("ADMIN")
-                .build();
-        var ghouse = User.withUsername("ghouse")
-                .password("S!p5fs!MFx&&GTPs")
-                .roles("USER")
-                .build();
-        var jwilson = User.withUsername("jwilson")
-                .password("s9dQd$grL!!Y5?$h")
-                .roles("USER")
-                .build();
-        var spotter = User.withUsername("spotter")
-                .password("N78S9x9ft$HFGMrf")
-                .roles("ADMIN")
-                .build();
-        var bpierce = User.withUsername("bpierce")
-                .password("C$At$BBGL5yLP&AM")
-                .roles("USER")
-                .build();
-        var woreilly = User.withUsername("woreilly")
-                .password("so#KKNYiqe!F5!Ph")
-                .roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(userDetails, user, rtrenneman, mmoss, jbarber, lcuddy, ghouse, jwilson, spotter, bpierce, woreilly);
+    public UserDetailsService userDetailsService(MmUserInfoService mmUserInfoService) {
+        return new InMemoryUserDetailsManager(mmUserInfoService.getUserDetails());
     }
 
     @Bean
@@ -198,19 +154,13 @@ public class SecurityConfig {
     }
 
     @Bean
-    public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer() {
-        return context -> {
-            if (context.getPrincipal() != null) {
-                // Extract authorities from the authenticated principal
-                context.getPrincipal().getAuthorities();
-
-
-                var authorities = context.getPrincipal().getAuthorities().stream()
-                        .map(grantedAuthority -> grantedAuthority.getAuthority())
-                        .toList();
-
-                // Add a custom claim to include roles/authorities
-                context.getClaims().claim("roles", authorities);
+    public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer(MmUserInfoService mmUserInfoService) {
+        return (context) -> {
+            if (OidcParameterNames.ID_TOKEN.equals(context.getTokenType().getValue())) {
+                OidcUserInfo userInfo = mmUserInfoService.loadUser(
+                        context.getPrincipal().getName());
+                context.getClaims().claims(claims ->
+                        claims.putAll(userInfo.getClaims()));
             }
         };
     }
