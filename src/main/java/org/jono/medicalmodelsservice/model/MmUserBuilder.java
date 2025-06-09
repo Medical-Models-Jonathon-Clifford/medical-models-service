@@ -75,13 +75,15 @@ public class MmUserBuilder {
         }
 
         public MmUser build() {
+            LoginUser loginUser = new LoginUser(this.honorific + " " + this.givenName + " " + this.familyName,
+                    this.username, this.password);
             UserDetails userDetails = User.withUsername(this.username)
                     .password(this.password)
                     .roles(this.roles.toArray(new String[0]))
                     .build();
             OidcUserInfo oidcUserInfo1 = OidcUserInfo.builder()
                     .subject(this.username)
-                    .name(this.givenName + " " + this.familyName)
+                    .name(this.honorific + " " + this.givenName + " " + this.familyName)
                     .givenName(this.givenName)
                     .familyName(this.familyName)
                     .profile(this.baseUrl + "/" + this.username)
@@ -94,7 +96,7 @@ public class MmUserBuilder {
                     .claim("honorific", this.honorific)
                     .updatedAt("1970-01-01T00:00:00Z")
                     .build();
-            return new MmUser(userDetails, oidcUserInfo1, this.base64Picture);
+            return new MmUser(loginUser, userDetails, oidcUserInfo1, this.base64Picture);
         }
     }
 }
