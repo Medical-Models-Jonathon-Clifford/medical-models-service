@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/images")
 @RequiredArgsConstructor
 public class ImageController {
+
     private final MinioService minioService;
 
     @PostMapping
