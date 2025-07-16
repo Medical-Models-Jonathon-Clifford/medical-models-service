@@ -6,6 +6,6 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class NewDocument {
-    private String parentId;
-    private String creatorId;
+  private String parentId;
+  private String creatorId;
 }
