@@ -8,18 +8,18 @@ import java.util.Optional;
 
 @Repository
 public class UserRepository {
-    private final UserCrudRepository userCrudRepository;
+  private final UserCrudRepository userCrudRepository;
 
-    @Autowired
-    public UserRepository(UserCrudRepository userCrudRepository) {
-        this.userCrudRepository = userCrudRepository;
-    }
+  @Autowired
+  public UserRepository(final UserCrudRepository userCrudRepository) {
+    this.userCrudRepository = userCrudRepository;
+  }
 
-    public User create(User user) {
-        return this.userCrudRepository.save(user);
-    }
+  public User create(final User user) {
+    return this.userCrudRepository.save(user);
+  }
 
-    public Optional<User> findById(String id) {
-        return this.userCrudRepository.findById(id);
-    }
+  public Optional<User> findById(final String id) {
+    return this.userCrudRepository.findById(id);
+  }
 }
