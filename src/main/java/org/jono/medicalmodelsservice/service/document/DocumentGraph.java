@@ -8,8 +8,8 @@ import java.util.List;
 
 public class DocumentGraph {
 
-    public static List<DocumentNode> buildGraph(List<Document> documentList,
-                                                List<DocumentChild> documentChildList) {
-        return GraphBuilder.buildGraph(documentList, documentChildList, DocumentNode::new, DocumentNode::getChildren);
-    }
+  public static List<DocumentNode> buildGraph(final List<Document> documentList,
+                                              final List<DocumentChild> documentChildList) {
+    return GraphBuilder.buildGraph(documentList, documentChildList, DocumentNode::new, DocumentNode::getChildren);
+  }
 }
