@@ -23,50 +23,50 @@ import java.security.NoSuchAlgorithmException;
 @Service
 public class OpenSearchService {
 
-    private final OpenSearchClientConfig openSearchClientConfig;
+  private final OpenSearchClientConfig openSearchClientConfig;
 
-    @Autowired
-    public OpenSearchService(OpenSearchClientConfig openSearchClientConfig) {
-        this.openSearchClientConfig = openSearchClientConfig;
+  @Autowired
+  public OpenSearchService(final OpenSearchClientConfig openSearchClientConfig) {
+    this.openSearchClientConfig = openSearchClientConfig;
+  }
+
+  public void runOpenSearchStuff() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, IOException {
+    final OpenSearchClient client = openSearchClientConfig.openSearchClient();
+
+    // ------ Creating an Index --------
+    log.info("----- Creating an index -----");
+    final String index = "sample-index3";
+    final CreateIndexRequest createIndexRequest = new CreateIndexRequest.Builder().index(index).build();
+    client.indices().create(createIndexRequest);
+
+    final IndexSettings indexSettings = new IndexSettings.Builder().autoExpandReplicas("0-all").build();
+    final PutIndicesSettingsRequest putIndicesSettingsRequest = new PutIndicesSettingsRequest.Builder()
+        .index(index)
+        .settings(indexSettings)
+        .build();
+    client.indices().putSettings(putIndicesSettingsRequest);
+
+    // ----- Indexing Data ----
+    log.info("----- Indexing Data -----");
+    final IndexData indexData = new IndexData("first_name", "Bruce");
+    final IndexRequest<IndexData> indexRequest = new IndexRequest.Builder<IndexData>().index(index).id("1").document(indexData).build();
+    client.index(indexRequest);
+
+    //Search for the document
+    log.info("----- Searching for a document -----");
+    final SearchResponse<IndexData> searchResponse = client.search(s -> s.index(index), IndexData.class);
+    for (int i = 0; i < searchResponse.hits().hits().size(); i++) {
+      log.info(String.valueOf(searchResponse.hits().hits().get(i).source()));
     }
 
-    public void runOpenSearchStuff() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, IOException {
-        OpenSearchClient client = openSearchClientConfig.openSearchClient();
+    //Delete the document
+    log.info("----- Deleting the document -----");
+    client.delete(b -> b.index(index).id("1"));
 
-        // ------ Creating an Index --------
-        log.info("----- Creating an index -----");
-        String index = "sample-index3";
-        CreateIndexRequest createIndexRequest = new CreateIndexRequest.Builder().index(index).build();
-        client.indices().create(createIndexRequest);
-
-        IndexSettings indexSettings = new IndexSettings.Builder().autoExpandReplicas("0-all").build();
-        PutIndicesSettingsRequest putIndicesSettingsRequest = new PutIndicesSettingsRequest.Builder()
-                .index(index)
-                .settings(indexSettings)
-                .build();
-        client.indices().putSettings(putIndicesSettingsRequest);
-
-        // ----- Indexing Data ----
-        log.info("----- Indexing Data -----");
-        IndexData indexData = new IndexData("first_name", "Bruce");
-        IndexRequest<IndexData> indexRequest = new IndexRequest.Builder<IndexData>().index(index).id("1").document(indexData).build();
-        client.index(indexRequest);
-
-        //Search for the document
-        log.info("----- Searching for a document -----");
-        SearchResponse<IndexData> searchResponse = client.search(s -> s.index(index), IndexData.class);
-        for (int i = 0; i< searchResponse.hits().hits().size(); i++) {
-            log.info(String.valueOf(searchResponse.hits().hits().get(i).source()));
-        }
-
-        //Delete the document
-        log.info("----- Deleting the document -----");
-        client.delete(b -> b.index(index).id("1"));
-
-        // Delete the index
-        log.info("----- Deleting the index -----");
-        DeleteIndexRequest deleteIndexRequest = new DeleteIndexRequest.Builder().index(index).build();
-        DeleteIndexResponse deleteIndexResponse = client.indices().delete(deleteIndexRequest);
-        log.info(String.valueOf(deleteIndexResponse.acknowledged()));
-    }
+    // Delete the index
+    log.info("----- Deleting the index -----");
+    final DeleteIndexRequest deleteIndexRequest = new DeleteIndexRequest.Builder().index(index).build();
+    final DeleteIndexResponse deleteIndexResponse = client.indices().delete(deleteIndexRequest);
+    log.info(String.valueOf(deleteIndexResponse.acknowledged()));
+  }
 }

@@ -9,18 +9,18 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+  @Autowired
+  public UserService(final UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
 
-    public User createUser(User user) {
-        return userRepository.create(user);
-    }
+  public User createUser(final User user) {
+    return userRepository.create(user);
+  }
 
-    public Optional<User> getById(String id) {
-        return userRepository.findById(id);
-    }
+  public Optional<User> getById(final String id) {
+    return userRepository.findById(id);
+  }
 }
