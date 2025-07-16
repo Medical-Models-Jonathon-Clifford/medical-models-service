@@ -8,15 +8,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class LoginController {
 
-    private final MmUserInfoService mmUserInfoService;
+  private final MmUserInfoService mmUserInfoService;
 
-    LoginController(MmUserInfoService mmUserInfoService) {
-        this.mmUserInfoService = mmUserInfoService;
-    }
+  LoginController(final MmUserInfoService mmUserInfoService) {
+    this.mmUserInfoService = mmUserInfoService;
+  }
 
-    @GetMapping("/login")
-    String login(Model model) {
-        model.addAttribute("loginCompanies", mmUserInfoService.getLoginCompanies());
-        return "login.html";
-    }
+  @GetMapping("/login")
+  String login(final Model model) {
+    model.addAttribute("loginCompanies", mmUserInfoService.getLoginCompanies());
+    return "login.html";
+  }
 }

@@ -25,45 +25,45 @@ import java.util.Base64;
 @RequestMapping("/users")
 public class UserController {
 
-    private final UserService userService;
-    private final MmUserInfoService mmUserInfoService;
+  private final UserService userService;
+  private final MmUserInfoService mmUserInfoService;
 
-    @Autowired
-    public UserController(UserService userService, MmUserInfoService mmUserInfoService) {
-        this.userService = userService;
-        this.mmUserInfoService = mmUserInfoService;
-    }
+  @Autowired
+  public UserController(final UserService userService, final MmUserInfoService mmUserInfoService) {
+    this.userService = userService;
+    this.mmUserInfoService = mmUserInfoService;
+  }
 
-    @PostMapping(produces = "application/json")
-    @ResponseBody
-    public User handleUserPost(@RequestBody User user) {
-        return userService.createUser(user);
-    }
+  @PostMapping(produces = "application/json")
+  @ResponseBody
+  public User handleUserPost(@RequestBody final User user) {
+    return userService.createUser(user);
+  }
 
-    @GetMapping(path = "/{id}",
-            produces = "application/json")
-    @ResponseBody
-    public ResponseEntity<User> handleUserGet(@PathVariable String id) {
-        return userService.getById(id).map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
+  @GetMapping(path = "/{id}",
+      produces = "application/json")
+  @ResponseBody
+  public ResponseEntity<User> handleUserGet(@PathVariable final String id) {
+    return userService.getById(id).map(ResponseEntity::ok)
+        .orElse(ResponseEntity.notFound().build());
+  }
 
-    @GetMapping(value = "/picture/{username}.png", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<byte[]> getImage(@PathVariable String username) {
-        try {
-            String base64Image = getBase64ImageFromStorage(username);
-            byte[] imageBytes = Base64.getDecoder().decode(base64Image);
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + username + ".png\"")
-                    .body(imageBytes);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
+  @GetMapping(value = "/picture/{username}.png", produces = MediaType.IMAGE_PNG_VALUE)
+  public ResponseEntity<byte[]> getImage(@PathVariable final String username) {
+    try {
+      final String base64Image = getBase64ImageFromStorage(username);
+      final byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+      return ResponseEntity.ok()
+          .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + username + ".png\"")
+          .body(imageBytes);
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().build();
+    } catch (Exception e) {
+      return ResponseEntity.internalServerError().build();
     }
+  }
 
-    private String getBase64ImageFromStorage(String imageId) {
-        return mmUserInfoService.getBase64Picture(imageId);
-    }
+  private String getBase64ImageFromStorage(final String imageId) {
+    return mmUserInfoService.getBase64Picture(imageId);
+  }
 }
