@@ -27,40 +27,40 @@ import java.util.List;
 @RequestMapping("/comments")
 public class CommentController {
 
-    private final CommentService commentService;
+  private final CommentService commentService;
 
-    @Autowired
-    public CommentController(CommentService commentService) {
-        this.commentService = commentService;
-    }
+  @Autowired
+  public CommentController(final CommentService commentService) {
+    this.commentService = commentService;
+  }
 
-    @PostMapping(produces = "application/json")
-    @ResponseBody
-    public Comment handleCommentPost(@RequestBody NewComment newComment) {
-        return commentService.createComment(newComment);
-    }
+  @PostMapping(produces = "application/json")
+  @ResponseBody
+  public Comment handleCommentPost(@RequestBody final NewComment newComment) {
+    return commentService.createComment(newComment);
+  }
 
-    @GetMapping(path = "/documents/{documentId}",
-            produces = "application/json")
-    @ResponseBody
-    public List<CommentNode> getCommentsForDocumentId(@PathVariable String documentId) {
-        return commentService.getComments(documentId);
-    }
+  @GetMapping(path = "/documents/{documentId}",
+      produces = "application/json")
+  @ResponseBody
+  public List<CommentNode> getCommentsForDocumentId(@PathVariable final String documentId) {
+    return commentService.getComments(documentId);
+  }
 
-    @PutMapping(path = "/{id}",
-            produces = "application/json")
-    @ResponseBody
-    public ResponseEntity<Comment> handleCommentsPut(@PathVariable String id,
-                                                     @RequestBody EditCommentDto editCommentDto) {
-        return commentService.updateComment(id, editCommentDto)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
+  @PutMapping(path = "/{id}",
+      produces = "application/json")
+  @ResponseBody
+  public ResponseEntity<Comment> handleCommentsPut(@PathVariable final String id,
+                                                   @RequestBody final EditCommentDto editCommentDto) {
+    return commentService.updateComment(id, editCommentDto)
+        .map(ResponseEntity::ok)
+        .orElseGet(() -> ResponseEntity.notFound().build());
+  }
 
-    @DeleteMapping(path = "/{id}",
-            produces = "application/json")
-    @ResponseBody
-    public void deleteComment(@PathVariable String id) {
-        commentService.deleteComment(id);
-    }
+  @DeleteMapping(path = "/{id}",
+      produces = "application/json")
+  @ResponseBody
+  public void deleteComment(@PathVariable final String id) {
+    commentService.deleteComment(id);
+  }
 }

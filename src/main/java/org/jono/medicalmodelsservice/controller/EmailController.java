@@ -17,44 +17,44 @@ import java.util.Objects;
 @RequestMapping("/emails")
 public class EmailController {
 
-    @Value("${to.address}")
-    public String toAddress;
+  @Value("${to.address}")
+  public String toAddress;
 
-    private final EmailService emailService;
-    private final String attachmentPath;
+  private final EmailService emailService;
+  private final String attachmentPath;
 
-    @Autowired
-    public EmailController(EmailService emailService) {
-        this.emailService = emailService;
-        this.attachmentPath = Objects.requireNonNull(getClass().getClassLoader().getResource("images/50-note-1.jpg")).getPath();
-    }
+  @Autowired
+  public EmailController(final EmailService emailService) {
+    this.emailService = emailService;
+    this.attachmentPath = Objects.requireNonNull(getClass().getClassLoader().getResource("images/50-note-1.jpg")).getPath();
+  }
 
-    @PostMapping(path = "/simple")
-    public void handleSimpleEmail() {
-        emailService.sendSimpleMessage(toAddress,
-                "Simple Email",
-                "This is a test message sent from Spring.");
-    }
+  @PostMapping(path = "/simple")
+  public void handleSimpleEmail() {
+    emailService.sendSimpleMessage(toAddress,
+        "Simple Email",
+        "This is a test message sent from Spring.");
+  }
 
-    @PostMapping(path = "/simpletemplate")
-    public void handleSimpleEmailFromTemplate() {
-        emailService.sendSimpleMessageFromSimpleTemplate(toAddress,
-                "Simple Email using a template",
-                "This is a test message sent from Spring.");
-    }
+  @PostMapping(path = "/simpletemplate")
+  public void handleSimpleEmailFromTemplate() {
+    emailService.sendSimpleMessageFromSimpleTemplate(toAddress,
+        "Simple Email using a template",
+        "This is a test message sent from Spring.");
+  }
 
-    @PostMapping(path = "/simpleattachment")
-    public void handleSimpleEmailWithAttachment() {
-        emailService.sendMessageWithAttachment(toAddress,
-                "Simple Email with an attachment",
-                "This is a test message with an attachment sent from Spring.",
-                attachmentPath);
-    }
+  @PostMapping(path = "/simpleattachment")
+  public void handleSimpleEmailWithAttachment() {
+    emailService.sendMessageWithAttachment(toAddress,
+        "Simple Email with an attachment",
+        "This is a test message with an attachment sent from Spring.",
+        attachmentPath);
+  }
 
-    @PostMapping(path = "/htmlattachment")
-    public void handleHtmlEmailWithAttachment() {
-        emailService.sendHtmlMessageWithAttachment(toAddress,
-                "HTML Email with an attachment",
-                attachmentPath);
-    }
+  @PostMapping(path = "/htmlattachment")
+  public void handleHtmlEmailWithAttachment() {
+    emailService.sendHtmlMessageWithAttachment(toAddress,
+        "HTML Email with an attachment",
+        attachmentPath);
+  }
 }

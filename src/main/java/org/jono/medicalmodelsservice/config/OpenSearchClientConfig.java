@@ -29,54 +29,54 @@ import java.security.NoSuchAlgorithmException;
 @Configuration
 public class OpenSearchClientConfig {
 
-    @Value("${opensearch.username}")
-    private String username;
+  @Value("${opensearch.username}")
+  private String username;
 
-    @Value("${opensearch.password}")
-    private String password;
+  @Value("${opensearch.password}")
+  private String password;
 
-    @Bean
-    public OpenSearchClient openSearchClient() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        log.info("----- JavaClientService script starting -----");
-        System.setProperty("javax.net.ssl.trustStore", "/full/path/to/keystore");
-        System.setProperty("javax.net.ssl.trustStorePassword", "password-to-keystore");
-        log.info("----- Properties set -----");
+  @Bean
+  public OpenSearchClient openSearchClient() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    log.info("----- JavaClientService script starting -----");
+    System.setProperty("javax.net.ssl.trustStore", "/full/path/to/keystore");
+    System.setProperty("javax.net.ssl.trustStorePassword", "password-to-keystore");
+    log.info("----- Properties set -----");
 
-        final HttpHost host = new HttpHost("https", "localhost", 9200);
-        final BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        log.info("----- Host: {} -----", host.toHostString());
-        // Only for demo purposes. Don't specify your credentials in code.
-        credentialsProvider.setCredentials(new AuthScope(host), new UsernamePasswordCredentials(username, password.toCharArray()));
+    final HttpHost host = new HttpHost("https", "localhost", 9200);
+    final BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+    log.info("----- Host: {} -----", host.toHostString());
+    // Only for demo purposes. Don't specify your credentials in code.
+    credentialsProvider.setCredentials(new AuthScope(host), new UsernamePasswordCredentials(username, password.toCharArray()));
 
-        final SSLContext sslcontext = SSLContextBuilder
-                .create()
-                .loadTrustMaterial(null, (chains, authType) -> true)
-                .build();
+    final SSLContext sslcontext = SSLContextBuilder
+        .create()
+        .loadTrustMaterial(null, (chains, authType) -> true)
+        .build();
 
-        final ApacheHttpClient5TransportBuilder builder = ApacheHttpClient5TransportBuilder.builder(host);
-        builder.setHttpClientConfigCallback(httpClientBuilder -> {
-            final TlsStrategy tlsStrategy = ClientTlsStrategyBuilder.create()
-                    .setSslContext(sslcontext)
-                    // See https://issues.apache.org/jira/browse/HTTPCLIENT-2219
-                    .setTlsDetailsFactory(new Factory<SSLEngine, TlsDetails>() {
-                        @Override
-                        public TlsDetails create(final SSLEngine sslEngine) {
-                            return new TlsDetails(sslEngine.getSession(), sslEngine.getApplicationProtocol());
-                        }
-                    })
-                    .build();
+    final ApacheHttpClient5TransportBuilder builder = ApacheHttpClient5TransportBuilder.builder(host);
+    builder.setHttpClientConfigCallback(httpClientBuilder -> {
+      final TlsStrategy tlsStrategy = ClientTlsStrategyBuilder.create()
+          .setSslContext(sslcontext)
+          // See https://issues.apache.org/jira/browse/HTTPCLIENT-2219
+          .setTlsDetailsFactory(new Factory<SSLEngine, TlsDetails>() {
+            @Override
+            public TlsDetails create(final SSLEngine sslEngine) {
+              return new TlsDetails(sslEngine.getSession(), sslEngine.getApplicationProtocol());
+            }
+          })
+          .build();
 
-            final PoolingAsyncClientConnectionManager connectionManager = PoolingAsyncClientConnectionManagerBuilder
-                    .create()
-                    .setTlsStrategy(tlsStrategy)
-                    .build();
+      final PoolingAsyncClientConnectionManager connectionManager = PoolingAsyncClientConnectionManagerBuilder
+          .create()
+          .setTlsStrategy(tlsStrategy)
+          .build();
 
-            return httpClientBuilder
-                    .setDefaultCredentialsProvider(credentialsProvider)
-                    .setConnectionManager(connectionManager);
-        });
+      return httpClientBuilder
+          .setDefaultCredentialsProvider(credentialsProvider)
+          .setConnectionManager(connectionManager);
+    });
 
-        final OpenSearchTransport transport = builder.build();
-        return new OpenSearchClient(transport);
-    }
+    final OpenSearchTransport transport = builder.build();
+    return new OpenSearchClient(transport);
+  }
 }

@@ -11,10 +11,10 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import java.io.IOException;
 
 public class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler {
-    private static final Log log = LogFactory.getLog(CustomAuthenticationFailureHandler.class);
+  private static final Log log = LogFactory.getLog(CustomAuthenticationFailureHandler.class);
 
-    @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        log.error("Authentication failed: " + exception.getMessage());
-    }
+  @Override
+  public void onAuthenticationFailure(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException exception) throws IOException, ServletException {
+    log.error("Authentication failed: " + exception.getMessage());
+  }
 }

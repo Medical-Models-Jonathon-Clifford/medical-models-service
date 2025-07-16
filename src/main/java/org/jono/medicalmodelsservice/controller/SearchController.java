@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/search")
 public class SearchController {
 
-    @GetMapping(produces = "application/json")
-    @ResponseBody
-    public String getCommentsForDocumentId() {
-        return "{ \"key\": \"value\" }";
-    }
+  @GetMapping(produces = "application/json")
+  @ResponseBody
+  public String getCommentsForDocumentId() {
+    return "{ \"key\": \"value\" }";
+  }
 }
