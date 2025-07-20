@@ -1,5 +1,11 @@
 package org.jono.medicalmodelsservice.service.comment;
 
+import static java.util.stream.Collectors.toList;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.CommentChild;
@@ -8,13 +14,6 @@ import org.jono.medicalmodelsservice.repository.jdbc.CommentChildRepository;
 import org.jono.medicalmodelsservice.utils.ListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @Component
@@ -49,7 +48,8 @@ class CommentInvestigator {
 
   private CommentsToDelete deleteRootNode(final String id) {
     log.info("root node condition");
-    List<CommentChild> commentChildren = ListUtils.deduplicate(commentChildRepository.findCommentChildrenByCommentId(id));
+    final List<CommentChild> commentChildren = ListUtils.deduplicate(
+        commentChildRepository.findCommentChildrenByCommentId(id));
     return CommentsToDelete.builder()
         .childCommentIds(justIds(commentChildren))
         .commentIds(allCommentIds(commentChildren, id))
@@ -87,8 +87,10 @@ class CommentInvestigator {
   }
 
   private CommentChildData findCommentChildrenByCommentIdOrChildCommentId(final String commentId) {
-    final List<CommentChild> commentChildrenByCommentId = ListUtils.deduplicate(commentChildRepository.findCommentChildrenByCommentId(commentId));
-    final List<CommentChild> commentChildrenByChildCommentId = ListUtils.deduplicate(commentChildRepository.findCommentChildrenByChildCommentId(commentId));
+    final List<CommentChild> commentChildrenByCommentId = ListUtils.deduplicate(
+        commentChildRepository.findCommentChildrenByCommentId(commentId));
+    final List<CommentChild> commentChildrenByChildCommentId = ListUtils.deduplicate(
+        commentChildRepository.findCommentChildrenByChildCommentId(commentId));
     return CommentChildData.builder()
         .targetAndDescendants(commentChildrenByCommentId)
         .ancestors(commentChildrenByChildCommentId)
@@ -100,7 +102,7 @@ class CommentInvestigator {
     return commentChildList.stream().map(CommentChild::getId).collect(toList());
   }
 
-  private List<String> allCommentIds(final List<CommentChild> commentChildList, String targetCommentId) {
+  private List<String> allCommentIds(final List<CommentChild> commentChildList, final String targetCommentId) {
     final List<String> parentCommentIds = commentChildList.stream().map(CommentChild::getCommentId).toList();
     final List<String> childCommentIds = commentChildList.stream().map(CommentChild::getChildCommentId).toList();
     final List<String> allCommentIds = new ArrayList<>(parentCommentIds);

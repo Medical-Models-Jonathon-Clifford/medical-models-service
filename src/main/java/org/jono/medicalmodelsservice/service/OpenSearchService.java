@@ -1,5 +1,9 @@
 package org.jono.medicalmodelsservice.service;
 
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.config.OpenSearchClientConfig;
 import org.jono.medicalmodelsservice.model.IndexData;
@@ -14,11 +18,6 @@ import org.opensearch.client.opensearch.indices.PutIndicesSettingsRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-
 @Slf4j
 @Service
 public class OpenSearchService {
@@ -30,7 +29,8 @@ public class OpenSearchService {
     this.openSearchClientConfig = openSearchClientConfig;
   }
 
-  public void runOpenSearchStuff() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, IOException {
+  public void runOpenSearchStuff() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException,
+      IOException {
     final OpenSearchClient client = openSearchClientConfig.openSearchClient();
 
     // ------ Creating an Index --------
@@ -49,17 +49,18 @@ public class OpenSearchService {
     // ----- Indexing Data ----
     log.info("----- Indexing Data -----");
     final IndexData indexData = new IndexData("first_name", "Bruce");
-    final IndexRequest<IndexData> indexRequest = new IndexRequest.Builder<IndexData>().index(index).id("1").document(indexData).build();
+    final IndexRequest<IndexData> indexRequest = new IndexRequest.Builder<IndexData>().index(index).id("1").document(
+        indexData).build();
     client.index(indexRequest);
 
-    //Search for the document
+    // Search for the document
     log.info("----- Searching for a document -----");
     final SearchResponse<IndexData> searchResponse = client.search(s -> s.index(index), IndexData.class);
     for (int i = 0; i < searchResponse.hits().hits().size(); i++) {
       log.info(String.valueOf(searchResponse.hits().hits().get(i).source()));
     }
 
-    //Delete the document
+    // Delete the document
     log.info("----- Deleting the document -----");
     client.delete(b -> b.index(index).id("1"));
 

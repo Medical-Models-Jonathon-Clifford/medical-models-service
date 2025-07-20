@@ -11,7 +11,8 @@ public class MmUser {
   private OidcUserInfo oidcUserInfo;
   private String base64Picture;
 
-  public MmUser(final LoginUser loginUser, final UserDetails userDetails, final OidcUserInfo oidcUserInfo, final String base64Picture) {
+  public MmUser(final LoginUser loginUser, final UserDetails userDetails, final OidcUserInfo oidcUserInfo,
+      final String base64Picture) {
     this.loginUser = loginUser;
     this.userDetails = userDetails;
     this.oidcUserInfo = oidcUserInfo;

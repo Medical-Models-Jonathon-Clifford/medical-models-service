@@ -1,5 +1,9 @@
 package org.jono.medicalmodelsservice;
 
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.config.OpenSearchClientConfig;
 import org.jono.medicalmodelsservice.model.IndexData;
@@ -18,11 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.TestPropertySource;
-
-import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 
 @Slf4j
 @SpringBootTest
@@ -66,7 +65,8 @@ class MedicalModelsServiceApplicationTests {
     // ----- Indexing Data ----
     log.info("----- Indexing Data -----");
     final IndexData indexData = new IndexData("first_name", "Bruce");
-    final IndexRequest<IndexData> indexRequest = new IndexRequest.Builder<IndexData>().index(index).id("1").document(indexData).build();
+    final IndexRequest<IndexData> indexRequest = new IndexRequest.Builder<IndexData>().index(index).id("1").document(
+        indexData).build();
     client.index(indexRequest);
 
     // Search for the document

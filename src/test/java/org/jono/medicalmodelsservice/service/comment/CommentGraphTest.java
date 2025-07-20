@@ -1,11 +1,7 @@
 package org.jono.medicalmodelsservice.service.comment;
 
-import org.jono.medicalmodelsservice.model.Comment;
-import org.jono.medicalmodelsservice.model.CommentChild;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -14,9 +10,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
+import org.jono.medicalmodelsservice.model.Comment;
+import org.jono.medicalmodelsservice.model.CommentChild;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class CommentGraphTest {
 
@@ -80,11 +79,13 @@ class CommentGraphTest {
     assertThat(secondLevel)
         .extracting("id", "body", "documentId")
         .containsExactly("43", "Test comment 43", "97");
-    final Comment thirdLevel = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("41", "43", "46")).getComment();
+    final Comment thirdLevel =
+        getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("41", "43", "46")).getComment();
     assertThat(thirdLevel)
         .extracting("id", "body", "documentId")
         .containsExactly("46", "Test comment 46", "97");
-    final Comment fourthLevel = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("41", "43", "46", "49")).getComment();
+    final Comment fourthLevel =
+        getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("41", "43", "46", "49")).getComment();
     assertThat(fourthLevel)
         .extracting("id", "body", "documentId")
         .containsExactly("49", "Test comment 49", "97");
@@ -102,7 +103,8 @@ class CommentGraphTest {
 
     final List<CommentNode> actualCommentNodes = CommentGraph.buildGraph(commentList, commentChildList);
 
-    final Comment firstLevelFirstComment = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("43")).getComment();
+    final Comment firstLevelFirstComment =
+        getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("43")).getComment();
     assertThat(firstLevelFirstComment)
         .extracting("id", "body", "documentId")
         .containsExactly("43", "Test comment 43", "97");
@@ -110,19 +112,23 @@ class CommentGraphTest {
     assertThat(firstLevelSecond)
         .extracting("id", "body", "documentId")
         .containsExactly("49", "Test comment 49", "97");
-    final Comment secondLevelFirstComment = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("49", "50")).getComment();
+    final Comment secondLevelFirstComment =
+        getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("49", "50")).getComment();
     assertThat(secondLevelFirstComment)
         .extracting("id", "body", "documentId")
         .containsExactly("50", "Test comment 50", "97");
-    final Comment secondLevelSecondComment = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("49", "59")).getComment();
+    final Comment secondLevelSecondComment =
+        getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("49", "59")).getComment();
     assertThat(secondLevelSecondComment)
         .extracting("id", "body", "documentId")
         .containsExactly("59", "Test comment 59", "97");
-    final Comment thirdLevelFirstComment = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("49", "50", "66")).getComment();
+    final Comment thirdLevelFirstComment = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("49", "50",
+        "66")).getComment();
     assertThat(thirdLevelFirstComment)
         .extracting("id", "body", "documentId")
         .containsExactly("66", "Test comment 66", "97");
-    final Comment thirdLevelSecondComment = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("49", "59", "68")).getComment();
+    final Comment thirdLevelSecondComment = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("49", "59",
+        "68")).getComment();
     assertThat(thirdLevelSecondComment)
         .extracting("id", "body", "documentId")
         .containsExactly("68", "Test comment 68", "97");
@@ -151,7 +157,8 @@ class CommentGraphTest {
     assertThat(firstLevelSecond.getComment())
         .extracting("id", "body", "documentId")
         .containsExactly("42", "Test comment 42", "97");
-    final CommentNode secondLevelFirstComment = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("41", "42", "43"));
+    final CommentNode secondLevelFirstComment = getCommentNodeWithIdAtEachLevel(actualCommentNodes,
+        List.of("41", "42", "43"));
     assertThat(secondLevelFirstComment.getComment())
         .extracting("id", "body", "documentId")
         .containsExactly("43", "Test comment 43", "97");
@@ -165,16 +172,19 @@ class CommentGraphTest {
     );
   }
 
-  private CommentNode getCommentNodeWithIdAtEachLevel(final List<CommentNode> commentNodes, final List<String> levelIds) {
+  private CommentNode getCommentNodeWithIdAtEachLevel(final List<CommentNode> commentNodes,
+                                                      final List<String> levelIds) {
     if (levelIds.size() == 1) {
       return getCommentNodeWithId(commentNodes, levelIds.getFirst());
     } else {
-      return getCommentNodeWithIdAtEachLevel(getCommentNodeWithId(commentNodes, levelIds.getFirst()).getChildren(), levelIds.subList(1, levelIds.size()));
+      return getCommentNodeWithIdAtEachLevel(getCommentNodeWithId(commentNodes, levelIds.getFirst()).getChildren(),
+          levelIds.subList(1, levelIds.size()));
     }
   }
 
   private CommentNode getCommentNodeWithId(final List<CommentNode> commentNodes, final String id) {
-    final Optional<CommentNode> first = commentNodes.stream().filter(commentNode -> commentNode.getComment().getId().equals(id)).findFirst();
+    final Optional<CommentNode> first =
+        commentNodes.stream().filter(commentNode -> commentNode.getComment().getId().equals(id)).findFirst();
     if (first.isEmpty()) {
       fail("The comment with ID \"" + id + "\" was not present at this level of the comment tree.");
     }

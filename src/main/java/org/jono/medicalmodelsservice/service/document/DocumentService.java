@@ -1,5 +1,10 @@
 package org.jono.medicalmodelsservice.service.document;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import org.jono.medicalmodelsservice.model.Document;
 import org.jono.medicalmodelsservice.model.DocumentChild;
 import org.jono.medicalmodelsservice.model.DocumentState;
@@ -10,12 +15,6 @@ import org.jono.medicalmodelsservice.repository.jdbc.DocumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.relational.core.sql.SqlIdentifier;
 import org.springframework.stereotype.Service;
-
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 
 
 @Service

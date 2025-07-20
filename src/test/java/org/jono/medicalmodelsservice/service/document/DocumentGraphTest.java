@@ -1,11 +1,7 @@
 package org.jono.medicalmodelsservice.service.document;
 
-import org.jono.medicalmodelsservice.model.Document;
-import org.jono.medicalmodelsservice.model.DocumentChild;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -14,9 +10,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
+import org.jono.medicalmodelsservice.model.Document;
+import org.jono.medicalmodelsservice.model.DocumentChild;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class DocumentGraphTest {
 
@@ -84,7 +83,8 @@ class DocumentGraphTest {
     assertThat(thirdLevel)
         .extracting("id", "title")
         .containsExactly("46", "Test document 46");
-    final DocumentNode fourthLevel = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes, List.of("41", "43", "46", "49"));
+    final DocumentNode fourthLevel = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes, List.of("41", "43", "46",
+                                                                                                   "49"));
     assertThat(fourthLevel)
         .extracting("id", "title")
         .containsExactly("49", "Test document 49");
@@ -110,19 +110,23 @@ class DocumentGraphTest {
     assertThat(firstLevelSecond)
         .extracting("id", "title")
         .containsExactly("49", "Test document 49");
-    final DocumentNode secondLevelFirstDocument = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes, List.of("49", "50"));
+    final DocumentNode secondLevelFirstDocument = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes,
+                                                                                   List.of("49", "50"));
     assertThat(secondLevelFirstDocument)
         .extracting("id", "title")
         .containsExactly("50", "Test document 50");
-    final DocumentNode secondLevelSecondDocument = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes, List.of("49", "59"));
+    final DocumentNode secondLevelSecondDocument = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes,
+                                                                                    List.of("49", "59"));
     assertThat(secondLevelSecondDocument)
         .extracting("id", "title")
         .containsExactly("59", "Test document 59");
-    final DocumentNode thirdLevelFirstDocument = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes, List.of("49", "50", "66"));
+    final DocumentNode thirdLevelFirstDocument = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes,
+                                                                                  List.of("49", "50", "66"));
     assertThat(thirdLevelFirstDocument)
         .extracting("id", "title")
         .containsExactly("66", "Test document 66");
-    final DocumentNode thirdLevelSecondDocument = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes, List.of("49", "59", "68"));
+    final DocumentNode thirdLevelSecondDocument = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes,
+                                                                                   List.of("49", "59", "68"));
     assertThat(thirdLevelSecondDocument)
         .extracting("id", "title")
         .containsExactly("68", "Test document 68");
@@ -151,7 +155,9 @@ class DocumentGraphTest {
     assertThat(firstLevelSecond)
         .extracting("id", "title")
         .containsExactly("42", "Test document 42");
-    final DocumentNode secondLevelFirstDocument = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes, List.of("41", "42", "43"));
+    final DocumentNode secondLevelFirstDocument = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes, List.of("41",
+                                                                                                                "42",
+                                                                                                                "43"));
     assertThat(secondLevelFirstDocument)
         .extracting("id", "title")
         .containsExactly("43", "Test document 43");
@@ -165,16 +171,19 @@ class DocumentGraphTest {
     );
   }
 
-  private DocumentNode getDocumentNodeWithIdAtEachLevel(final List<DocumentNode> documentNodes, final List<String> levelIds) {
+  private DocumentNode getDocumentNodeWithIdAtEachLevel(final List<DocumentNode> documentNodes,
+      final List<String> levelIds) {
     if (levelIds.size() == 1) {
       return getDocumentNodeWithId(documentNodes, levelIds.getFirst());
     } else {
-      return getDocumentNodeWithIdAtEachLevel(getDocumentNodeWithId(documentNodes, levelIds.getFirst()).getChildren(), levelIds.subList(1, levelIds.size()));
+      return getDocumentNodeWithIdAtEachLevel(getDocumentNodeWithId(documentNodes, levelIds.getFirst()).getChildren(),
+                                              levelIds.subList(1, levelIds.size()));
     }
   }
 
   private DocumentNode getDocumentNodeWithId(final List<DocumentNode> documentNodes, final String id) {
-    final Optional<DocumentNode> first = documentNodes.stream().filter(documentNode -> documentNode.getId().equals(id)).findFirst();
+    final Optional<DocumentNode> first =
+        documentNodes.stream().filter(documentNode -> documentNode.getId().equals(id)).findFirst();
     if (first.isEmpty()) {
       fail("The document with ID \"" + id + "\" was not present at this level of the document tree.");
     }
@@ -185,11 +194,11 @@ class DocumentGraphTest {
     final List<Document> documentList = new ArrayList<>();
     for (final String documentId : documentIds) {
       documentList.add(Document.builder()
-          .id(documentId)
-          .createdDate(LocalDateTime.of(2024, Month.AUGUST, 3, 4, 23))
-          .modifiedDate(LocalDateTime.of(2024, Month.AUGUST, 3, 4, 27))
-          .title("Test document " + documentId)
-          .build());
+                           .id(documentId)
+                           .createdDate(LocalDateTime.of(2024, Month.AUGUST, 3, 4, 23))
+                           .modifiedDate(LocalDateTime.of(2024, Month.AUGUST, 3, 4, 27))
+                           .title("Test document " + documentId)
+                           .build());
     }
     return documentList;
   }

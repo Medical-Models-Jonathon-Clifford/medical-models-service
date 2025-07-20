@@ -8,7 +8,7 @@ import org.springframework.mail.SimpleMailMessage;
 public class MailConfig {
   @Bean
   public SimpleMailMessage templateSimpleMessage() {
-    var message = new SimpleMailMessage();
+    final var message = new SimpleMailMessage();
     message.setText(
         "This is the test email template for your email:\n%s\n");
     return message;

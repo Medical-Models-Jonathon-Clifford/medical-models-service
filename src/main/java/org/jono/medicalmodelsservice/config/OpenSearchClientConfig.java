@@ -1,5 +1,10 @@
 package org.jono.medicalmodelsservice.config;
 
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.auth.AuthScope;
 import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
@@ -19,12 +24,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLEngine;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-
 @Slf4j
 @Configuration
 public class OpenSearchClientConfig {
@@ -36,7 +35,8 @@ public class OpenSearchClientConfig {
   private String password;
 
   @Bean
-  public OpenSearchClient openSearchClient() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+  public OpenSearchClient openSearchClient() throws NoSuchAlgorithmException, KeyStoreException,
+      KeyManagementException {
     log.info("----- JavaClientService script starting -----");
     System.setProperty("javax.net.ssl.trustStore", "/full/path/to/keystore");
     System.setProperty("javax.net.ssl.trustStorePassword", "password-to-keystore");
@@ -46,7 +46,8 @@ public class OpenSearchClientConfig {
     final BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
     log.info("----- Host: {} -----", host.toHostString());
     // Only for demo purposes. Don't specify your credentials in code.
-    credentialsProvider.setCredentials(new AuthScope(host), new UsernamePasswordCredentials(username, password.toCharArray()));
+    credentialsProvider.setCredentials(new AuthScope(host),
+                                       new UsernamePasswordCredentials(username, password.toCharArray()));
 
     final SSLContext sslcontext = SSLContextBuilder
         .create()

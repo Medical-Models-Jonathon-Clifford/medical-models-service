@@ -1,9 +1,8 @@
 package org.jono.medicalmodelsservice.service.comment;
 
+import java.util.List;
 import lombok.Builder;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 @Builder

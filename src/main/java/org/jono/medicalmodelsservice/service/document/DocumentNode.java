@@ -1,11 +1,10 @@
 package org.jono.medicalmodelsservice.service.document;
 
-import lombok.Data;
-import org.jono.medicalmodelsservice.model.Document;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Data;
+import org.jono.medicalmodelsservice.model.Document;
 
 @Data
 public class DocumentNode {

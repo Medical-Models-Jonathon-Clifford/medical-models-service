@@ -1,5 +1,10 @@
 package org.jono.medicalmodelsservice.repository.jdbc;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.Comment;
 import org.jono.medicalmodelsservice.model.CommentChild;
@@ -9,12 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.relational.core.sql.SqlIdentifier;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 @Slf4j
 @Component
 public class CommentRepository {
@@ -23,7 +22,8 @@ public class CommentRepository {
   private final CommentChildCrudRepository commentChildCrudRepository;
 
   @Autowired
-  public CommentRepository(final CommentCrudRepository commentCrudRepository, final CommentChildCrudRepository commentChildCrudRepository) {
+  public CommentRepository(final CommentCrudRepository commentCrudRepository,
+      final CommentChildCrudRepository commentChildCrudRepository) {
     this.commentCrudRepository = commentCrudRepository;
     this.commentChildCrudRepository = commentChildCrudRepository;
   }
@@ -32,7 +32,8 @@ public class CommentRepository {
     final var comment = new Comment(newComment);
     final Comment savedComment = this.commentCrudRepository.save(comment);
     if (newComment.getParentCommentId() != null) {
-      final var newCommentChild = new CommentChild(savedComment.getDocumentId(), newComment.getParentCommentId(), savedComment.getId());
+      final var newCommentChild = new CommentChild(savedComment.getDocumentId(), newComment.getParentCommentId(),
+                                                   savedComment.getId());
       this.commentChildCrudRepository.save(newCommentChild);
     }
     return savedComment;

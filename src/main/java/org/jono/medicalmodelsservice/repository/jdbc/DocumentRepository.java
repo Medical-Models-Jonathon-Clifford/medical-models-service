@@ -1,6 +1,10 @@
 package org.jono.medicalmodelsservice.repository.jdbc;
 
 import com.google.common.collect.ImmutableList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.Document;
 import org.jono.medicalmodelsservice.model.DocumentChild;
@@ -11,11 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.relational.core.sql.SqlIdentifier;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-
 @Slf4j
 @Repository
 public class DocumentRepository {
@@ -25,8 +24,8 @@ public class DocumentRepository {
 
   @Autowired
   public DocumentRepository(
-      DocumentCrudRepository documentCrudRepository,
-      DocumentChildCrudRepository documentChildCrudRepository
+      final DocumentCrudRepository documentCrudRepository,
+      final DocumentChildCrudRepository documentChildCrudRepository
   ) {
     this.documentCrudRepository = documentCrudRepository;
     this.documentChildCrudRepository = documentChildCrudRepository;
@@ -40,7 +39,8 @@ public class DocumentRepository {
     return documentCrudRepository.findById(id);
   }
 
-  public Document updateById(final String id, final DocumentDto documentDto, final Map<SqlIdentifier, Object> updateMap) {
+  public Document updateById(final String id, final DocumentDto documentDto,
+      final Map<SqlIdentifier, Object> updateMap) {
     // Fetch the existing document by ID
     final Document existingDocument = documentCrudRepository.findById(id)
         .orElseThrow(() -> new IllegalArgumentException("Document with id " + id + " not found"));

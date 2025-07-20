@@ -1,10 +1,9 @@
 package org.jono.medicalmodelsservice.service.comment;
 
-import lombok.Data;
-import org.jono.medicalmodelsservice.model.Comment;
-
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Data;
+import org.jono.medicalmodelsservice.model.Comment;
 
 @Data
 public class CommentNode {
