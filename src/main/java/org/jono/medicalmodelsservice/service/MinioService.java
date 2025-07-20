@@ -12,16 +12,15 @@ import io.minio.errors.InvalidResponseException;
 import io.minio.errors.ServerException;
 import io.minio.errors.XmlParserException;
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
-import org.jono.medicalmodelsservice.config.MinioConfigHolder;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.jono.medicalmodelsservice.config.MinioConfigHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -40,35 +39,38 @@ public class MinioService {
     }
   }
 
-  private boolean bucketDoesNotExist() throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+  private boolean bucketDoesNotExist() throws ServerException, InsufficientDataException, ErrorResponseException,
+      IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException,
+      InternalException {
     return !minioClient.bucketExists(BucketExistsArgs.builder()
-        .bucket(minioConfig.getBucketName())
-        .build());
+                                         .bucket(minioConfig.getBucketName())
+                                         .build());
   }
 
-  private void makeBucket() throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+  private void makeBucket() throws ServerException, InsufficientDataException, ErrorResponseException, IOException,
+      NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
     minioClient.makeBucket(MakeBucketArgs.builder()
-        .bucket(minioConfig.getBucketName()).build());
+                               .bucket(minioConfig.getBucketName()).build());
   }
 
   public String uploadImage(final MultipartFile file) throws Exception {
     final String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
 
     minioClient.putObject(PutObjectArgs.builder()
-        .bucket(minioConfig.getBucketName())
-        .object(fileName)
-        .stream(file.getInputStream(), file.getSize(), -1)
-        .contentType(file.getContentType())
-        .build());
+                              .bucket(minioConfig.getBucketName())
+                              .object(fileName)
+                              .stream(file.getInputStream(), file.getSize(), -1)
+                              .contentType(file.getContentType())
+                              .build());
 
     return fileName;
   }
 
   public byte[] downloadImage(final String fileName) throws Exception {
     try (final InputStream stream = minioClient.getObject(GetObjectArgs.builder()
-        .bucket(minioConfig.getBucketName())
-        .object(fileName)
-        .build())) {
+                                                              .bucket(minioConfig.getBucketName())
+                                                              .object(fileName)
+                                                              .build())) {
       return stream.readAllBytes();
     }
   }

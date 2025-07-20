@@ -1,5 +1,6 @@
 package org.jono.medicalmodelsservice.controller;
 
+import java.util.Base64;
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.User;
 import org.jono.medicalmodelsservice.service.MmUserInfoService;
@@ -16,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Base64;
 
 @Slf4j
 @CrossOrigin

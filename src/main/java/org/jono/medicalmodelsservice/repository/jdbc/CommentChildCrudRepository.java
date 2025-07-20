@@ -1,9 +1,8 @@
 package org.jono.medicalmodelsservice.repository.jdbc;
 
+import java.util.List;
 import org.jono.medicalmodelsservice.model.CommentChild;
 import org.springframework.data.repository.CrudRepository;
-
-import java.util.List;
 
 public interface CommentChildCrudRepository extends CrudRepository<CommentChild, String> {
   List<CommentChild> findAllByDocumentId(String documentId);

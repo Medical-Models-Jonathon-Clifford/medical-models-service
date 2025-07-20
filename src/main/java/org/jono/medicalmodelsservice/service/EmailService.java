@@ -1,8 +1,9 @@
 package org.jono.medicalmodelsservice.service;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import java.io.File;
 import java.util.Objects;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,9 +12,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
-
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 
 @Slf4j
 @Component
@@ -43,7 +41,8 @@ public class EmailService {
     sendSimpleMessage(to, subject, String.format(Objects.requireNonNull(template.getText()), text));
   }
 
-  public void sendMessageWithAttachment(final String to, final String subject, final String text, final String pathToAttachment) {
+  public void sendMessageWithAttachment(final String to, final String subject, final String text,
+                                        final String pathToAttachment) {
     try {
       final MimeMessage message = emailSender.createMimeMessage();
       final MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -65,12 +64,12 @@ public class EmailService {
       helper.setFrom(replyAddress);
       helper.setTo(to);
       helper.setSubject(subject);
-      helper.setText("<html><body>" +
-          "<h1>Very important news here</h1>" +
-          "<p>Look below for more information</p>" +
-          "<table><tr><th>Col 1</th><th>Col 2</th></tr><tr><td>Data 1</td><td>Data 2</td></tr></table>" +
-          "<img src='cid:identifier1234'>" +
-          "</body></html>", true);
+      helper.setText("<html><body>"
+                         + "<h1>Very important news here</h1>"
+                         + "<p>Look below for more information</p>"
+                         + "<table><tr><th>Col 1</th><th>Col 2</th></tr><tr><td>Data 1</td><td>Data 2</td></tr></table>"
+                         + "<img src='cid:identifier1234'>"
+                         + "</body></html>", true);
       helper.addInline("identifier1234", new FileSystemResource(new File(pathToAttachment)));
       emailSender.send(message);
     } catch (MessagingException e) {

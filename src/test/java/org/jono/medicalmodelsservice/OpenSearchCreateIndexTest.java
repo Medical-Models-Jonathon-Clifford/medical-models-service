@@ -1,5 +1,11 @@
 package org.jono.medicalmodelsservice;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.config.OpenSearchClientConfig;
 import org.jono.medicalmodelsservice.model.IndexData;
@@ -21,13 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.TestPropertySource;
-
-import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @SpringBootTest
@@ -142,17 +141,18 @@ class OpenSearchCreateIndexTest {
     final IndexRequest<IndexData> indexRequest2 = createIndexRequest("2", "Tim", "Poole");
     client.index(indexRequest2);
 
-    //Search for the document
+    // Search for the document
     final SearchResponse<IndexData> searchResponse = client.search(s -> s.index(TEST_INDEX_NAME), IndexData.class);
     for (int i = 0; i < searchResponse.hits().hits().size(); i++) {
       System.out.println(searchResponse.hits().hits().get(i).source());
     }
 
-    //Delete the document
+    // Delete the document
     client.delete(b -> b.index(TEST_INDEX_NAME).id("1"));
   }
 
   private IndexRequest<IndexData> createIndexRequest(final String id, final String firstName, final String lastName) {
-    return new IndexRequest.Builder<IndexData>().index(TEST_INDEX_NAME).id(id).document(new IndexData(firstName, lastName)).build();
+    return new IndexRequest.Builder<IndexData>().index(TEST_INDEX_NAME).id(id).document(
+        new IndexData(firstName, lastName)).build();
   }
 }

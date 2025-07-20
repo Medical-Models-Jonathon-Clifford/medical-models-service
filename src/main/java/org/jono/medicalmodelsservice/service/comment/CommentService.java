@@ -1,5 +1,10 @@
 package org.jono.medicalmodelsservice.service.comment;
 
+import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.Comment;
 import org.jono.medicalmodelsservice.model.CommentChild;
@@ -12,12 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.relational.core.sql.SqlIdentifier;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 @Slf4j
 @Service
 public class CommentService {
@@ -28,8 +27,8 @@ public class CommentService {
 
   @Autowired
   public CommentService(final CommentRepository commentRepository,
-                        final CommentChildRepository commentChildRepository,
-                        final CommentInvestigator commentInvestigator
+      final CommentChildRepository commentChildRepository,
+      final CommentInvestigator commentInvestigator
   ) {
     this.commentRepository = commentRepository;
     this.commentChildRepository = commentChildRepository;
@@ -55,7 +54,8 @@ public class CommentService {
   public void deleteComment(final String id) {
     final List<CommentChild> commentChildrenByCommentId = commentChildRepository.findByCommentId(id);
     final List<CommentChild> commentChildrenByChildCommentId = commentChildRepository.findListByChildCommentId(id);
-    final Tuple2<List<CommentChild>, List<CommentChild>> servletTuple2 = new Tuple2<>(commentChildrenByCommentId, commentChildrenByChildCommentId);
+    final Tuple2<List<CommentChild>, List<CommentChild>> servletTuple2 = new Tuple2<>(commentChildrenByCommentId,
+                                                                                      commentChildrenByChildCommentId);
     final CommentsToDelete commentsToDeleteServlet = commentInvestigator.findNodesToDelete(id, servletTuple2);
     commentChildRepository.deleteByIds(commentsToDeleteServlet.getChildCommentIds());
     commentRepository.deleteByIds(commentsToDeleteServlet.getCommentIds());

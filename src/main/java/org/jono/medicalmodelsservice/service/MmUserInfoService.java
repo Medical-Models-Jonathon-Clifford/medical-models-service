@@ -1,14 +1,13 @@
 package org.jono.medicalmodelsservice.service;
 
+import java.util.Collection;
+import java.util.List;
 import org.jono.medicalmodelsservice.model.LoginCompanies;
 import org.jono.medicalmodelsservice.model.LoginUser;
 import org.jono.medicalmodelsservice.repository.UserInfoRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
-import java.util.List;
 
 @Service
 public class MmUserInfoService {

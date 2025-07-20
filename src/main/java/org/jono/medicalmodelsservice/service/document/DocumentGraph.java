@@ -1,10 +1,9 @@
 package org.jono.medicalmodelsservice.service.document;
 
+import java.util.List;
 import org.jono.medicalmodelsservice.model.Document;
 import org.jono.medicalmodelsservice.model.DocumentChild;
 import org.jono.medicalmodelsservice.service.GraphBuilder;
-
-import java.util.List;
 
 public class DocumentGraph {
 
