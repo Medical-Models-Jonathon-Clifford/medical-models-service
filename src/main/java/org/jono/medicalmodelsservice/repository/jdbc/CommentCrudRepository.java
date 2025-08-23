@@ -5,5 +5,5 @@ import org.jono.medicalmodelsservice.model.Comment;
 import org.springframework.data.repository.CrudRepository;
 
 public interface CommentCrudRepository extends CrudRepository<Comment, String> {
-  List<Comment> findAllByDocumentId(String documentId);
+    List<Comment> findAllByDocumentId(String documentId);
 }

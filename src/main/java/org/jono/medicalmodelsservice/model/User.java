@@ -10,12 +10,12 @@ import org.springframework.data.relational.core.mapping.Table;
 @AllArgsConstructor
 @Data
 public class User {
-  @Id
-  private String id;
-  private String email;
-  private String profilePicture;
-  private String name;
-  private LocalDateTime createdDate;
-  private String password;
-  private String state;
+    @Id
+    private String id;
+    private String email;
+    private String profilePicture;
+    private String name;
+    private LocalDateTime createdDate;
+    private String password;
+    private String state;
 }

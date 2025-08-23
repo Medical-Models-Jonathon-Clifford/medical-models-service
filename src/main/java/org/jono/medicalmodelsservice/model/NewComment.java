@@ -6,8 +6,8 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class NewComment {
-  private String documentId;
-  private String body;
-  private String creator;
-  private String parentCommentId;
+    private String documentId;
+    private String body;
+    private String creator;
+    private String parentCommentId;
 }

@@ -9,8 +9,8 @@ import org.jono.medicalmodelsservice.service.GraphBuilder;
 @Slf4j
 public class CommentGraph {
 
-  public static List<CommentNode> buildGraph(final List<Comment> commentList,
-                                             final List<CommentChild> commentChildList) {
-    return GraphBuilder.buildGraph(commentList, commentChildList, CommentNode::new, CommentNode::getChildren);
-  }
+    public static List<CommentNode> buildGraph(final List<Comment> commentList,
+            final List<CommentChild> commentChildList) {
+        return GraphBuilder.buildGraph(commentList, commentChildList, CommentNode::new, CommentNode::getChildren);
+    }
 }

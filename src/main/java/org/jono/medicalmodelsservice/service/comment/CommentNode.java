@@ -7,11 +7,11 @@ import org.jono.medicalmodelsservice.model.Comment;
 
 @Data
 public class CommentNode {
-  private Comment comment;
-  private List<CommentNode> children;
+    private Comment comment;
+    private List<CommentNode> children;
 
-  public CommentNode(final Comment comment) {
-    this.comment = comment;
-    this.children = new ArrayList<>();
-  }
+    public CommentNode(final Comment comment) {
+        this.comment = comment;
+        this.children = new ArrayList<>();
+    }
 }

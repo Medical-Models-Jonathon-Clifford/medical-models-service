@@ -46,120 +46,121 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 public class SecurityConfig {
 
-  @Bean
-  @Order(1)
-  public SecurityFilterChain asFilterChain(final HttpSecurity http)
-      throws Exception {
-    OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
+    @Bean
+    @Order(1)
+    public SecurityFilterChain asFilterChain(final HttpSecurity http)
+            throws Exception {
+        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 
-    http.cors((cors) -> cors
-        .configurationSource(myWebsiteConfigurationSource()));
+        http.cors((cors) -> cors
+                .configurationSource(myWebsiteConfigurationSource()));
 
-    http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-        .oidc(Customizer.withDefaults());
+        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+                .oidc(Customizer.withDefaults());
 
-    http
-        .exceptionHandling((exceptions) ->
-            exceptions.defaultAuthenticationEntryPointFor(
-                new LoginUrlAuthenticationEntryPoint("/login"), new MediaTypeRequestMatcher(MediaType.TEXT_HTML))
-        )
-        .oauth2ResourceServer((resourceServer) -> resourceServer
-            .jwt(Customizer.withDefaults()));
+        http
+                .exceptionHandling((exceptions) ->
+                                           exceptions.defaultAuthenticationEntryPointFor(
+                                                   new LoginUrlAuthenticationEntryPoint("/login"),
+                                                   new MediaTypeRequestMatcher(MediaType.TEXT_HTML))
+                )
+                .oauth2ResourceServer((resourceServer) -> resourceServer
+                        .jwt(Customizer.withDefaults()));
 
 
-    return http.build();
-  }
+        return http.build();
+    }
 
-  UrlBasedCorsConfigurationSource myWebsiteConfigurationSource() {
-    final CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList("*"));
-    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-    final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", configuration);
-    return source;
-  }
+    UrlBasedCorsConfigurationSource myWebsiteConfigurationSource() {
+        final CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
-  @Bean
-  @Order(2)
-  public SecurityFilterChain defaultSecurityFilterChain(final HttpSecurity http)
-      throws Exception {
-    http
-        .formLogin(form -> form
-            .loginPage("/login"))
-        .csrf(c -> c.disable());
+    @Bean
+    @Order(2)
+    public SecurityFilterChain defaultSecurityFilterChain(final HttpSecurity http)
+            throws Exception {
+        http
+                .formLogin(form -> form
+                        .loginPage("/login"))
+                .csrf(c -> c.disable());
 
-    return http.build();
-  }
+        return http.build();
+    }
 
-  @Bean
-  public UserDetailsService userDetailsService(final MmUserInfoService mmUserInfoService) {
-    return new InMemoryUserDetailsManager(mmUserInfoService.getUserDetails());
-  }
+    @Bean
+    public UserDetailsService userDetailsService(final MmUserInfoService mmUserInfoService) {
+        return new InMemoryUserDetailsManager(mmUserInfoService.getUserDetails());
+    }
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return NoOpPasswordEncoder.getInstance();
-  }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return NoOpPasswordEncoder.getInstance();
+    }
 
-  @Bean
-  public RegisteredClientRepository registeredClientRepository() {
-    final var registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
-        .clientId("client")
-        .clientSecret("secret")
-        .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-        .redirectUri("http://localhost:8080/login/oauth2/code/my_authorization_server")
-        .scope(OidcScopes.OPENID)
-        .build();
+    @Bean
+    public RegisteredClientRepository registeredClientRepository() {
+        final var registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
+                .clientId("client")
+                .clientSecret("secret")
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .redirectUri("http://localhost:8080/login/oauth2/code/my_authorization_server")
+                .scope(OidcScopes.OPENID)
+                .build();
 
-    final var nextAuthClient = RegisteredClient.withId(UUID.randomUUID().toString()) // Use your client ID
-        .clientId("next-auth-client")
-        .clientSecret("next-auth-client-secret") // Use your actual secret
-        .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-        .redirectUris(uris -> uris.add("http://localhost:3000/auth/callback/my_authorization_server"))
-        .redirectUris(uris -> uris.add("http://localhost:3001/auth/callback/my_authorization_server"))
-        .redirectUris(uris -> uris.add("https://www.medicalmodels.net/auth/callback/my_authorization_server"))
-        .scope(OidcScopes.OPENID)
-        .scope(OidcScopes.PROFILE)
-        .clientSettings(ClientSettings.builder()
-            .requireProofKey(true)
-            .build())
-        .build();
+        final var nextAuthClient = RegisteredClient.withId(UUID.randomUUID().toString()) // Use your client ID
+                .clientId("next-auth-client")
+                .clientSecret("next-auth-client-secret") // Use your actual secret
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .redirectUris(uris -> uris.add("http://localhost:3000/auth/callback/my_authorization_server"))
+                .redirectUris(uris -> uris.add("http://localhost:3001/auth/callback/my_authorization_server"))
+                .redirectUris(uris -> uris.add("https://www.medicalmodels.net/auth/callback/my_authorization_server"))
+                .scope(OidcScopes.OPENID)
+                .scope(OidcScopes.PROFILE)
+                .clientSettings(ClientSettings.builder()
+                                        .requireProofKey(true)
+                                        .build())
+                .build();
 
-    return new InMemoryRegisteredClientRepository(registeredClient, nextAuthClient);
-  }
+        return new InMemoryRegisteredClientRepository(registeredClient, nextAuthClient);
+    }
 
-  @Bean
-  public JWKSource<SecurityContext> jwkSource() throws NoSuchAlgorithmException {
-    final KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-    keyPairGenerator.initialize(2048);
-    final KeyPair keyPair = keyPairGenerator.generateKeyPair();
+    @Bean
+    public JWKSource<SecurityContext> jwkSource() throws NoSuchAlgorithmException {
+        final KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        keyPairGenerator.initialize(2048);
+        final KeyPair keyPair = keyPairGenerator.generateKeyPair();
 
-    final RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
-    final RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-    final RSAKey rsaKey = new RSAKey.Builder(publicKey)
-        .privateKey(privateKey)
-        .keyID(UUID.randomUUID().toString())
-        .build();
-    final JWKSet jwkSet = new JWKSet(rsaKey);
-    return new ImmutableJWKSet<>(jwkSet);
-  }
+        final RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
+        final RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
+        final RSAKey rsaKey = new RSAKey.Builder(publicKey)
+                .privateKey(privateKey)
+                .keyID(UUID.randomUUID().toString())
+                .build();
+        final JWKSet jwkSet = new JWKSet(rsaKey);
+        return new ImmutableJWKSet<>(jwkSet);
+    }
 
-  @Bean
-  public AuthorizationServerSettings authorizationServerSettings() {
-    return AuthorizationServerSettings.builder().build();
-  }
+    @Bean
+    public AuthorizationServerSettings authorizationServerSettings() {
+        return AuthorizationServerSettings.builder().build();
+    }
 
-  @Bean
-  public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer(final MmUserInfoService mmUserInfoService) {
-    return (context) -> {
-      if (OidcParameterNames.ID_TOKEN.equals(context.getTokenType().getValue())) {
-        final OidcUserInfo userInfo = mmUserInfoService.loadUser(
-            context.getPrincipal().getName());
-        context.getClaims().claims(claims ->
-            claims.putAll(userInfo.getClaims()));
-      }
-    };
-  }
+    @Bean
+    public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer(final MmUserInfoService mmUserInfoService) {
+        return (context) -> {
+            if (OidcParameterNames.ID_TOKEN.equals(context.getTokenType().getValue())) {
+                final OidcUserInfo userInfo = mmUserInfoService.loadUser(
+                        context.getPrincipal().getName());
+                context.getClaims().claims(claims ->
+                                                   claims.putAll(userInfo.getClaims()));
+            }
+        };
+    }
 }
