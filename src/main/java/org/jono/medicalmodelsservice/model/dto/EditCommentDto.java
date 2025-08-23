@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class EditCommentDto {
-  private String body;
+    private String body;
 }

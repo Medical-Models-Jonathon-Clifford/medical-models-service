@@ -7,11 +7,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MinioConfiguration {
 
-  @Bean
-  public MinioClient minioClient(final MinioConfigHolder minioConfig) {
-    return MinioClient.builder()
-        .endpoint(minioConfig.getEndpoint())
-        .credentials(minioConfig.getAccessKey(), minioConfig.getSecretKey())
-        .build();
-  }
+    @Bean
+    public MinioClient minioClient(final MinioConfigHolder minioConfig) {
+        return MinioClient.builder()
+                .endpoint(minioConfig.getEndpoint())
+                .credentials(minioConfig.getAccessKey(), minioConfig.getSecretKey())
+                .build();
+    }
 }

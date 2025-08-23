@@ -15,26 +15,26 @@ import org.springframework.data.relational.core.mapping.Table;
 @Data
 @Builder
 public class Document implements NodeData {
-  private static final String INITIAL_STATE = "Draft";
+    private static final String INITIAL_STATE = "Draft";
 
-  @Id
-  private String id;
-  private String title;
-  // TODO: Use a better DateTime that includes a TimeZone
-  private LocalDateTime createdDate;
-  private LocalDateTime modifiedDate;
-  private String body;
-  private String creator;
-  private DocumentState state;
+    @Id
+    private String id;
+    private String title;
+    // TODO: Use a better DateTime that includes a TimeZone
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
+    private String body;
+    private String creator;
+    private DocumentState state;
 
-  public Document(final NewDocument newDocument) {
-    this.creator = newDocument.getCreatorId();
-    this.state = DocumentState.DRAFT;
-    this.createdDate = LocalDateTime.now();
-    this.modifiedDate = this.createdDate;
-  }
+    public Document(final NewDocument newDocument) {
+        this.creator = newDocument.getCreatorId();
+        this.state = DocumentState.DRAFT;
+        this.createdDate = LocalDateTime.now();
+        this.modifiedDate = this.createdDate;
+    }
 
-  public static Document draftDocument() {
-    return Document.builder().state(DocumentState.DRAFT).build();
-  }
+    public static Document draftDocument() {
+        return Document.builder().state(DocumentState.DRAFT).build();
+    }
 }

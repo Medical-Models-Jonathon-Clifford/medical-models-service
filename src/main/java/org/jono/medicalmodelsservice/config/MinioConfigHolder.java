@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 public class MinioConfigHolder {
-  private String endpoint;
-  private String accessKey;
-  private String secretKey;
-  private String bucketName;
+    private String endpoint;
+    private String accessKey;
+    private String secretKey;
+    private String bucketName;
 }

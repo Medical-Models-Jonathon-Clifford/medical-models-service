@@ -27,41 +27,41 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/documents")
 public class DocumentController {
 
-  private final DocumentService documentService;
+    private final DocumentService documentService;
 
-  @Autowired
-  public DocumentController(final DocumentService documentService) {
-    this.documentService = documentService;
-  }
+    @Autowired
+    public DocumentController(final DocumentService documentService) {
+        this.documentService = documentService;
+    }
 
-  @PostMapping(path = "/new",
-      produces = "application/json")
-  @ResponseBody
-  public Document handleDocumentsNewPost(@RequestParam final Optional<String> parentId) {
-    return documentService.createDocument(parentId);
-  }
+    @PostMapping(path = "/new",
+            produces = "application/json")
+    @ResponseBody
+    public Document handleDocumentsNewPost(@RequestParam final Optional<String> parentId) {
+        return documentService.createDocument(parentId);
+    }
 
-  @PutMapping(path = "/{id}",
-      produces = "application/json")
-  @ResponseBody
-  public Document handleDocumentsPut(@PathVariable final String id,
-                                     @RequestBody final DocumentDto documentDto) {
-    return documentService.updateDocument(id, documentDto);
-  }
+    @PutMapping(path = "/{id}",
+            produces = "application/json")
+    @ResponseBody
+    public Document handleDocumentsPut(@PathVariable final String id,
+            @RequestBody final DocumentDto documentDto) {
+        return documentService.updateDocument(id, documentDto);
+    }
 
-  @GetMapping(path = "/{id}",
-      produces = "application/json")
-  @ResponseBody
-  public ResponseEntity<Document> handleDocumentsGet(@PathVariable final String id) {
-    return documentService.getDocumentById(id)
-        .map(ResponseEntity::ok) // If document is present, return 200 with the document
-        .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build()); // If empty, return 404
-  }
+    @GetMapping(path = "/{id}",
+            produces = "application/json")
+    @ResponseBody
+    public ResponseEntity<Document> handleDocumentsGet(@PathVariable final String id) {
+        return documentService.getDocumentById(id)
+                .map(ResponseEntity::ok) // If document is present, return 200 with the document
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build()); // If empty, return 404
+    }
 
-  @GetMapping(path = "/all/navigation",
-      produces = "application/json")
-  @ResponseBody
-  public List<DocumentNode> handleDocumentsGetAllNavigation() {
-    return documentService.getAllNavigation();
-  }
+    @GetMapping(path = "/all/navigation",
+            produces = "application/json")
+    @ResponseBody
+    public List<DocumentNode> handleDocumentsGetAllNavigation() {
+        return documentService.getAllNavigation();
+    }
 }

@@ -1,7 +1,7 @@
 package org.jono.medicalmodelsservice.service;
 
 public interface NodeRelationship {
-  String getParentId();
+    String getParentId();
 
-  String getChildId();
+    String getChildId();
 }

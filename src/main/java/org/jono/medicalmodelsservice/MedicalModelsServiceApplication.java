@@ -6,12 +6,12 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 
 @SpringBootApplication
 @EnableJdbcRepositories(
-    basePackages = "org.jono.medicalmodelsservice.repository.jdbc"
+        basePackages = "org.jono.medicalmodelsservice.repository.jdbc"
 )
 public class MedicalModelsServiceApplication {
 
-  public static void main(final String[] args) {
-    SpringApplication.run(MedicalModelsServiceApplication.class, args);
-  }
+    public static void main(final String[] args) {
+        SpringApplication.run(MedicalModelsServiceApplication.class, args);
+    }
 
 }

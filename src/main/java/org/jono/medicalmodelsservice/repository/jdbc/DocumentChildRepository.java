@@ -7,14 +7,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class DocumentChildRepository {
 
-  private final DocumentChildCrudRepository documentChildCrudRepository;
+    private final DocumentChildCrudRepository documentChildCrudRepository;
 
-  @Autowired
-  public DocumentChildRepository(final DocumentChildCrudRepository documentChildCrudRepository) {
-    this.documentChildCrudRepository = documentChildCrudRepository;
-  }
+    @Autowired
+    public DocumentChildRepository(final DocumentChildCrudRepository documentChildCrudRepository) {
+        this.documentChildCrudRepository = documentChildCrudRepository;
+    }
 
-  public DocumentChild create(final String parentId, final String docId) {
-    return this.documentChildCrudRepository.save(new DocumentChild(parentId, docId));
-  }
+    public DocumentChild create(final String parentId, final String docId) {
+        return this.documentChildCrudRepository.save(new DocumentChild(parentId, docId));
+    }
 }

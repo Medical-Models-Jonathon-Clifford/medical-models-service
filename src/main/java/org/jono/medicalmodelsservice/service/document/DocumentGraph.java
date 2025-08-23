@@ -7,8 +7,8 @@ import org.jono.medicalmodelsservice.service.GraphBuilder;
 
 public class DocumentGraph {
 
-  public static List<DocumentNode> buildGraph(final List<Document> documentList,
-                                              final List<DocumentChild> documentChildList) {
-    return GraphBuilder.buildGraph(documentList, documentChildList, DocumentNode::new, DocumentNode::getChildren);
-  }
+    public static List<DocumentNode> buildGraph(final List<Document> documentList,
+            final List<DocumentChild> documentChildList) {
+        return GraphBuilder.buildGraph(documentList, documentChildList, DocumentNode::new, DocumentNode::getChildren);
+    }
 }

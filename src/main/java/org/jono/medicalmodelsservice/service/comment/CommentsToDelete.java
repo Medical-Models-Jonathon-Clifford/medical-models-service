@@ -7,6 +7,6 @@ import lombok.Data;
 @Data
 @Builder
 class CommentsToDelete {
-  List<String> commentIds;
-  List<String> childCommentIds;
+    List<String> commentIds;
+    List<String> childCommentIds;
 }
