@@ -36,13 +36,7 @@ public class DocumentService {
         final Document document = Document.draftDocument();
         final Document newDoc = documentRepository.create(document);
 
-        return parentId
-                .map(id -> addChildAndReturnDoc(id, newDoc))
-                .orElse(newDoc);
-    }
-
-    private Document addChildAndReturnDoc(final String id, final Document newDoc) {
-        documentChildRepository.create(id, newDoc.getId());
+        parentId.ifPresent(s -> documentChildRepository.create(s, newDoc.getId()));
         return newDoc;
     }
 
