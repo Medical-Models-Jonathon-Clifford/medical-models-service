@@ -41,18 +41,6 @@ public class DocumentService {
     }
 
     public Document updateDocument(final String id, final DocumentDto documentDto) {
-        if (documentDto.getState().equals(DocumentState.DRAFT)) {
-            if (Objects.nonNull(documentDto.getTitle()) && Objects.nonNull(documentDto.getBody())) {
-                documentDto.setState(DocumentState.ACTIVE);
-            } else if (Objects.nonNull(documentDto.getTitle())) {
-                documentDto.setState(DocumentState.NO_CONTENT);
-            } else if (Objects.nonNull(documentDto.getBody())) {
-                documentDto.setState(DocumentState.NO_TITLE);
-            } else {
-                throw new RuntimeException("Title and body are both null. It is unclear what was updated.");
-            }
-        }
-
         final Map<SqlIdentifier, Object> updateMap = new LinkedHashMap<>();
         updateMap.put(SqlIdentifier.unquoted("title"), documentDto.getTitle());
         updateMap.put(SqlIdentifier.unquoted("body"), documentDto.getBody());
