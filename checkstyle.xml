@@ -457,5 +457,6 @@
         <module name="FinalParameters"/>
         <module name="FinalLocalVariableCheck"/>
         <module name="FinalParameters"/>
+        <module name="UnusedImports"/>
     </module>
 </module>
