@@ -33,8 +33,7 @@ public class DocumentService {
     public Document createDocument(final Optional<String> parentId) {
         final Document document = Document.draftDocument();
         final Document newDoc = documentRepository.create(document);
-
-        parentId.ifPresent(s -> documentChildRepository.create(s, newDoc.getId()));
+        parentId.ifPresent(id -> documentChildRepository.create(id, newDoc.getId()));
         return newDoc;
     }
 
