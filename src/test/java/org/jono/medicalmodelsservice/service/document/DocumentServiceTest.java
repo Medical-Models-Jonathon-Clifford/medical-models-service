@@ -1,7 +1,6 @@
 package org.jono.medicalmodelsservice.service.document;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -30,8 +29,8 @@ class DocumentServiceTest {
         @Test
         void happyPath() {
             when(documentRepository.create(any())).thenReturn(new Document());
-            var documentService = new DocumentService(documentRepository, documentChildRepository);
-            Document document = documentService.createDocument(Optional.of("1"));
+            final var documentService = new DocumentService(documentRepository, documentChildRepository);
+            final Document document = documentService.createDocument(Optional.of("1"));
             assertThat(document).isNotNull();
         }
     }
