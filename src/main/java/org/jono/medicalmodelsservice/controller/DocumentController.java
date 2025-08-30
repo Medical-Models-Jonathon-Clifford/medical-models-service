@@ -53,7 +53,7 @@ public class DocumentController {
             produces = "application/json")
     @ResponseBody
     public ResponseEntity<Document> handleDocumentsGet(@PathVariable final String id) {
-        return documentService.getDocumentById(id)
+        return documentService.readDocument(id)
                 .map(ResponseEntity::ok) // If document is present, return 200 with the document
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build()); // If empty, return 404
     }

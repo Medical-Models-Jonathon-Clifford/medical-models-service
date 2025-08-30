@@ -34,12 +34,12 @@ public class DocumentService {
         return newDoc;
     }
 
-    public Document updateDocument(final String id, final DocumentDto documentDto) {
-        return documentRepository.updateById(id, documentDto);
+    public Optional<Document> readDocument(final String id) {
+        return documentRepository.findById(id);
     }
 
-    public Optional<Document> getDocumentById(final String id) {
-        return documentRepository.findById(id);
+    public Document updateDocument(final String id, final DocumentDto documentDto) {
+        return documentRepository.updateById(id, documentDto);
     }
 
     public List<DocumentNode> getAllNavigation() {
