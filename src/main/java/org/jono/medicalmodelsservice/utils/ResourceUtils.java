@@ -6,6 +6,10 @@ import java.util.Base64;
 
 public class ResourceUtils {
 
+    private ResourceUtils() {
+        // Utility class
+    }
+
     public static String loadBase64ResourceFile(final String resourcePath) throws IOException {
         try (final InputStream is = ResourceUtils.class.getClassLoader().getResourceAsStream(resourcePath)) {
             if (is == null) {
