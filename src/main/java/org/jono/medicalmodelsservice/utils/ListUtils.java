@@ -9,6 +9,11 @@ import java.util.Objects;
 import java.util.function.Function;
 
 public class ListUtils {
+
+    private ListUtils() {
+        // Utility class
+    }
+
     public static <T> List<T> deduplicate(final List<T> withDuplicates) {
         return new ArrayList<>(new HashSet<>(withDuplicates));
     }
