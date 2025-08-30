@@ -35,7 +35,6 @@ public class DocumentRepository {
         return documentCrudRepository.findById(id);
     }
 
-    // TODO: Simplify this method. I think I can remove either documentDto or updateMap.
     public Document updateById(final String id, final DocumentDto documentDto) {
         final Document existingDocument = documentCrudRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Document with id " + id + " not found"));
