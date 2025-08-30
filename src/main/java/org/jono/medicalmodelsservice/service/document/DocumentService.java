@@ -1,8 +1,6 @@
 package org.jono.medicalmodelsservice.service.document;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import org.jono.medicalmodelsservice.model.Document;
 import org.jono.medicalmodelsservice.model.DocumentChild;
@@ -11,7 +9,6 @@ import org.jono.medicalmodelsservice.model.dto.DocumentDto;
 import org.jono.medicalmodelsservice.repository.jdbc.DocumentChildRepository;
 import org.jono.medicalmodelsservice.repository.jdbc.DocumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.relational.core.sql.SqlIdentifier;
 import org.springframework.stereotype.Service;
 
 
@@ -38,12 +35,7 @@ public class DocumentService {
     }
 
     public Document updateDocument(final String id, final DocumentDto documentDto) {
-        final Map<SqlIdentifier, Object> updateMap = new LinkedHashMap<>();
-        updateMap.put(SqlIdentifier.unquoted("title"), documentDto.getTitle());
-        updateMap.put(SqlIdentifier.unquoted("body"), documentDto.getBody());
-        updateMap.put(SqlIdentifier.unquoted("state"), documentDto.getState());
-
-        return documentRepository.updateById(id, documentDto, updateMap);
+        return documentRepository.updateById(id, documentDto);
     }
 
     public Optional<Document> getDocumentById(final String id) {
