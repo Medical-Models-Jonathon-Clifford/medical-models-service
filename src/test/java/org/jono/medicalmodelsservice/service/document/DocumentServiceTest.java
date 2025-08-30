@@ -60,6 +60,7 @@ class DocumentServiceTest {
 
     @Nested
     class ReadDocument {
+
         @Test
         void shouldCallReadByIdOnDocRepo() {
             when(documentRepository.findById(any())).thenReturn(Optional.of(new Document()));
@@ -89,6 +90,7 @@ class DocumentServiceTest {
 
     @Nested
     class GetAllNavigation {
+
         @Test
         void shouldCallGetAllOnDocRepo() {
             when(documentRepository.getDocsAndDocChildren())
