@@ -6,7 +6,7 @@ import org.jono.medicalmodelsservice.model.Document;
 import org.jono.medicalmodelsservice.model.DocumentRelationship;
 import org.jono.medicalmodelsservice.model.Tuple2;
 import org.jono.medicalmodelsservice.model.dto.DocumentDto;
-import org.jono.medicalmodelsservice.repository.jdbc.DocumentChildRepository;
+import org.jono.medicalmodelsservice.repository.jdbc.DocumentRelationshipRepository;
 import org.jono.medicalmodelsservice.repository.jdbc.DocumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,21 +16,21 @@ import org.springframework.stereotype.Service;
 public class DocumentService {
 
     private final DocumentRepository documentRepository;
-    private final DocumentChildRepository documentChildRepository;
+    private final DocumentRelationshipRepository documentRelationshipRepository;
 
     @Autowired
     public DocumentService(
             final DocumentRepository documentRepository,
-            final DocumentChildRepository documentChildRepository
+            final DocumentRelationshipRepository documentRelationshipRepository
     ) {
         this.documentRepository = documentRepository;
-        this.documentChildRepository = documentChildRepository;
+        this.documentRelationshipRepository = documentRelationshipRepository;
     }
 
     public Document createDocument(final Optional<String> parentId) {
         final Document document = Document.draftDocument();
         final Document newDoc = documentRepository.create(document);
-        parentId.ifPresent(id -> documentChildRepository.create(id, newDoc.getId()));
+        parentId.ifPresent(id -> documentRelationshipRepository.create(id, newDoc.getId()));
         return newDoc;
     }
 
@@ -44,7 +44,7 @@ public class DocumentService {
 
     public List<DocumentNode> getAllNavigation() {
         final Tuple2<List<DocumentRelationship>, List<Document>> docsAndDocChildren =
-                documentRepository.getDocsAndDocChildren();
+                documentRepository.getDocsAndDocRelationships();
         return DocumentGraph.buildGraph(docsAndDocChildren.getT2(), docsAndDocChildren.getT1());
     }
 }

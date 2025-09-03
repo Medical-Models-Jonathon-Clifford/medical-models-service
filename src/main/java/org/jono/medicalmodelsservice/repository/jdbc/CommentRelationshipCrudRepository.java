@@ -4,7 +4,7 @@ import java.util.List;
 import org.jono.medicalmodelsservice.model.CommentRelationship;
 import org.springframework.data.repository.CrudRepository;
 
-public interface CommentChildCrudRepository extends CrudRepository<CommentRelationship, String> {
+public interface CommentRelationshipCrudRepository extends CrudRepository<CommentRelationship, String> {
     List<CommentRelationship> findAllByDocumentId(String documentId);
 
     List<CommentRelationship> findAllByParentCommentId(String parentCommentId);

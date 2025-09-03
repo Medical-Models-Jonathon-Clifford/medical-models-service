@@ -13,7 +13,7 @@ import org.jono.medicalmodelsservice.model.DocumentRelationship;
 import org.jono.medicalmodelsservice.model.DocumentState;
 import org.jono.medicalmodelsservice.model.Tuple2;
 import org.jono.medicalmodelsservice.model.dto.DocumentDto;
-import org.jono.medicalmodelsservice.repository.jdbc.DocumentChildRepository;
+import org.jono.medicalmodelsservice.repository.jdbc.DocumentRelationshipRepository;
 import org.jono.medicalmodelsservice.repository.jdbc.DocumentRepository;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ class DocumentServiceTest {
     DocumentRepository documentRepository;
 
     @Mock
-    DocumentChildRepository documentChildRepository;
+    DocumentRelationshipRepository documentRelationshipRepository;
 
     @InjectMocks
     DocumentService documentService;
@@ -44,7 +44,7 @@ class DocumentServiceTest {
             final Document document = documentService.createDocument(Optional.of("1"));
 
             assertThat(document).isNotNull();
-            verify(documentChildRepository).create("1", "11");
+            verify(documentRelationshipRepository).create("1", "11");
         }
 
         @Test
@@ -54,7 +54,7 @@ class DocumentServiceTest {
             final Document document = documentService.createDocument(Optional.empty());
 
             assertThat(document).isNotNull();
-            verify(documentChildRepository, times(0)).create(any(), any());
+            verify(documentRelationshipRepository, times(0)).create(any(), any());
         }
     }
 
@@ -93,7 +93,7 @@ class DocumentServiceTest {
 
         @Test
         void shouldCallGetAllOnDocRepo() {
-            when(documentRepository.getDocsAndDocChildren())
+            when(documentRepository.getDocsAndDocRelationships())
                     .thenReturn(
                             new Tuple2<>(
                                     List.of(new DocumentRelationship("1", "11")),

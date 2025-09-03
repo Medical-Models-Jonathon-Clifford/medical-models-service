@@ -16,15 +16,15 @@ import org.springframework.stereotype.Repository;
 public class DocumentRepository {
 
     private final DocumentCrudRepository documentCrudRepository;
-    private final DocumentChildCrudRepository documentChildCrudRepository;
+    private final DocumentRelationshipCrudRepository documentRelationshipCrudRepository;
 
     @Autowired
     public DocumentRepository(
             final DocumentCrudRepository documentCrudRepository,
-            final DocumentChildCrudRepository documentChildCrudRepository
+            final DocumentRelationshipCrudRepository documentRelationshipCrudRepository
     ) {
         this.documentCrudRepository = documentCrudRepository;
-        this.documentChildCrudRepository = documentChildCrudRepository;
+        this.documentRelationshipCrudRepository = documentRelationshipCrudRepository;
     }
 
     public Document create(final Document document) {
@@ -51,9 +51,9 @@ public class DocumentRepository {
         return documentCrudRepository.save(existingDocument);
     }
 
-    public Tuple2<List<DocumentRelationship>, List<Document>> getDocsAndDocChildren() {
+    public Tuple2<List<DocumentRelationship>, List<Document>> getDocsAndDocRelationships() {
         final List<DocumentRelationship> documentRelationships = ImmutableList.copyOf(
-                documentChildCrudRepository.findAll());
+                documentRelationshipCrudRepository.findAll());
         final List<Document> documents = ImmutableList.copyOf(documentCrudRepository.findAll());
         return new Tuple2<>(documentRelationships, documents);
     }

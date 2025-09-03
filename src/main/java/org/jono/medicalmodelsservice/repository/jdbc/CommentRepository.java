@@ -19,23 +19,23 @@ import org.springframework.stereotype.Component;
 public class CommentRepository {
 
     private final CommentCrudRepository commentCrudRepository;
-    private final CommentChildCrudRepository commentChildCrudRepository;
+    private final CommentRelationshipCrudRepository commentRelationshipCrudRepository;
 
     @Autowired
     public CommentRepository(final CommentCrudRepository commentCrudRepository,
-            final CommentChildCrudRepository commentChildCrudRepository) {
+            final CommentRelationshipCrudRepository commentRelationshipCrudRepository) {
         this.commentCrudRepository = commentCrudRepository;
-        this.commentChildCrudRepository = commentChildCrudRepository;
+        this.commentRelationshipCrudRepository = commentRelationshipCrudRepository;
     }
 
     public Comment create(final NewComment newComment) {
         final var comment = new Comment(newComment);
         final Comment savedComment = this.commentCrudRepository.save(comment);
         if (newComment.getParentCommentId() != null) {
-            final var newCommentChild = new CommentRelationship(savedComment.getDocumentId(),
-                                                                newComment.getParentCommentId(),
-                                                                savedComment.getId());
-            this.commentChildCrudRepository.save(newCommentChild);
+            final var newCommentRelationship = new CommentRelationship(savedComment.getDocumentId(),
+                                                                       newComment.getParentCommentId(),
+                                                                       savedComment.getId());
+            this.commentRelationshipCrudRepository.save(newCommentRelationship);
         }
         return savedComment;
     }
@@ -46,7 +46,8 @@ public class CommentRepository {
 
     public Tuple2<List<CommentRelationship>, List<Comment>> getById(final String documentId) {
         final List<Comment> comments = this.commentCrudRepository.findAllByDocumentId(documentId);
-        final List<CommentRelationship> commentRelationships = this.commentChildCrudRepository.findAllByDocumentId(
+        final List<CommentRelationship> commentRelationships =
+                this.commentRelationshipCrudRepository.findAllByDocumentId(
                 documentId);
         return new Tuple2<>(commentRelationships, comments);
     }
