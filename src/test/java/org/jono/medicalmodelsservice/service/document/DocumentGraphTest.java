@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.jono.medicalmodelsservice.model.Document;
-import org.jono.medicalmodelsservice.model.DocumentChild;
+import org.jono.medicalmodelsservice.model.DocumentRelationship;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -22,10 +22,10 @@ class DocumentGraphTest {
     @Test
     public void shouldReturnEmptyListWhenNoDocuments() {
         final List<Document> emptyDocumentList = Collections.emptyList();
-        final List<DocumentChild> emptyDocumentChildList = Collections.emptyList();
+        final List<DocumentRelationship> emptyDocumentRelationshipList = Collections.emptyList();
 
         final List<DocumentNode> actualDocumentNodes = DocumentGraph.buildGraph(emptyDocumentList,
-                                                                                emptyDocumentChildList);
+                                                                                emptyDocumentRelationshipList);
 
         assertThat(actualDocumentNodes.size()).isEqualTo(0);
     }
@@ -33,10 +33,10 @@ class DocumentGraphTest {
     @Test
     public void oneDocumentNoChildren() {
         final List<Document> emptyDocumentList = createDocumentList("41");
-        final List<DocumentChild> emptyDocumentChildList = Collections.emptyList();
+        final List<DocumentRelationship> emptyDocumentRelationshipList = Collections.emptyList();
 
         final List<DocumentNode> actualDocumentNodes = DocumentGraph.buildGraph(emptyDocumentList,
-                                                                                emptyDocumentChildList);
+                                                                                emptyDocumentRelationshipList);
 
         assertThat(actualDocumentNodes.size()).isEqualTo(1);
         assertThat(actualDocumentNodes.getFirst())
@@ -48,7 +48,7 @@ class DocumentGraphTest {
     @Test
     public void twoDocumentsWithChildRelationship() {
         final List<Document> documentList = createDocumentList("41", "42");
-        final var singleDocumentChildList = List.of(new DocumentChild("41", "42"));
+        final var singleDocumentChildList = List.of(new DocumentRelationship("41", "42"));
 
         final List<DocumentNode> actualDocumentNodes = DocumentGraph.buildGraph(documentList, singleDocumentChildList);
 
@@ -65,13 +65,13 @@ class DocumentGraphTest {
     @Test
     public void chainOfDocuments() {
         final List<Document> documentList = createDocumentList("41", "43", "46", "49");
-        final List<DocumentChild> documentChildList = List.of(
-                new DocumentChild("41", "43"),
-                new DocumentChild("43", "46"),
-                new DocumentChild("46", "49")
+        final List<DocumentRelationship> documentRelationshipList = List.of(
+                new DocumentRelationship("41", "43"),
+                new DocumentRelationship("43", "46"),
+                new DocumentRelationship("46", "49")
         );
 
-        final List<DocumentNode> actualDocumentNodes = DocumentGraph.buildGraph(documentList, documentChildList);
+        final List<DocumentNode> actualDocumentNodes = DocumentGraph.buildGraph(documentList, documentRelationshipList);
 
         final DocumentNode firstLevel = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes, List.of("41"));
         assertThat(firstLevel)
@@ -97,10 +97,10 @@ class DocumentGraphTest {
     public void treeOfDocuments() {
         final List<Document> documentList = createDocumentList("43", "49", "50", "59", "66", "68");
         final var documentChildList = List.of(
-                new DocumentChild("49", "50"),
-                new DocumentChild("49", "59"),
-                new DocumentChild("50", "66"),
-                new DocumentChild("59", "68")
+                new DocumentRelationship("49", "50"),
+                new DocumentRelationship("49", "59"),
+                new DocumentRelationship("50", "66"),
+                new DocumentRelationship("59", "68")
         );
 
         final List<DocumentNode> actualDocumentNodes = DocumentGraph.buildGraph(documentList, documentChildList);
@@ -141,9 +141,9 @@ class DocumentGraphTest {
     public void gracefullyHandlesInvalidDocumentChildren(final String parentId, final String childId) {
         final List<Document> documentList = createDocumentList("41", "42", "43");
         final var documentChildList = List.of(
-                new DocumentChild("41", "42"),
-                new DocumentChild("42", "43"),
-                new DocumentChild(parentId, childId)
+                new DocumentRelationship("41", "42"),
+                new DocumentRelationship("42", "43"),
+                new DocumentRelationship(parentId, childId)
         );
 
         final List<DocumentNode> actualDocumentNodes = DocumentGraph.buildGraph(documentList, documentChildList);

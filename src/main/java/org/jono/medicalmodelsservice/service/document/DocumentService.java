@@ -3,7 +3,7 @@ package org.jono.medicalmodelsservice.service.document;
 import java.util.List;
 import java.util.Optional;
 import org.jono.medicalmodelsservice.model.Document;
-import org.jono.medicalmodelsservice.model.DocumentChild;
+import org.jono.medicalmodelsservice.model.DocumentRelationship;
 import org.jono.medicalmodelsservice.model.Tuple2;
 import org.jono.medicalmodelsservice.model.dto.DocumentDto;
 import org.jono.medicalmodelsservice.repository.jdbc.DocumentChildRepository;
@@ -43,7 +43,7 @@ public class DocumentService {
     }
 
     public List<DocumentNode> getAllNavigation() {
-        final Tuple2<List<DocumentChild>, List<Document>> docsAndDocChildren =
+        final Tuple2<List<DocumentRelationship>, List<Document>> docsAndDocChildren =
                 documentRepository.getDocsAndDocChildren();
         return DocumentGraph.buildGraph(docsAndDocChildren.getT2(), docsAndDocChildren.getT1());
     }

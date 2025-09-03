@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.Comment;
-import org.jono.medicalmodelsservice.model.CommentChild;
+import org.jono.medicalmodelsservice.model.CommentRelationship;
 import org.jono.medicalmodelsservice.model.NewComment;
 import org.jono.medicalmodelsservice.model.Tuple2;
 import org.jono.medicalmodelsservice.model.dto.EditCommentDto;
@@ -40,7 +40,7 @@ public class CommentService {
     }
 
     public List<CommentNode> getComments(final String documentId) {
-        final Tuple2<List<CommentChild>, List<Comment>> tuple = commentRepository.getById(documentId);
+        final Tuple2<List<CommentRelationship>, List<Comment>> tuple = commentRepository.getById(documentId);
         return CommentGraph.buildGraph(tuple.getT2(), tuple.getT1());
     }
 
@@ -52,9 +52,11 @@ public class CommentService {
     }
 
     public void deleteComment(final String id) {
-        final List<CommentChild> commentChildrenByCommentId = commentChildRepository.findByCommentId(id);
-        final List<CommentChild> commentChildrenByChildCommentId = commentChildRepository.findListByChildCommentId(id);
-        final Tuple2<List<CommentChild>, List<CommentChild>> servletTuple2 =
+        final List<CommentRelationship> commentChildrenByCommentId = commentChildRepository.findByCommentId(id);
+        final List<CommentRelationship> commentChildrenByChildCommentId =
+                commentChildRepository.findListByChildCommentId(
+                id);
+        final Tuple2<List<CommentRelationship>, List<CommentRelationship>> servletTuple2 =
                 new Tuple2<>(commentChildrenByCommentId, commentChildrenByChildCommentId);
         final CommentsToDelete commentsToDeleteServlet = commentInvestigator.findNodesToDelete(id, servletTuple2);
         commentChildRepository.deleteByIds(commentsToDeleteServlet.getChildCommentIds());

@@ -1,15 +1,15 @@
 package org.jono.medicalmodelsservice.repository.jdbc;
 
 import java.util.List;
-import org.jono.medicalmodelsservice.model.CommentChild;
+import org.jono.medicalmodelsservice.model.CommentRelationship;
 import org.springframework.data.repository.CrudRepository;
 
-public interface CommentChildCrudRepository extends CrudRepository<CommentChild, String> {
-    List<CommentChild> findAllByDocumentId(String documentId);
+public interface CommentChildCrudRepository extends CrudRepository<CommentRelationship, String> {
+    List<CommentRelationship> findAllByDocumentId(String documentId);
 
-    List<CommentChild> findAllByCommentId(String commentId);
+    List<CommentRelationship> findAllByParentCommentId(String parentCommentId);
 
-    List<CommentChild> findAllByChildCommentId(String childCommentId);
+    List<CommentRelationship> findAllByChildCommentId(String childCommentId);
 
-    CommentChild findFirstByChildCommentId(String childCommentId);
+    CommentRelationship findFirstByChildCommentId(String childCommentId);
 }

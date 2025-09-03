@@ -9,7 +9,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 import org.jono.medicalmodelsservice.model.Document;
-import org.jono.medicalmodelsservice.model.DocumentChild;
+import org.jono.medicalmodelsservice.model.DocumentRelationship;
 import org.jono.medicalmodelsservice.model.DocumentState;
 import org.jono.medicalmodelsservice.model.Tuple2;
 import org.jono.medicalmodelsservice.model.dto.DocumentDto;
@@ -96,7 +96,7 @@ class DocumentServiceTest {
             when(documentRepository.getDocsAndDocChildren())
                     .thenReturn(
                             new Tuple2<>(
-                                    List.of(new DocumentChild("1", "11")),
+                                    List.of(new DocumentRelationship("1", "11")),
                                     List.of(Document.builder().id("1").build(), Document.builder().id("11").build())
                             )
                     );

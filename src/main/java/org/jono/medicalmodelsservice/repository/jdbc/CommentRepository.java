@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.Comment;
-import org.jono.medicalmodelsservice.model.CommentChild;
+import org.jono.medicalmodelsservice.model.CommentRelationship;
 import org.jono.medicalmodelsservice.model.NewComment;
 import org.jono.medicalmodelsservice.model.Tuple2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +32,9 @@ public class CommentRepository {
         final var comment = new Comment(newComment);
         final Comment savedComment = this.commentCrudRepository.save(comment);
         if (newComment.getParentCommentId() != null) {
-            final var newCommentChild = new CommentChild(savedComment.getDocumentId(), newComment.getParentCommentId(),
-                                                         savedComment.getId());
+            final var newCommentChild = new CommentRelationship(savedComment.getDocumentId(),
+                                                                newComment.getParentCommentId(),
+                                                                savedComment.getId());
             this.commentChildCrudRepository.save(newCommentChild);
         }
         return savedComment;
@@ -43,10 +44,11 @@ public class CommentRepository {
         this.commentCrudRepository.deleteAllById(ids);
     }
 
-    public Tuple2<List<CommentChild>, List<Comment>> getById(final String documentId) {
+    public Tuple2<List<CommentRelationship>, List<Comment>> getById(final String documentId) {
         final List<Comment> comments = this.commentCrudRepository.findAllByDocumentId(documentId);
-        final List<CommentChild> commentChildren = this.commentChildCrudRepository.findAllByDocumentId(documentId);
-        return new Tuple2<>(commentChildren, comments);
+        final List<CommentRelationship> commentRelationships = this.commentChildCrudRepository.findAllByDocumentId(
+                documentId);
+        return new Tuple2<>(commentRelationships, comments);
     }
 
     public Optional<Comment> updateById(final String id, final Map<SqlIdentifier, Object> updateMap) {
