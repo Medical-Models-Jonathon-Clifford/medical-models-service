@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-class CommentInvestigator {
+public class CommentInvestigator {
 
     private final CommentRelationshipRepository commentRelationshipRepository;
 
