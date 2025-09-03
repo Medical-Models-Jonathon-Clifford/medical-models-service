@@ -8,51 +8,53 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CommentChildRepository {
-    private final CommentChildCrudRepository commentChildCrudRepository;
+public class CommentRelationshipRepository {
+    private final CommentRelationshipCrudRepository commentRelationshipCrudRepository;
 
     @Autowired
-    public CommentChildRepository(final CommentChildCrudRepository commentChildCrudRepository) {
-        this.commentChildCrudRepository = commentChildCrudRepository;
+    public CommentRelationshipRepository(final CommentRelationshipCrudRepository commentRelationshipCrudRepository) {
+        this.commentRelationshipCrudRepository = commentRelationshipCrudRepository;
     }
 
     public List<CommentRelationship> findByCommentId(final String commentId) {
-        return this.commentChildCrudRepository.findAllByParentCommentId(commentId);
+        return this.commentRelationshipCrudRepository.findAllByParentCommentId(commentId);
     }
 
-    public List<CommentRelationship> findCommentChildrenByCommentId(final String commentId) {
-        final List<CommentRelationship> commentRelationships = this.commentChildCrudRepository.findAllByParentCommentId(
+    public List<CommentRelationship> findCommentRelationshipsByCommentId(final String commentId) {
+        final List<CommentRelationship> commentRelationships =
+                this.commentRelationshipCrudRepository.findAllByParentCommentId(
                 commentId);
         final List<CommentRelationship> allCommentRelationships = new ArrayList<>(commentRelationships);
         for (final CommentRelationship commentRelationship : commentRelationships) {
             final List<CommentRelationship> nextCommentRelationships =
-                    this.commentChildCrudRepository.findAllByParentCommentId(
-                    commentRelationship.getChildCommentId());
+                    this.commentRelationshipCrudRepository.findAllByParentCommentId(
+                            commentRelationship.getChildCommentId());
             allCommentRelationships.addAll(nextCommentRelationships);
         }
         return allCommentRelationships;
     }
 
     public List<CommentRelationship> findListByChildCommentId(final String childCommentId) {
-        return this.commentChildCrudRepository.findAllByChildCommentId(childCommentId);
+        return this.commentRelationshipCrudRepository.findAllByChildCommentId(childCommentId);
     }
 
     public CommentRelationship findLeafNodesParentConnection(final String childCommentId) {
-        return this.commentChildCrudRepository.findFirstByChildCommentId(childCommentId);
+        return this.commentRelationshipCrudRepository.findFirstByChildCommentId(childCommentId);
     }
 
     public void deleteByIds(final Collection<String> ids) {
-        this.commentChildCrudRepository.deleteAllById(ids);
+        this.commentRelationshipCrudRepository.deleteAllById(ids);
     }
 
-    public List<CommentRelationship> findCommentChildrenByChildCommentId(final String commentId) {
-        final List<CommentRelationship> commentRelationships = this.commentChildCrudRepository.findAllByChildCommentId(
+    public List<CommentRelationship> findCommentRelationshipsByChildCommentId(final String commentId) {
+        final List<CommentRelationship> commentRelationships =
+                this.commentRelationshipCrudRepository.findAllByChildCommentId(
                 commentId);
         final List<CommentRelationship> allCommentRelationships = new ArrayList<>(commentRelationships);
         for (final CommentRelationship commentRelationship : commentRelationships) {
             final List<CommentRelationship> nextCommentRelationships =
-                    this.commentChildCrudRepository.findAllByChildCommentId(
-                    commentRelationship.getParentCommentId());
+                    this.commentRelationshipCrudRepository.findAllByChildCommentId(
+                            commentRelationship.getParentCommentId());
             allCommentRelationships.addAll(nextCommentRelationships);
         }
         return allCommentRelationships;

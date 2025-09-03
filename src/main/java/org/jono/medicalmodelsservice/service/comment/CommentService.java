@@ -11,7 +11,7 @@ import org.jono.medicalmodelsservice.model.CommentRelationship;
 import org.jono.medicalmodelsservice.model.NewComment;
 import org.jono.medicalmodelsservice.model.Tuple2;
 import org.jono.medicalmodelsservice.model.dto.EditCommentDto;
-import org.jono.medicalmodelsservice.repository.jdbc.CommentChildRepository;
+import org.jono.medicalmodelsservice.repository.jdbc.CommentRelationshipRepository;
 import org.jono.medicalmodelsservice.repository.jdbc.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.relational.core.sql.SqlIdentifier;
@@ -22,16 +22,16 @@ import org.springframework.stereotype.Service;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final CommentChildRepository commentChildRepository;
+    private final CommentRelationshipRepository commentRelationshipRepository;
     private final CommentInvestigator commentInvestigator;
 
     @Autowired
     public CommentService(final CommentRepository commentRepository,
-            final CommentChildRepository commentChildRepository,
+            final CommentRelationshipRepository commentRelationshipRepository,
             final CommentInvestigator commentInvestigator
     ) {
         this.commentRepository = commentRepository;
-        this.commentChildRepository = commentChildRepository;
+        this.commentRelationshipRepository = commentRelationshipRepository;
         this.commentInvestigator = commentInvestigator;
     }
 
@@ -52,14 +52,14 @@ public class CommentService {
     }
 
     public void deleteComment(final String id) {
-        final List<CommentRelationship> commentChildrenByCommentId = commentChildRepository.findByCommentId(id);
+        final List<CommentRelationship> commentChildrenByCommentId = commentRelationshipRepository.findByCommentId(id);
         final List<CommentRelationship> commentChildrenByChildCommentId =
-                commentChildRepository.findListByChildCommentId(
+                commentRelationshipRepository.findListByChildCommentId(
                 id);
         final Tuple2<List<CommentRelationship>, List<CommentRelationship>> servletTuple2 =
                 new Tuple2<>(commentChildrenByCommentId, commentChildrenByChildCommentId);
         final CommentsToDelete commentsToDeleteServlet = commentInvestigator.findNodesToDelete(id, servletTuple2);
-        commentChildRepository.deleteByIds(commentsToDeleteServlet.getChildCommentIds());
+        commentRelationshipRepository.deleteByIds(commentsToDeleteServlet.getChildCommentIds());
         commentRepository.deleteByIds(commentsToDeleteServlet.getCommentIds());
     }
 }
