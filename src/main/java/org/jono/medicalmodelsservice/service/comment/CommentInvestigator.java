@@ -9,7 +9,6 @@ import java.util.Optional;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.CommentRelationship;
-import org.jono.medicalmodelsservice.model.Tuple2;
 import org.jono.medicalmodelsservice.repository.jdbc.CommentRelationshipRepository;
 import org.jono.medicalmodelsservice.utils.ListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +25,14 @@ class CommentInvestigator {
         this.commentRelationshipRepository = commentRelationshipRepository;
     }
 
-    CommentsToDelete findNodesToDelete(final String id, final Tuple2<List<CommentRelationship>,
-            List<CommentRelationship>> tuple2) {
-        if (this.isRootNode(tuple2)) {
+    CommentsToDelete findNodesToDelete(final String id,
+            final List<CommentRelationship> commentChildrenByCommentId,
+            final List<CommentRelationship> commentChildrenByChildCommentId) {
+        if (this.isRootNode(commentChildrenByCommentId, commentChildrenByChildCommentId)) {
             return deleteRootNode(id);
-        } else if (this.isInternalNode(tuple2)) {
+        } else if (this.isInternalNode(commentChildrenByCommentId, commentChildrenByChildCommentId)) {
             return deleteInternalNode(id);
-        } else if (this.isLeafNode(tuple2)) {
+        } else if (this.isLeafNode(commentChildrenByCommentId, commentChildrenByChildCommentId)) {
             return deleteLeafNode(id);
         } else {
             return deleteIsolatedNode(id);
@@ -61,7 +61,7 @@ class CommentInvestigator {
         log.info("internal node condition");
         final CommentRelationshipData commentRelationshipData =
                 findCommentRelationshipsByParentCommentIdOrChildCommentId(
-                id);
+                        id);
         return CommentsToDelete.builder()
                 .childCommentIds(justIds(commentRelationshipData.getAllToDelete()))
                 .commentIds(allCommentIds(commentRelationshipData.targetAndDescendants, id))
@@ -72,23 +72,26 @@ class CommentInvestigator {
         log.info("leaf node condition");
         final CommentRelationship commentRelationshipServlet =
                 commentRelationshipRepository.findLeafNodesParentConnection(
-                id);
+                        id);
         return CommentsToDelete.builder()
                 .childCommentIds(Collections.singletonList(commentRelationshipServlet.getId()))
                 .commentIds(Collections.singletonList(id))
                 .build();
     }
 
-    private boolean isRootNode(final Tuple2<List<CommentRelationship>, List<CommentRelationship>> tuple) {
-        return !tuple.getT1().isEmpty() && tuple.getT2().isEmpty();
+    private boolean isRootNode(final List<CommentRelationship> commentChildrenByCommentId,
+            final List<CommentRelationship> commentChildrenByChildCommentId) {
+        return !commentChildrenByCommentId.isEmpty() && commentChildrenByChildCommentId.isEmpty();
     }
 
-    private boolean isInternalNode(final Tuple2<List<CommentRelationship>, List<CommentRelationship>> tuple) {
-        return !tuple.getT1().isEmpty() && !tuple.getT2().isEmpty();
+    private boolean isInternalNode(final List<CommentRelationship> commentChildrenByCommentId,
+            final List<CommentRelationship> commentChildrenByChildCommentId) {
+        return !commentChildrenByCommentId.isEmpty() && !commentChildrenByChildCommentId.isEmpty();
     }
 
-    private boolean isLeafNode(final Tuple2<List<CommentRelationship>, List<CommentRelationship>> tuple) {
-        return tuple.getT1().isEmpty() && !tuple.getT2().isEmpty();
+    private boolean isLeafNode(final List<CommentRelationship> commentChildrenByCommentId,
+            final List<CommentRelationship> commentChildrenByChildCommentId) {
+        return commentChildrenByCommentId.isEmpty() && !commentChildrenByChildCommentId.isEmpty();
     }
 
     private CommentRelationshipData findCommentRelationshipsByParentCommentIdOrChildCommentId(final String commentId) {

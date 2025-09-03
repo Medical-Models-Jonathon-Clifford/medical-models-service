@@ -54,11 +54,9 @@ public class CommentService {
     public void deleteComment(final String id) {
         final List<CommentRelationship> commentChildrenByCommentId = commentRelationshipRepository.findByCommentId(id);
         final List<CommentRelationship> commentChildrenByChildCommentId =
-                commentRelationshipRepository.findListByChildCommentId(
-                id);
-        final Tuple2<List<CommentRelationship>, List<CommentRelationship>> servletTuple2 =
-                new Tuple2<>(commentChildrenByCommentId, commentChildrenByChildCommentId);
-        final CommentsToDelete commentsToDeleteServlet = commentInvestigator.findNodesToDelete(id, servletTuple2);
+                commentRelationshipRepository.findListByChildCommentId(id);
+        final CommentsToDelete commentsToDeleteServlet =
+                commentInvestigator.findNodesToDelete(id, commentChildrenByCommentId, commentChildrenByChildCommentId);
         commentRelationshipRepository.deleteByIds(commentsToDeleteServlet.getChildCommentIds());
         commentRepository.deleteByIds(commentsToDeleteServlet.getCommentIds());
     }
