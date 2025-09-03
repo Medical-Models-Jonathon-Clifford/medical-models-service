@@ -21,13 +21,13 @@ CREATE TABLE IF NOT EXISTS document
     FOREIGN KEY (creator) REFERENCES user (id)
 );
 
-CREATE TABLE IF NOT EXISTS document_child
+CREATE TABLE IF NOT EXISTS document_relationship
 (
-    id          INT AUTO_INCREMENT PRIMARY KEY,
-    document_id INT,
-    child_id    INT,
-    FOREIGN KEY (document_id) REFERENCES document (id),
-    FOREIGN KEY (child_id) REFERENCES document (id)
+    id                 INT AUTO_INCREMENT PRIMARY KEY,
+    parent_document_id INT,
+    child_document_id  INT,
+    FOREIGN KEY (parent_document_id) REFERENCES document (id),
+    FOREIGN KEY (child_document_id) REFERENCES document (id)
 );
 
 CREATE TABLE IF NOT EXISTS comment
@@ -41,13 +41,13 @@ CREATE TABLE IF NOT EXISTS comment
     FOREIGN KEY (creator) REFERENCES user (id)
 );
 
-CREATE TABLE IF NOT EXISTS comment_child
+CREATE TABLE IF NOT EXISTS comment_relationship
 (
-    id               INT AUTO_INCREMENT PRIMARY KEY,
-    document_id      INT,
-    comment_id       INT,
-    child_comment_id INT,
+    id                INT AUTO_INCREMENT PRIMARY KEY,
+    document_id       INT,
+    parent_comment_id INT,
+    child_comment_id  INT,
     FOREIGN KEY (document_id) REFERENCES document (id),
-    FOREIGN KEY (comment_id) REFERENCES comment (id),
+    FOREIGN KEY (parent_comment_id) REFERENCES comment (id),
     FOREIGN KEY (child_comment_id) REFERENCES comment (id)
 );

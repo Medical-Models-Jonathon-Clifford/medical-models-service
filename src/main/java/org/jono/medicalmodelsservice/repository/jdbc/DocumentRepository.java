@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.Document;
-import org.jono.medicalmodelsservice.model.DocumentChild;
+import org.jono.medicalmodelsservice.model.DocumentRelationship;
 import org.jono.medicalmodelsservice.model.Tuple2;
 import org.jono.medicalmodelsservice.model.dto.DocumentDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,9 +51,10 @@ public class DocumentRepository {
         return documentCrudRepository.save(existingDocument);
     }
 
-    public Tuple2<List<DocumentChild>, List<Document>> getDocsAndDocChildren() {
-        final List<DocumentChild> documentChildren = ImmutableList.copyOf(documentChildCrudRepository.findAll());
+    public Tuple2<List<DocumentRelationship>, List<Document>> getDocsAndDocChildren() {
+        final List<DocumentRelationship> documentRelationships = ImmutableList.copyOf(
+                documentChildCrudRepository.findAll());
         final List<Document> documents = ImmutableList.copyOf(documentCrudRepository.findAll());
-        return new Tuple2<>(documentChildren, documents);
+        return new Tuple2<>(documentRelationships, documents);
     }
 }

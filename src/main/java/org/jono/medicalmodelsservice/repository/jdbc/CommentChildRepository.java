@@ -3,7 +3,7 @@ package org.jono.medicalmodelsservice.repository.jdbc;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.jono.medicalmodelsservice.model.CommentChild;
+import org.jono.medicalmodelsservice.model.CommentRelationship;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,26 +16,28 @@ public class CommentChildRepository {
         this.commentChildCrudRepository = commentChildCrudRepository;
     }
 
-    public List<CommentChild> findByCommentId(final String commentId) {
-        return this.commentChildCrudRepository.findAllByCommentId(commentId);
+    public List<CommentRelationship> findByCommentId(final String commentId) {
+        return this.commentChildCrudRepository.findAllByParentCommentId(commentId);
     }
 
-    public List<CommentChild> findCommentChildrenByCommentId(final String commentId) {
-        final List<CommentChild> commentChildren = this.commentChildCrudRepository.findAllByCommentId(commentId);
-        final List<CommentChild> allCommentChildren = new ArrayList<>(commentChildren);
-        for (final CommentChild commentChild : commentChildren) {
-            final List<CommentChild> nextCommentChildren = this.commentChildCrudRepository.findAllByCommentId(
-                    commentChild.getChildCommentId());
-            allCommentChildren.addAll(nextCommentChildren);
+    public List<CommentRelationship> findCommentChildrenByCommentId(final String commentId) {
+        final List<CommentRelationship> commentRelationships = this.commentChildCrudRepository.findAllByParentCommentId(
+                commentId);
+        final List<CommentRelationship> allCommentRelationships = new ArrayList<>(commentRelationships);
+        for (final CommentRelationship commentRelationship : commentRelationships) {
+            final List<CommentRelationship> nextCommentRelationships =
+                    this.commentChildCrudRepository.findAllByParentCommentId(
+                    commentRelationship.getChildCommentId());
+            allCommentRelationships.addAll(nextCommentRelationships);
         }
-        return allCommentChildren;
+        return allCommentRelationships;
     }
 
-    public List<CommentChild> findListByChildCommentId(final String childCommentId) {
+    public List<CommentRelationship> findListByChildCommentId(final String childCommentId) {
         return this.commentChildCrudRepository.findAllByChildCommentId(childCommentId);
     }
 
-    public CommentChild findLeafNodesParentConnection(final String childCommentId) {
+    public CommentRelationship findLeafNodesParentConnection(final String childCommentId) {
         return this.commentChildCrudRepository.findFirstByChildCommentId(childCommentId);
     }
 
@@ -43,14 +45,16 @@ public class CommentChildRepository {
         this.commentChildCrudRepository.deleteAllById(ids);
     }
 
-    public List<CommentChild> findCommentChildrenByChildCommentId(final String commentId) {
-        final List<CommentChild> commentChildren = this.commentChildCrudRepository.findAllByChildCommentId(commentId);
-        final List<CommentChild> allCommentChildren = new ArrayList<>(commentChildren);
-        for (final CommentChild commentChild : commentChildren) {
-            final List<CommentChild> nextCommentChildren = this.commentChildCrudRepository.findAllByChildCommentId(
-                    commentChild.getCommentId());
-            allCommentChildren.addAll(nextCommentChildren);
+    public List<CommentRelationship> findCommentChildrenByChildCommentId(final String commentId) {
+        final List<CommentRelationship> commentRelationships = this.commentChildCrudRepository.findAllByChildCommentId(
+                commentId);
+        final List<CommentRelationship> allCommentRelationships = new ArrayList<>(commentRelationships);
+        for (final CommentRelationship commentRelationship : commentRelationships) {
+            final List<CommentRelationship> nextCommentRelationships =
+                    this.commentChildCrudRepository.findAllByChildCommentId(
+                    commentRelationship.getParentCommentId());
+            allCommentRelationships.addAll(nextCommentRelationships);
         }
-        return allCommentChildren;
+        return allCommentRelationships;
     }
 }

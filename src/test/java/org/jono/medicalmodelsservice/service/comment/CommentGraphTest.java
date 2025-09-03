@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.jono.medicalmodelsservice.model.Comment;
-import org.jono.medicalmodelsservice.model.CommentChild;
+import org.jono.medicalmodelsservice.model.CommentRelationship;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -22,9 +22,10 @@ class CommentGraphTest {
     @Test
     public void noComments() {
         final List<Comment> emptyCommentList = Collections.emptyList();
-        final List<CommentChild> emptyCommentChildList = Collections.emptyList();
+        final List<CommentRelationship> emptyCommentRelationshipList = Collections.emptyList();
 
-        final List<CommentNode> actualCommentNodes = CommentGraph.buildGraph(emptyCommentList, emptyCommentChildList);
+        final List<CommentNode> actualCommentNodes = CommentGraph.buildGraph(emptyCommentList,
+                                                                             emptyCommentRelationshipList);
 
         assertThat(actualCommentNodes.size()).isEqualTo(0);
     }
@@ -32,9 +33,10 @@ class CommentGraphTest {
     @Test
     public void oneCommentNoChildren() {
         final List<Comment> oneCommentList = createCommentList("41");
-        final List<CommentChild> emptyCommentChildList = Collections.emptyList();
+        final List<CommentRelationship> emptyCommentRelationshipList = Collections.emptyList();
 
-        final List<CommentNode> actualCommentNodes = CommentGraph.buildGraph(oneCommentList, emptyCommentChildList);
+        final List<CommentNode> actualCommentNodes = CommentGraph.buildGraph(oneCommentList,
+                                                                             emptyCommentRelationshipList);
 
         assertThat(actualCommentNodes.size()).isEqualTo(1);
         assertThat(actualCommentNodes.getFirst().getComment())
@@ -47,7 +49,7 @@ class CommentGraphTest {
     public void twoCommentsWithChildRelationship() {
         final List<Comment> commentList = createCommentList("41", "42");
         final var singleCommentChildList =
-                List.of(new CommentChild("97", "41", "42"));
+                List.of(new CommentRelationship("97", "41", "42"));
 
         final List<CommentNode> actualCommentNodes = CommentGraph.buildGraph(commentList, singleCommentChildList);
 
@@ -65,9 +67,9 @@ class CommentGraphTest {
     public void chainOfComments() {
         final List<Comment> commentList = createCommentList("41", "43", "46", "49");
         final var commentChildList = List.of(
-                new CommentChild("97", "41", "43"),
-                new CommentChild("97", "43", "46"),
-                new CommentChild("97", "46", "49")
+                new CommentRelationship("97", "41", "43"),
+                new CommentRelationship("97", "43", "46"),
+                new CommentRelationship("97", "46", "49")
         );
 
         final List<CommentNode> actualCommentNodes = CommentGraph.buildGraph(commentList, commentChildList);
@@ -97,10 +99,10 @@ class CommentGraphTest {
     public void treeOfComments() {
         final List<Comment> commentList = createCommentList("43", "49", "50", "59", "66", "68");
         final var commentChildList = List.of(
-                new CommentChild("97", "49", "50"),
-                new CommentChild("97", "49", "59"),
-                new CommentChild("97", "50", "66"),
-                new CommentChild("97", "59", "68")
+                new CommentRelationship("97", "49", "50"),
+                new CommentRelationship("97", "49", "59"),
+                new CommentRelationship("97", "50", "66"),
+                new CommentRelationship("97", "59", "68")
         );
 
         final List<CommentNode> actualCommentNodes = CommentGraph.buildGraph(commentList, commentChildList);
@@ -142,9 +144,9 @@ class CommentGraphTest {
     public void gracefullyHandlesInvalidChildComments(final String parentId, final String childId) {
         final List<Comment> commentList = createCommentList("41", "42", "43");
         final var commentChildList = List.of(
-                new CommentChild("97", "41", "42"),
-                new CommentChild("97", "42", "43"),
-                new CommentChild("97", parentId, childId)
+                new CommentRelationship("97", "41", "42"),
+                new CommentRelationship("97", "42", "43"),
+                new CommentRelationship("97", parentId, childId)
         );
 
         final List<CommentNode> actualCommentNodes = CommentGraph.buildGraph(commentList, commentChildList);

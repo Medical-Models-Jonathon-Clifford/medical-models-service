@@ -5,24 +5,24 @@ import org.jono.medicalmodelsservice.service.NodeRelationship;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table("comment_child")
+@Table("comment_relationship")
 @Data
-public class CommentChild implements NodeRelationship {
+public class CommentRelationship implements NodeRelationship {
     @Id
     private String id;
     private String documentId;
-    private String commentId;
+    private String parentCommentId;
     private String childCommentId;
 
-    public CommentChild(final String documentId, final String commentId, final String childCommentId) {
+    public CommentRelationship(final String documentId, final String parentCommentId, final String childCommentId) {
         this.documentId = documentId;
-        this.commentId = commentId;
+        this.parentCommentId = parentCommentId;
         this.childCommentId = childCommentId;
     }
 
     @Override
     public String getParentId() {
-        return commentId;
+        return parentCommentId;
     }
 
     @Override

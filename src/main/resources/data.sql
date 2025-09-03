@@ -294,7 +294,7 @@ VALUES (1,
         1,
         'ACTIVE');
 
-INSERT IGNORE INTO document_child (id, document_id, child_id)
+INSERT IGNORE INTO document_relationship (id, parent_document_id, child_document_id)
 VALUES (1, 2, 3),
        (2, 2, 4),
        (3, 4, 5),
@@ -339,7 +339,7 @@ VALUES (1, 9,'2023-09-01 12:00:00',
         'I do not like it when you are right. Anyway, I pinged Dr Guslaug of the Frost Giants on Slack. I received the response - "Frost Giants are a proud, civilised people. We do not have horns like common beasts. How dare you even ask!.". Happy?',
         2);
 
-INSERT IGNORE INTO comment_child (id, document_id, comment_id, child_comment_id)
+INSERT IGNORE INTO comment_relationship (id, document_id, parent_comment_id, child_comment_id)
 VALUES (1, 9, 1, 2),
        (2, 9, 2, 3),
        (3, 9, 3, 4),
