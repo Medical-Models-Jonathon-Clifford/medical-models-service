@@ -52,12 +52,14 @@ public class CommentService {
     }
 
     public void deleteComment(final String id) {
-        final List<CommentRelationship> commentChildrenByCommentId = commentRelationshipRepository.findByCommentId(id);
-        final List<CommentRelationship> commentChildrenByChildCommentId =
+        final List<CommentRelationship> commentRelationshipsByCommentId = commentRelationshipRepository.findByCommentId(
+                id);
+        final List<CommentRelationship> commentRelationshipsByChildCommentId =
                 commentRelationshipRepository.findListByChildCommentId(id);
-        final CommentsToDelete commentsToDeleteServlet =
-                commentInvestigator.findNodesToDelete(id, commentChildrenByCommentId, commentChildrenByChildCommentId);
-        commentRelationshipRepository.deleteByIds(commentsToDeleteServlet.getChildCommentIds());
-        commentRepository.deleteByIds(commentsToDeleteServlet.getCommentIds());
+        final CommentsToDelete commentsToDelete =
+                commentInvestigator.findNodesToDelete(id, commentRelationshipsByCommentId,
+                                                      commentRelationshipsByChildCommentId);
+        commentRelationshipRepository.deleteByIds(commentsToDelete.getCommentRelationshipIds());
+        commentRepository.deleteByIds(commentsToDelete.getCommentIds());
     }
 }

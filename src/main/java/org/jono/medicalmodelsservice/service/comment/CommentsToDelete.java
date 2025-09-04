@@ -8,5 +8,5 @@ import lombok.Data;
 @Builder
 class CommentsToDelete {
     List<String> commentIds;
-    List<String> childCommentIds;
+    List<String> commentRelationshipIds;
 }

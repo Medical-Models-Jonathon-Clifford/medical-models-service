@@ -26,7 +26,7 @@ class CommentInvestigatorTest {
                                                           List.of(new CommentRelationship("1", "11", "101")),
                                                           Collections.emptyList());
             assertThat(commentsToDelete.commentIds).containsExactly("1");
-            assertThat(commentsToDelete.childCommentIds).isEmpty();
+            assertThat(commentsToDelete.commentRelationshipIds).isEmpty();
         }
     }
 
@@ -43,7 +43,7 @@ class CommentInvestigatorTest {
                                                           List.of(new CommentRelationship("1", "11", "101")),
                                                           List.of(new CommentRelationship("1", "11", "101")));
             assertThat(commentsToDelete.commentIds).containsExactly("1");
-            assertThat(commentsToDelete.childCommentIds).isEmpty();
+            assertThat(commentsToDelete.commentRelationshipIds).isEmpty();
         }
     }
 
@@ -62,7 +62,7 @@ class CommentInvestigatorTest {
                                                           Collections.emptyList(),
                                                           List.of(new CommentRelationship("1", "11", "101")));
             assertThat(commentsToDelete.commentIds).containsExactly("1");
-            assertThat(commentsToDelete.childCommentIds).containsExactly("1");
+            assertThat(commentsToDelete.commentRelationshipIds).containsExactly("1");
         }
     }
 
@@ -81,7 +81,7 @@ class CommentInvestigatorTest {
                                                           Collections.emptyList(),
                                                           Collections.emptyList());
             assertThat(commentsToDelete.commentIds).containsExactly("1");
-            assertThat(commentsToDelete.childCommentIds).isEmpty();
+            assertThat(commentsToDelete.commentRelationshipIds).isEmpty();
         }
     }
 }
