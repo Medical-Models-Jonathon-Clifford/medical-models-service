@@ -57,8 +57,8 @@ public class CommentService {
         final List<CommentRelationship> commentRelationshipsByChildCommentId =
                 commentRelationshipRepository.findListByChildCommentId(id);
         final CommentsToDelete commentsToDelete =
-                commentInvestigator.findNodesToDelete(id, commentRelationshipsByCommentId,
-                                                      commentRelationshipsByChildCommentId);
+                commentInvestigator.findCommentsToDelete(id, commentRelationshipsByCommentId,
+                                                         commentRelationshipsByChildCommentId);
         commentRelationshipRepository.deleteByIds(commentsToDelete.getCommentRelationshipIds());
         commentRepository.deleteByIds(commentsToDelete.getCommentIds());
     }
