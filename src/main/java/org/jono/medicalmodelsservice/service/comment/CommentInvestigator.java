@@ -1,35 +1,32 @@
 package org.jono.medicalmodelsservice.service.comment;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.jono.medicalmodelsservice.utils.ListUtils.deduplicate;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.Builder;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.CommentRelationship;
 import org.jono.medicalmodelsservice.repository.jdbc.CommentRelationshipRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class CommentInvestigator {
 
     private final CommentRelationshipRepository commentRelationshipRepository;
-
-    @Autowired
-    CommentInvestigator(final CommentRelationshipRepository commentRelationshipRepository) {
-        this.commentRelationshipRepository = commentRelationshipRepository;
-    }
 
     CommentsToDelete findCommentsToDelete(final String idToDelete) {
         return new NodeFinder(idToDelete).findNodesToDelete();
     }
 
     class NodeFinder {
+
         private final String idToDelete;
         private final List<CommentRelationship> commentRelationshipsByCommentId;
         private final List<CommentRelationship> commentRelationshipsByChildCommentId;
@@ -67,7 +64,7 @@ public class CommentInvestigator {
         private CommentsToDelete deleteRootNode() {
             log.info("root node condition");
             final List<CommentRelationship> commentRelationships = deduplicate(
-                    commentRelationshipRepository.findCommentRelationshipsByCommentId(idToDelete));
+                    commentRelationshipRepository.findCommentRelationshipsByParentCommentId(idToDelete));
             return CommentsToDelete.builder()
                     .commentIds(allCommentIds(commentRelationships))
                     .commentRelationshipIds(justIds(commentRelationships))
@@ -89,22 +86,22 @@ public class CommentInvestigator {
             final CommentRelationship commentRelationship =
                     commentRelationshipRepository.findLeafNodesParentConnection(idToDelete);
             return CommentsToDelete.builder()
-                    .commentIds(Collections.singletonList(idToDelete))
-                    .commentRelationshipIds(Collections.singletonList(commentRelationship.getId()))
+                    .commentIds(singletonList(idToDelete))
+                    .commentRelationshipIds(singletonList(commentRelationship.getId()))
                     .build();
         }
 
         private CommentsToDelete deleteIsolatedNode() {
             log.info("isolated node condition");
             return CommentsToDelete.builder()
-                    .commentIds(List.of(idToDelete))
-                    .commentRelationshipIds(new ArrayList<>())
+                    .commentIds(singletonList(idToDelete))
+                    .commentRelationshipIds(emptyList())
                     .build();
         }
 
         private CommentRelationshipData findCommentRelationshipsByParentCommentIdOrChildCommentId() {
             final List<CommentRelationship> commentRelationshipsByCommentId = deduplicate(
-                    commentRelationshipRepository.findCommentRelationshipsByCommentId(idToDelete));
+                    commentRelationshipRepository.findCommentRelationshipsByParentCommentId(idToDelete));
             final List<CommentRelationship> commentRelationshipsByChildCommentId = deduplicate(
                     commentRelationshipRepository.findCommentRelationshipsByChildCommentId(idToDelete));
             return CommentRelationshipData.builder()
@@ -115,7 +112,7 @@ public class CommentInvestigator {
         }
 
         private List<String> justIds(final List<CommentRelationship> commentRelationshipList) {
-            return commentRelationshipList.stream().map(CommentRelationship::getId).collect(toList());
+            return commentRelationshipList.stream().map(CommentRelationship::getId).toList();
         }
 
         private List<String> allCommentIds(final List<CommentRelationship> commentRelationshipList) {
