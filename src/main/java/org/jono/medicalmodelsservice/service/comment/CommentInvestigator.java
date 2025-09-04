@@ -2,6 +2,8 @@ package org.jono.medicalmodelsservice.service.comment;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static org.jono.medicalmodelsservice.service.comment.CommentTreeUtils.collectAllCommentIds;
+import static org.jono.medicalmodelsservice.service.comment.CommentTreeUtils.extractIds;
 import static org.jono.medicalmodelsservice.utils.ListUtils.deduplicate;
 
 import java.util.ArrayList;
@@ -14,6 +16,17 @@ import org.jono.medicalmodelsservice.model.CommentRelationship;
 import org.jono.medicalmodelsservice.repository.jdbc.CommentRelationshipRepository;
 import org.springframework.stereotype.Component;
 
+/**
+ * CommentInvestigator handles the deletion of comments while maintaining the integrity
+ * of the comment tree structure. Comments can be in one of four positions:
+ *
+ * <p>1. Root node: Has children but no parents
+ * 2. Internal node: Has both parents and children
+ * 3. Leaf node: Has parents but no children
+ * 4. Isolated node: Has neither parents nor children
+ *
+ * <p>Each position requires a different deletion strategy to maintain tree integrity.
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -22,16 +35,16 @@ public class CommentInvestigator {
     private final CommentRelationshipRepository commentRelationshipRepository;
 
     CommentsToDelete findCommentsToDelete(final String targetId) {
-        return new NodeFinder(targetId).findNodesToDelete();
+        return new CommentTreeTraversal(targetId).findNodesToDelete();
     }
 
-    class NodeFinder {
+    class CommentTreeTraversal {
 
         private final String targetId;
         private final List<CommentRelationship> commentRelationshipsByCommentId;
         private final List<CommentRelationship> commentRelationshipsByChildCommentId;
 
-        NodeFinder(final String targetId) {
+        CommentTreeTraversal(final String targetId) {
             this.targetId = targetId;
             this.commentRelationshipsByCommentId = commentRelationshipRepository.findByParentCommentId(targetId);
             this.commentRelationshipsByChildCommentId = commentRelationshipRepository.findByChildCommentId(targetId);
@@ -63,20 +76,20 @@ public class CommentInvestigator {
 
         private CommentsToDelete deleteRootNode() {
             log.info("root node condition");
-            final List<CommentRelationship> commentRelationships = findTargetAndDescendants();
+            final List<CommentRelationship> commentRelationships = findSubtree();
             return CommentsToDelete.builder()
-                    .commentIds(allCommentIds(commentRelationships))
-                    .commentRelationshipIds(justIds(commentRelationships))
+                    .commentIds(collectAllCommentIds(commentRelationships, targetId))
+                    .commentRelationshipIds(extractIds(commentRelationships))
                     .build();
         }
 
         private CommentsToDelete deleteInternalNode() {
             log.info("internal node condition");
-            final CommentRelationshipData commentRelationshipData =
-                    findCommentRelationshipsByParentCommentIdOrChildCommentId();
+            final CommentTreeSection commentTreeSection =
+                    collectRelatedComments();
             return CommentsToDelete.builder()
-                    .commentIds(allCommentIds(commentRelationshipData.targetAndDescendants))
-                    .commentRelationshipIds(justIds(commentRelationshipData.getAllCommentRelationshipsToDelete()))
+                    .commentIds(collectAllCommentIds(commentTreeSection.subtree, targetId))
+                    .commentRelationshipIds(extractIds(commentTreeSection.getAllCommentRelationshipsToDelete()))
                     .build();
         }
 
@@ -98,51 +111,31 @@ public class CommentInvestigator {
                     .build();
         }
 
-        private CommentRelationshipData findCommentRelationshipsByParentCommentIdOrChildCommentId() {
-            return CommentRelationshipData.builder()
-                    .targetAndDescendants(findTargetAndDescendants())
+        private CommentTreeSection collectRelatedComments() {
+            return CommentTreeSection.builder()
+                    .subtree(findSubtree())
                     .ancestors(findAncestors())
                     .targetId(targetId)
                     .build();
         }
 
-        private List<CommentRelationship> findTargetAndDescendants() {
-            return deduplicate(commentRelationshipRepository.findDescendantRelationships(targetId));
+        private List<CommentRelationship> findSubtree() {
+            return deduplicate(commentRelationshipRepository.findSubtreeRelationships(targetId));
         }
 
         private List<CommentRelationship> findAncestors() {
             return deduplicate(commentRelationshipRepository.findAncestorRelationships(targetId));
         }
-
-        private List<String> justIds(final List<CommentRelationship> commentRelationshipList) {
-            return commentRelationshipList.stream()
-                    .map(CommentRelationship::getId)
-                    .toList();
-        }
-
-        private List<String> allCommentIds(final List<CommentRelationship> commentRelationships) {
-            final List<String> parentCommentIds = commentRelationships.stream()
-                    .map(CommentRelationship::getParentCommentId)
-                    .toList();
-            final List<String> childCommentIds = commentRelationships.stream()
-                    .map(CommentRelationship::getChildCommentId)
-                    .toList();
-            final List<String> allCommentIds = new ArrayList<>();
-            allCommentIds.addAll(parentCommentIds);
-            allCommentIds.addAll(childCommentIds);
-            allCommentIds.add(targetId);
-            return deduplicate(allCommentIds);
-        }
     }
 
     @Builder
-    private static class CommentRelationshipData {
+    private static class CommentTreeSection {
         private List<CommentRelationship> ancestors;
-        private List<CommentRelationship> targetAndDescendants;
+        private List<CommentRelationship> subtree;
         private String targetId;
 
         public List<CommentRelationship> getAllCommentRelationshipsToDelete() {
-            final List<CommentRelationship> all = new ArrayList<>(targetAndDescendants);
+            final List<CommentRelationship> all = new ArrayList<>(subtree);
             connectionToParent().ifPresent(all::add);
             return all;
         }

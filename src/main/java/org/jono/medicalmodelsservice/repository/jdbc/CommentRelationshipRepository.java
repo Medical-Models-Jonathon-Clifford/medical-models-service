@@ -32,7 +32,7 @@ public class CommentRelationshipRepository {
         return this.commentRelationshipCrudRepository.findAllByChildCommentId(childCommentId);
     }
 
-    public List<CommentRelationship> findDescendantRelationships(final String parentCommentId) {
+    public List<CommentRelationship> findSubtreeRelationships(final String parentCommentId) {
         final List<CommentRelationship> commentRelationships =
                 this.commentRelationshipCrudRepository.findAllByParentCommentId(parentCommentId);
         final List<CommentRelationship> allCommentRelationships = new ArrayList<>(commentRelationships);
