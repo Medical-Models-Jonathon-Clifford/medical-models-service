@@ -21,20 +21,20 @@ public class CommentInvestigator {
 
     private final CommentRelationshipRepository commentRelationshipRepository;
 
-    CommentsToDelete findCommentsToDelete(final String idToDelete) {
-        return new NodeFinder(idToDelete).findNodesToDelete();
+    CommentsToDelete findCommentsToDelete(final String targetId) {
+        return new NodeFinder(targetId).findNodesToDelete();
     }
 
     class NodeFinder {
 
-        private final String idToDelete;
+        private final String targetId;
         private final List<CommentRelationship> commentRelationshipsByCommentId;
         private final List<CommentRelationship> commentRelationshipsByChildCommentId;
 
-        NodeFinder(final String idToDelete) {
-            this.idToDelete = idToDelete;
-            this.commentRelationshipsByCommentId = commentRelationshipRepository.findByParentCommentId(idToDelete);
-            this.commentRelationshipsByChildCommentId = commentRelationshipRepository.findByChildCommentId(idToDelete);
+        NodeFinder(final String targetId) {
+            this.targetId = targetId;
+            this.commentRelationshipsByCommentId = commentRelationshipRepository.findByParentCommentId(targetId);
+            this.commentRelationshipsByChildCommentId = commentRelationshipRepository.findByChildCommentId(targetId);
         }
 
         public CommentsToDelete findNodesToDelete() {
@@ -64,7 +64,7 @@ public class CommentInvestigator {
         private CommentsToDelete deleteRootNode() {
             log.info("root node condition");
             final List<CommentRelationship> commentRelationships = deduplicate(
-                    commentRelationshipRepository.findCommentRelationshipsByParentCommentId(idToDelete));
+                    commentRelationshipRepository.findCommentRelationshipsByParentCommentId(targetId));
             return CommentsToDelete.builder()
                     .commentIds(allCommentIds(commentRelationships))
                     .commentRelationshipIds(justIds(commentRelationships))
@@ -77,16 +77,16 @@ public class CommentInvestigator {
                     findCommentRelationshipsByParentCommentIdOrChildCommentId();
             return CommentsToDelete.builder()
                     .commentIds(allCommentIds(commentRelationshipData.targetAndDescendants))
-                    .commentRelationshipIds(justIds(commentRelationshipData.getAllToDelete()))
+                    .commentRelationshipIds(justIds(commentRelationshipData.getAllCommentRelationshipsToDelete()))
                     .build();
         }
 
         private CommentsToDelete deleteLeafNode() {
             log.info("leaf node condition");
             final CommentRelationship commentRelationship =
-                    commentRelationshipRepository.findLeafNodesParentConnection(idToDelete);
+                    commentRelationshipRepository.findLeafNodesParentConnection(targetId);
             return CommentsToDelete.builder()
-                    .commentIds(singletonList(idToDelete))
+                    .commentIds(singletonList(targetId))
                     .commentRelationshipIds(singletonList(commentRelationship.getId()))
                     .build();
         }
@@ -94,21 +94,25 @@ public class CommentInvestigator {
         private CommentsToDelete deleteIsolatedNode() {
             log.info("isolated node condition");
             return CommentsToDelete.builder()
-                    .commentIds(singletonList(idToDelete))
+                    .commentIds(singletonList(targetId))
                     .commentRelationshipIds(emptyList())
                     .build();
         }
 
         private CommentRelationshipData findCommentRelationshipsByParentCommentIdOrChildCommentId() {
-            final List<CommentRelationship> commentRelationshipsByCommentId = deduplicate(
-                    commentRelationshipRepository.findCommentRelationshipsByParentCommentId(idToDelete));
-            final List<CommentRelationship> commentRelationshipsByChildCommentId = deduplicate(
-                    commentRelationshipRepository.findCommentRelationshipsByChildCommentId(idToDelete));
             return CommentRelationshipData.builder()
-                    .targetAndDescendants(commentRelationshipsByCommentId)
-                    .ancestors(commentRelationshipsByChildCommentId)
-                    .targetCommentId(idToDelete)
+                    .targetAndDescendants(findTargetAndDescendants())
+                    .ancestors(findAncestors())
+                    .targetId(targetId)
                     .build();
+        }
+
+        private List<CommentRelationship> findTargetAndDescendants() {
+            return deduplicate(commentRelationshipRepository.findCommentRelationshipsByParentCommentId(targetId));
+        }
+
+        private List<CommentRelationship> findAncestors() {
+            return deduplicate(commentRelationshipRepository.findCommentRelationshipsByChildCommentId(targetId));
         }
 
         private List<String> justIds(final List<CommentRelationship> commentRelationshipList) {
@@ -125,7 +129,7 @@ public class CommentInvestigator {
             final List<String> allCommentIds = new ArrayList<>();
             allCommentIds.addAll(parentCommentIds);
             allCommentIds.addAll(childCommentIds);
-            allCommentIds.add(idToDelete);
+            allCommentIds.add(targetId);
             return deduplicate(allCommentIds);
         }
     }
@@ -134,9 +138,9 @@ public class CommentInvestigator {
     private static class CommentRelationshipData {
         private List<CommentRelationship> ancestors;
         private List<CommentRelationship> targetAndDescendants;
-        private String targetCommentId;
+        private String targetId;
 
-        public List<CommentRelationship> getAllToDelete() {
+        public List<CommentRelationship> getAllCommentRelationshipsToDelete() {
             final List<CommentRelationship> all = new ArrayList<>(targetAndDescendants);
             connectionToParent().ifPresent(all::add);
             return all;
@@ -151,7 +155,7 @@ public class CommentInvestigator {
         }
 
         private boolean targetIsChild(final CommentRelationship commentRelationship) {
-            return commentRelationship.getChildCommentId().equals(targetCommentId);
+            return commentRelationship.getChildCommentId().equals(targetId);
         }
     }
 }
