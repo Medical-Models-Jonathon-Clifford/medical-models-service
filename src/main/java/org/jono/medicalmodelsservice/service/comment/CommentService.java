@@ -45,7 +45,7 @@ public class CommentService {
 
     public void deleteComment(final String id) {
         final var commentsToDelete = commentInvestigator.findCommentsToDelete(id);
-        commentRelationshipRepository.deleteAllById(commentsToDelete.getCommentRelationshipIds());
-        commentRepository.deleteAllById(commentsToDelete.getCommentIds());
+        commentRelationshipRepository.deleteAllById(commentsToDelete.commentRelationshipIds());
+        commentRepository.deleteAllById(commentsToDelete.commentIds());
     }
 }
