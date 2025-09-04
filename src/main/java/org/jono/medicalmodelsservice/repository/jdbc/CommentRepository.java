@@ -40,11 +40,7 @@ public class CommentRepository {
         return savedComment;
     }
 
-    public void deleteByIds(final Collection<String> ids) {
-        this.commentCrudRepository.deleteAllById(ids);
-    }
-
-    public Tuple2<List<CommentRelationship>, List<Comment>> getById(final String documentId) {
+    public Tuple2<List<CommentRelationship>, List<Comment>> findById(final String documentId) {
         final List<Comment> comments = this.commentCrudRepository.findAllByDocumentId(documentId);
         final List<CommentRelationship> commentRelationships =
                 this.commentRelationshipCrudRepository.findAllByDocumentId(
@@ -70,5 +66,9 @@ public class CommentRepository {
             }
         });
         return Optional.of(this.commentCrudRepository.save(currentComment.get()));
+    }
+
+    public void deleteAllById(final Collection<String> ids) {
+        this.commentCrudRepository.deleteAllById(ids);
     }
 }
