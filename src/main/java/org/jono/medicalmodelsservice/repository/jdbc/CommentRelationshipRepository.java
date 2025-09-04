@@ -24,9 +24,9 @@ public class CommentRelationshipRepository {
         return this.commentRelationshipCrudRepository.findAllByChildCommentId(childCommentId);
     }
 
-    public List<CommentRelationship> findCommentRelationshipsByCommentId(final String commentId) {
+    public List<CommentRelationship> findCommentRelationshipsByParentCommentId(final String parentCommentId) {
         final List<CommentRelationship> commentRelationships =
-                this.commentRelationshipCrudRepository.findAllByParentCommentId(commentId);
+                this.commentRelationshipCrudRepository.findAllByParentCommentId(parentCommentId);
         final List<CommentRelationship> allCommentRelationships = new ArrayList<>(commentRelationships);
         for (final CommentRelationship commentRelationship : commentRelationships) {
             final List<CommentRelationship> nextCommentRelationships =
