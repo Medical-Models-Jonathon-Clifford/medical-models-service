@@ -24,7 +24,7 @@ public class CommentRelationshipRepository {
         return this.commentRelationshipCrudRepository.findAllByChildCommentId(childCommentId);
     }
 
-    public List<CommentRelationship> findCommentRelationshipsByParentCommentId(final String parentCommentId) {
+    public List<CommentRelationship> findDescendantRelationships(final String parentCommentId) {
         final List<CommentRelationship> commentRelationships =
                 this.commentRelationshipCrudRepository.findAllByParentCommentId(parentCommentId);
         final List<CommentRelationship> allCommentRelationships = new ArrayList<>(commentRelationships);
@@ -41,7 +41,7 @@ public class CommentRelationshipRepository {
         return this.commentRelationshipCrudRepository.findFirstByChildCommentId(childCommentId);
     }
 
-    public List<CommentRelationship> findCommentRelationshipsByChildCommentId(final String commentId) {
+    public List<CommentRelationship> findAncestorRelationships(final String commentId) {
         final List<CommentRelationship> commentRelationships =
                 this.commentRelationshipCrudRepository.findAllByChildCommentId(commentId);
         final List<CommentRelationship> allCommentRelationships = new ArrayList<>(commentRelationships);
@@ -54,7 +54,7 @@ public class CommentRelationshipRepository {
         return allCommentRelationships;
     }
 
-    public void deleteByIds(final Collection<String> ids) {
+    public void deleteAllById(final Collection<String> ids) {
         this.commentRelationshipCrudRepository.deleteAllById(ids);
     }
 }

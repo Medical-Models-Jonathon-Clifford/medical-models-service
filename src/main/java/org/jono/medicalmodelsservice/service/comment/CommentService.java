@@ -40,7 +40,7 @@ public class CommentService {
     }
 
     public List<CommentNode> getComments(final String documentId) {
-        final Tuple2<List<CommentRelationship>, List<Comment>> tuple = commentRepository.getById(documentId);
+        final Tuple2<List<CommentRelationship>, List<Comment>> tuple = commentRepository.findById(documentId);
         return CommentGraph.buildGraph(tuple.getT2(), tuple.getT1());
     }
 
@@ -53,7 +53,7 @@ public class CommentService {
 
     public void deleteComment(final String id) {
         final var commentsToDelete = commentInvestigator.findCommentsToDelete(id);
-        commentRelationshipRepository.deleteByIds(commentsToDelete.getCommentRelationshipIds());
-        commentRepository.deleteByIds(commentsToDelete.getCommentIds());
+        commentRelationshipRepository.deleteAllById(commentsToDelete.getCommentRelationshipIds());
+        commentRepository.deleteAllById(commentsToDelete.getCommentIds());
     }
 }

@@ -63,8 +63,7 @@ public class CommentInvestigator {
 
         private CommentsToDelete deleteRootNode() {
             log.info("root node condition");
-            final List<CommentRelationship> commentRelationships = deduplicate(
-                    commentRelationshipRepository.findCommentRelationshipsByParentCommentId(targetId));
+            final List<CommentRelationship> commentRelationships = findTargetAndDescendants();
             return CommentsToDelete.builder()
                     .commentIds(allCommentIds(commentRelationships))
                     .commentRelationshipIds(justIds(commentRelationships))
@@ -108,22 +107,24 @@ public class CommentInvestigator {
         }
 
         private List<CommentRelationship> findTargetAndDescendants() {
-            return deduplicate(commentRelationshipRepository.findCommentRelationshipsByParentCommentId(targetId));
+            return deduplicate(commentRelationshipRepository.findDescendantRelationships(targetId));
         }
 
         private List<CommentRelationship> findAncestors() {
-            return deduplicate(commentRelationshipRepository.findCommentRelationshipsByChildCommentId(targetId));
+            return deduplicate(commentRelationshipRepository.findAncestorRelationships(targetId));
         }
 
         private List<String> justIds(final List<CommentRelationship> commentRelationshipList) {
-            return commentRelationshipList.stream().map(CommentRelationship::getId).toList();
+            return commentRelationshipList.stream()
+                    .map(CommentRelationship::getId)
+                    .toList();
         }
 
-        private List<String> allCommentIds(final List<CommentRelationship> commentRelationshipList) {
-            final List<String> parentCommentIds = commentRelationshipList.stream()
+        private List<String> allCommentIds(final List<CommentRelationship> commentRelationships) {
+            final List<String> parentCommentIds = commentRelationships.stream()
                     .map(CommentRelationship::getParentCommentId)
                     .toList();
-            final List<String> childCommentIds = commentRelationshipList.stream()
+            final List<String> childCommentIds = commentRelationships.stream()
                     .map(CommentRelationship::getChildCommentId)
                     .toList();
             final List<String> allCommentIds = new ArrayList<>();
@@ -147,15 +148,13 @@ public class CommentInvestigator {
         }
 
         private Optional<CommentRelationship> connectionToParent() {
-            final List<CommentRelationship> list = ancestors.stream().filter(this::targetIsChild).toList();
+            final List<CommentRelationship> list = ancestors.stream()
+                    .filter(commentRelationship -> commentRelationship.getChildCommentId().equals(targetId))
+                    .toList();
             if (list.isEmpty()) {
                 return Optional.empty();
             }
             return Optional.of(list.getFirst());
-        }
-
-        private boolean targetIsChild(final CommentRelationship commentRelationship) {
-            return commentRelationship.getChildCommentId().equals(targetId);
         }
     }
 }
