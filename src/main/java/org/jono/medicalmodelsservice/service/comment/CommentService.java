@@ -5,43 +5,35 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.Comment;
 import org.jono.medicalmodelsservice.model.CommentRelationship;
 import org.jono.medicalmodelsservice.model.NewComment;
-import org.jono.medicalmodelsservice.model.Tuple2;
 import org.jono.medicalmodelsservice.model.dto.EditCommentDto;
 import org.jono.medicalmodelsservice.repository.jdbc.CommentRelationshipRepository;
 import org.jono.medicalmodelsservice.repository.jdbc.CommentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.relational.core.sql.SqlIdentifier;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class CommentService {
 
     private final CommentRepository commentRepository;
     private final CommentRelationshipRepository commentRelationshipRepository;
     private final CommentInvestigator commentInvestigator;
 
-    @Autowired
-    public CommentService(final CommentRepository commentRepository,
-            final CommentRelationshipRepository commentRelationshipRepository,
-            final CommentInvestigator commentInvestigator
-    ) {
-        this.commentRepository = commentRepository;
-        this.commentRelationshipRepository = commentRelationshipRepository;
-        this.commentInvestigator = commentInvestigator;
-    }
-
     public Comment createComment(final NewComment newComment) {
         return commentRepository.create(newComment);
     }
 
     public List<CommentNode> getComments(final String documentId) {
-        final Tuple2<List<CommentRelationship>, List<Comment>> tuple = commentRepository.findById(documentId);
-        return CommentGraph.buildGraph(tuple.getT2(), tuple.getT1());
+        final List<Comment> comments = commentRepository.findAllByDocumentId(documentId);
+        final List<CommentRelationship> commentRelationships =
+                this.commentRelationshipRepository.findAllByDocumentId(documentId);
+        return CommentGraph.buildGraph(comments, commentRelationships);
     }
 
     public Optional<Comment> updateComment(final String id, final EditCommentDto editCommentDto) {

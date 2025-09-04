@@ -16,6 +16,14 @@ public class CommentRelationshipRepository {
         this.commentRelationshipCrudRepository = commentRelationshipCrudRepository;
     }
 
+    public CommentRelationship save(final CommentRelationship commentRelationship) {
+        return this.commentRelationshipCrudRepository.save(commentRelationship);
+    }
+
+    public List<CommentRelationship> findAllByDocumentId(final String documentId) {
+        return this.commentRelationshipCrudRepository.findAllByDocumentId(documentId);
+    }
+
     public List<CommentRelationship> findByParentCommentId(final String parentCommentId) {
         return this.commentRelationshipCrudRepository.findAllByParentCommentId(parentCommentId);
     }

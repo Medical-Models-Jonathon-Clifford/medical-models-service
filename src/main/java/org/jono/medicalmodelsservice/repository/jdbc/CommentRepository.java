@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.Comment;
 import org.jono.medicalmodelsservice.model.CommentRelationship;
 import org.jono.medicalmodelsservice.model.NewComment;
-import org.jono.medicalmodelsservice.model.Tuple2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.relational.core.sql.SqlIdentifier;
 import org.springframework.stereotype.Component;
@@ -19,13 +18,13 @@ import org.springframework.stereotype.Component;
 public class CommentRepository {
 
     private final CommentCrudRepository commentCrudRepository;
-    private final CommentRelationshipCrudRepository commentRelationshipCrudRepository;
+    private final CommentRelationshipRepository commentRelationshipRepository;
 
     @Autowired
     public CommentRepository(final CommentCrudRepository commentCrudRepository,
-            final CommentRelationshipCrudRepository commentRelationshipCrudRepository) {
+            final CommentRelationshipRepository commentRelationshipRepository) {
         this.commentCrudRepository = commentCrudRepository;
-        this.commentRelationshipCrudRepository = commentRelationshipCrudRepository;
+        this.commentRelationshipRepository = commentRelationshipRepository;
     }
 
     public Comment create(final NewComment newComment) {
@@ -35,17 +34,13 @@ public class CommentRepository {
             final var newCommentRelationship = new CommentRelationship(savedComment.getDocumentId(),
                                                                        newComment.getParentCommentId(),
                                                                        savedComment.getId());
-            this.commentRelationshipCrudRepository.save(newCommentRelationship);
+            this.commentRelationshipRepository.save(newCommentRelationship);
         }
         return savedComment;
     }
 
-    public Tuple2<List<CommentRelationship>, List<Comment>> findById(final String documentId) {
-        final List<Comment> comments = this.commentCrudRepository.findAllByDocumentId(documentId);
-        final List<CommentRelationship> commentRelationships =
-                this.commentRelationshipCrudRepository.findAllByDocumentId(
-                documentId);
-        return new Tuple2<>(commentRelationships, comments);
+    public List<Comment> findAllByDocumentId(final String documentId) {
+        return this.commentCrudRepository.findAllByDocumentId(documentId);
     }
 
     public Optional<Comment> updateById(final String id, final Map<SqlIdentifier, Object> updateMap) {
