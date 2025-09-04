@@ -22,9 +22,9 @@ class CommentInvestigatorTest {
                     CommentRelationshipRepository.class);
             final var commentInvestigator = new CommentInvestigator(commentChildRepository);
             final CommentsToDelete commentsToDelete =
-                    commentInvestigator.findNodesToDelete("1",
-                                                          List.of(new CommentRelationship("1", "11", "101")),
-                                                          Collections.emptyList());
+                    commentInvestigator.findCommentsToDelete("1",
+                                                             List.of(new CommentRelationship("1", "11", "101")),
+                                                             Collections.emptyList());
             assertThat(commentsToDelete.commentIds).containsExactly("1");
             assertThat(commentsToDelete.commentRelationshipIds).isEmpty();
         }
@@ -39,9 +39,9 @@ class CommentInvestigatorTest {
                     CommentRelationshipRepository.class);
             final var commentInvestigator = new CommentInvestigator(commentChildRepository);
             final CommentsToDelete commentsToDelete =
-                    commentInvestigator.findNodesToDelete("1",
-                                                          List.of(new CommentRelationship("1", "11", "101")),
-                                                          List.of(new CommentRelationship("1", "11", "101")));
+                    commentInvestigator.findCommentsToDelete("1",
+                                                             List.of(new CommentRelationship("1", "11", "101")),
+                                                             List.of(new CommentRelationship("1", "11", "101")));
             assertThat(commentsToDelete.commentIds).containsExactly("1");
             assertThat(commentsToDelete.commentRelationshipIds).isEmpty();
         }
@@ -58,9 +58,9 @@ class CommentInvestigatorTest {
                     new CommentRelationship("1", "1", "11", "101"));
             final var commentInvestigator = new CommentInvestigator(commentChildRepository);
             final CommentsToDelete commentsToDelete =
-                    commentInvestigator.findNodesToDelete("1",
-                                                          Collections.emptyList(),
-                                                          List.of(new CommentRelationship("1", "11", "101")));
+                    commentInvestigator.findCommentsToDelete("1",
+                                                             Collections.emptyList(),
+                                                             List.of(new CommentRelationship("1", "11", "101")));
             assertThat(commentsToDelete.commentIds).containsExactly("1");
             assertThat(commentsToDelete.commentRelationshipIds).containsExactly("1");
         }
@@ -77,9 +77,9 @@ class CommentInvestigatorTest {
                     new CommentRelationship("1", "1", "11", "101"));
             final var commentInvestigator = new CommentInvestigator(commentChildRepository);
             final CommentsToDelete commentsToDelete =
-                    commentInvestigator.findNodesToDelete("1",
-                                                          Collections.emptyList(),
-                                                          Collections.emptyList());
+                    commentInvestigator.findCommentsToDelete("1",
+                                                             Collections.emptyList(),
+                                                             Collections.emptyList());
             assertThat(commentsToDelete.commentIds).containsExactly("1");
             assertThat(commentsToDelete.commentRelationshipIds).isEmpty();
         }
