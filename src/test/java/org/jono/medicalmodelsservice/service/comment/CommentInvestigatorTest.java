@@ -20,8 +20,8 @@ class CommentInvestigatorTest {
                     CommentRelationshipRepository.class);
             final var commentInvestigator = new CommentInvestigator(commentChildRepository);
             final CommentsToDelete commentsToDelete = commentInvestigator.findCommentsToDelete("1");
-            assertThat(commentsToDelete.commentIds).containsExactly("1");
-            assertThat(commentsToDelete.commentRelationshipIds).isEmpty();
+            assertThat(commentsToDelete.commentIds()).containsExactly("1");
+            assertThat(commentsToDelete.commentRelationshipIds()).isEmpty();
         }
     }
 
@@ -34,8 +34,8 @@ class CommentInvestigatorTest {
                     CommentRelationshipRepository.class);
             final var commentInvestigator = new CommentInvestigator(commentChildRepository);
             final CommentsToDelete commentsToDelete = commentInvestigator.findCommentsToDelete("1");
-            assertThat(commentsToDelete.commentIds).containsExactly("1");
-            assertThat(commentsToDelete.commentRelationshipIds).isEmpty();
+            assertThat(commentsToDelete.commentIds()).containsExactly("1");
+            assertThat(commentsToDelete.commentRelationshipIds()).isEmpty();
         }
     }
 
@@ -51,8 +51,8 @@ class CommentInvestigatorTest {
             final var commentInvestigator = new CommentInvestigator(commentChildRepository);
             final CommentsToDelete commentsToDelete = commentInvestigator.findCommentsToDelete("1");
             // TODO: Fix this test.
-            // assertThat(commentsToDelete.commentIds).containsExactly("1");
-            // assertThat(commentsToDelete.commentRelationshipIds).containsExactly("1");
+            // assertThat(commentsToDelete.commentIds()).containsExactly("1");
+            // assertThat(commentsToDelete.commentRelationshipIds()).containsExactly("1");
         }
     }
 
@@ -67,8 +67,8 @@ class CommentInvestigatorTest {
                     new CommentRelationship("1", "1", "11", "101"));
             final var commentInvestigator = new CommentInvestigator(commentChildRepository);
             final CommentsToDelete commentsToDelete = commentInvestigator.findCommentsToDelete("1");
-            assertThat(commentsToDelete.commentIds).containsExactly("1");
-            assertThat(commentsToDelete.commentRelationshipIds).isEmpty();
+            assertThat(commentsToDelete.commentIds()).containsExactly("1");
+            assertThat(commentsToDelete.commentRelationshipIds()).isEmpty();
         }
     }
 }
