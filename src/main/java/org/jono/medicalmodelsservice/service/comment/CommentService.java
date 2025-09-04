@@ -52,13 +52,7 @@ public class CommentService {
     }
 
     public void deleteComment(final String id) {
-        final List<CommentRelationship> commentRelationshipsByCommentId = commentRelationshipRepository.findByCommentId(
-                id);
-        final List<CommentRelationship> commentRelationshipsByChildCommentId =
-                commentRelationshipRepository.findListByChildCommentId(id);
-        final CommentsToDelete commentsToDelete =
-                commentInvestigator.findCommentsToDelete(id, commentRelationshipsByCommentId,
-                                                         commentRelationshipsByChildCommentId);
+        final var commentsToDelete = commentInvestigator.findCommentsToDelete(id);
         commentRelationshipRepository.deleteByIds(commentsToDelete.getCommentRelationshipIds());
         commentRepository.deleteByIds(commentsToDelete.getCommentIds());
     }
