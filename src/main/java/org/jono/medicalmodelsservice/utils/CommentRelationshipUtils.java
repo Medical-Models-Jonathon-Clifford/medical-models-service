@@ -1,4 +1,4 @@
-package org.jono.medicalmodelsservice.service.comment;
+package org.jono.medicalmodelsservice.utils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Set;
 import org.jono.medicalmodelsservice.model.CommentRelationship;
 
-public class CommentInvestigatorUtils {
+public class CommentRelationshipUtils {
 
-    private CommentInvestigatorUtils() {
+    private CommentRelationshipUtils() {
         // Utility class
     }
 
