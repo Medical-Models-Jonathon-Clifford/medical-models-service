@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Set;
 import org.jono.medicalmodelsservice.model.CommentRelationship;
 
-public class CommentTreeUtils {
+public class CommentInvestigatorUtils {
 
-    private CommentTreeUtils() {
+    private CommentInvestigatorUtils() {
         // Utility class
     }
 

@@ -2,8 +2,8 @@ package org.jono.medicalmodelsservice.service.comment;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static org.jono.medicalmodelsservice.service.comment.CommentTreeUtils.collectAllCommentIds;
-import static org.jono.medicalmodelsservice.service.comment.CommentTreeUtils.extractIds;
+import static org.jono.medicalmodelsservice.service.comment.CommentInvestigatorUtils.collectAllCommentIds;
+import static org.jono.medicalmodelsservice.service.comment.CommentInvestigatorUtils.extractIds;
 import static org.jono.medicalmodelsservice.utils.ListUtils.deduplicate;
 
 import java.util.ArrayList;
