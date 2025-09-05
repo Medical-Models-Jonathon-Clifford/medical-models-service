@@ -5,8 +5,8 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.Document;
 import org.jono.medicalmodelsservice.model.dto.DocumentDto;
-import org.jono.medicalmodelsservice.service.document.DocumentNode;
 import org.jono.medicalmodelsservice.service.document.DocumentService;
+import org.jono.medicalmodelsservice.service.document.DocumentTree;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,7 +61,7 @@ public class DocumentController {
     @GetMapping(path = "/all/navigation",
             produces = "application/json")
     @ResponseBody
-    public List<DocumentNode> handleDocumentsGetAllNavigation() {
+    public List<DocumentTree> handleDocumentsGetAllNavigation() {
         return documentService.getAllNavigation();
     }
 }

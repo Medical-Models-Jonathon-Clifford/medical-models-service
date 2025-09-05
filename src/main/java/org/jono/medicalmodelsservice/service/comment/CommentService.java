@@ -29,11 +29,11 @@ public class CommentService {
         return commentRepository.create(newComment);
     }
 
-    public List<CommentNode> getComments(final String documentId) {
+    public List<CommentTree> getComments(final String documentId) {
         final List<Comment> comments = commentRepository.findAllByDocumentId(documentId);
         final List<CommentRelationship> commentRelationships =
                 this.commentRelationshipRepository.findAllByDocumentId(documentId);
-        return CommentGraph.buildGraph(comments, commentRelationships);
+        return CommentForestBuilder.buildForest(comments, commentRelationships);
     }
 
     public Optional<Comment> updateComment(final String id, final EditCommentDto editCommentDto) {

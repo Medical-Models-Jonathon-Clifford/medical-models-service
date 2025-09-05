@@ -101,7 +101,7 @@ class DocumentServiceTest {
                             )
                     );
 
-            final List<DocumentNode> actual = documentService.getAllNavigation();
+            final List<DocumentTree> actual = documentService.getAllNavigation();
 
             assertThat(actual).isNotNull();
             assertThat(actual).hasSize(1);

@@ -42,9 +42,9 @@ public class DocumentService {
         return documentRepository.updateById(id, documentDto);
     }
 
-    public List<DocumentNode> getAllNavigation() {
+    public List<DocumentTree> getAllNavigation() {
         final Tuple2<List<DocumentRelationship>, List<Document>> docsAndDocChildren =
                 documentRepository.getDocsAndDocRelationships();
-        return DocumentGraph.buildGraph(docsAndDocChildren.getT2(), docsAndDocChildren.getT1());
+        return DocumentForestBuilder.buildForest(docsAndDocChildren.getT2(), docsAndDocChildren.getT1());
     }
 }
