@@ -1,8 +1,12 @@
 package org.jono.medicalmodelsservice.repository.jdbc;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Deque;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.jono.medicalmodelsservice.model.CommentRelationship;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,15 +41,26 @@ public class CommentRelationshipRepository {
     }
 
     public List<CommentRelationship> findSubtreeRelationships(final String parentCommentId) {
-        final List<CommentRelationship> commentRelationships =
-                this.commentRelationshipCrudRepository.findAllByParentCommentId(parentCommentId);
-        final List<CommentRelationship> allCommentRelationships = new ArrayList<>(commentRelationships);
-        for (final CommentRelationship commentRelationship : commentRelationships) {
-            final List<CommentRelationship> nextCommentRelationships =
-                    this.commentRelationshipCrudRepository.findAllByParentCommentId(
-                            commentRelationship.getChildCommentId());
-            allCommentRelationships.addAll(nextCommentRelationships);
+        final Deque<String> parentQueue = new ArrayDeque<>();
+        final List<CommentRelationship> allCommentRelationships = new ArrayList<>();
+        final Set<String> visited = new HashSet<>();
+
+        parentQueue.offer(parentCommentId);
+
+        while (!parentQueue.isEmpty()) {
+            final String currentId = parentQueue.poll();
+            final List<CommentRelationship> relationships =
+                    this.commentRelationshipCrudRepository.findAllByParentCommentId(currentId);
+
+            for (final CommentRelationship relationship : relationships) {
+                if (!visited.contains(relationship.getChildCommentId())) {
+                    visited.add(relationship.getChildCommentId());
+                    parentQueue.offer(relationship.getChildCommentId());
+                    allCommentRelationships.add(relationship);
+                }
+            }
         }
+
         return allCommentRelationships;
     }
 
