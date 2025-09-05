@@ -46,7 +46,7 @@ class CommentInvestigatorTest {
         void shouldDeleteLeafNode() {
             final CommentRelationshipRepository commentChildRepository = Mockito.mock(
                     CommentRelationshipRepository.class);
-            when(commentChildRepository.findLeafNodesParentConnection("1")).thenReturn(
+            when(commentChildRepository.findRelationshipToParent("1")).thenReturn(
                     new CommentRelationship("1", "1", "11", "101"));
             final var commentInvestigator = new CommentInvestigator(commentChildRepository);
             final CommentsToDelete commentsToDelete = commentInvestigator.findCommentsToDelete("1");
@@ -63,7 +63,7 @@ class CommentInvestigatorTest {
         void shouldDeleteIsolatedNode() {
             final CommentRelationshipRepository commentChildRepository = Mockito.mock(
                     CommentRelationshipRepository.class);
-            when(commentChildRepository.findLeafNodesParentConnection("1")).thenReturn(
+            when(commentChildRepository.findRelationshipToParent("1")).thenReturn(
                     new CommentRelationship("1", "1", "11", "101"));
             final var commentInvestigator = new CommentInvestigator(commentChildRepository);
             final CommentsToDelete commentsToDelete = commentInvestigator.findCommentsToDelete("1");
