@@ -1,7 +1,7 @@
 package org.jono.medicalmodelsservice.service.comment;
 
-import static org.jono.medicalmodelsservice.service.comment.CommentInvestigatorUtils.collectAllCommentIds;
-import static org.jono.medicalmodelsservice.service.comment.CommentInvestigatorUtils.extractIds;
+import static org.jono.medicalmodelsservice.utils.CommentRelationshipUtils.collectAllCommentIds;
+import static org.jono.medicalmodelsservice.utils.CommentRelationshipUtils.extractIds;
 import static org.jono.medicalmodelsservice.utils.ListUtils.deduplicate;
 
 import java.util.List;
