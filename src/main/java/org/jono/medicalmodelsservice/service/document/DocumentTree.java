@@ -7,15 +7,15 @@ import lombok.Data;
 import org.jono.medicalmodelsservice.model.Document;
 
 @Data
-public class DocumentNode {
+public class DocumentTree {
     private String id;
     private String title;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
     private Document document;
-    private List<DocumentNode> children;
+    private List<DocumentTree> children;
 
-    public DocumentNode(final Document document) {
+    public DocumentTree(final Document document) {
         this.id = document.getId();
         this.title = document.getTitle();
         this.createdDate = document.getCreatedDate();

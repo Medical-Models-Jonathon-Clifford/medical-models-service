@@ -17,17 +17,17 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class DocumentGraphTest {
+class DocumentForestBuilderTest {
 
     @Test
     public void shouldReturnEmptyListWhenNoDocuments() {
         final List<Document> emptyDocumentList = Collections.emptyList();
         final List<DocumentRelationship> emptyDocumentRelationshipList = Collections.emptyList();
 
-        final List<DocumentNode> actualDocumentNodes = DocumentGraph.buildGraph(emptyDocumentList,
-                                                                                emptyDocumentRelationshipList);
+        final List<DocumentTree> actualDocumentTrees = DocumentForestBuilder.buildForest(emptyDocumentList,
+                                                                                         emptyDocumentRelationshipList);
 
-        assertThat(actualDocumentNodes.size()).isEqualTo(0);
+        assertThat(actualDocumentTrees.size()).isEqualTo(0);
     }
 
     @Test
@@ -35,14 +35,14 @@ class DocumentGraphTest {
         final List<Document> emptyDocumentList = createDocumentList("41");
         final List<DocumentRelationship> emptyDocumentRelationshipList = Collections.emptyList();
 
-        final List<DocumentNode> actualDocumentNodes = DocumentGraph.buildGraph(emptyDocumentList,
-                                                                                emptyDocumentRelationshipList);
+        final List<DocumentTree> actualDocumentTrees = DocumentForestBuilder.buildForest(emptyDocumentList,
+                                                                                         emptyDocumentRelationshipList);
 
-        assertThat(actualDocumentNodes.size()).isEqualTo(1);
-        assertThat(actualDocumentNodes.getFirst())
+        assertThat(actualDocumentTrees.size()).isEqualTo(1);
+        assertThat(actualDocumentTrees.getFirst())
                 .extracting("id", "title")
                 .containsExactly("41", "Test document 41");
-        assertThat(actualDocumentNodes.getFirst().getChildren().size()).isEqualTo(0);
+        assertThat(actualDocumentTrees.getFirst().getChildren().size()).isEqualTo(0);
     }
 
     @Test
@@ -50,14 +50,15 @@ class DocumentGraphTest {
         final List<Document> documentList = createDocumentList("41", "42");
         final var singleDocumentChildList = List.of(new DocumentRelationship("41", "42"));
 
-        final List<DocumentNode> actualDocumentNodes = DocumentGraph.buildGraph(documentList, singleDocumentChildList);
+        final List<DocumentTree> actualDocumentTrees = DocumentForestBuilder.buildForest(documentList,
+                                                                                         singleDocumentChildList);
 
-        assertThat(actualDocumentNodes.size()).isEqualTo(1);
-        assertThat(actualDocumentNodes.getFirst())
+        assertThat(actualDocumentTrees.size()).isEqualTo(1);
+        assertThat(actualDocumentTrees.getFirst())
                 .extracting("id", "title")
                 .containsExactly("41", "Test document 41");
-        assertThat(actualDocumentNodes.getFirst().getChildren().size()).isEqualTo(1);
-        assertThat(actualDocumentNodes.getFirst().getChildren().getFirst())
+        assertThat(actualDocumentTrees.getFirst().getChildren().size()).isEqualTo(1);
+        assertThat(actualDocumentTrees.getFirst().getChildren().getFirst())
                 .extracting("id", "title")
                 .containsExactly("42", "Test document 42");
     }
@@ -71,22 +72,23 @@ class DocumentGraphTest {
                 new DocumentRelationship("46", "49")
         );
 
-        final List<DocumentNode> actualDocumentNodes = DocumentGraph.buildGraph(documentList, documentRelationshipList);
+        final List<DocumentTree> actualDocumentTrees = DocumentForestBuilder.buildForest(documentList,
+                                                                                         documentRelationshipList);
 
-        final DocumentNode firstLevel = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes, List.of("41"));
+        final DocumentTree firstLevel = getDocumentNodeWithIdAtEachLevel(actualDocumentTrees, List.of("41"));
         assertThat(firstLevel)
                 .extracting("id", "title")
                 .containsExactly("41", "Test document 41");
-        final DocumentNode secondLevel = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes, List.of("41", "43"));
+        final DocumentTree secondLevel = getDocumentNodeWithIdAtEachLevel(actualDocumentTrees, List.of("41", "43"));
         assertThat(secondLevel)
                 .extracting("id", "title")
                 .containsExactly("43", "Test document 43");
-        final DocumentNode thirdLevel = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes,
+        final DocumentTree thirdLevel = getDocumentNodeWithIdAtEachLevel(actualDocumentTrees,
                                                                          List.of("41", "43", "46"));
         assertThat(thirdLevel)
                 .extracting("id", "title")
                 .containsExactly("46", "Test document 46");
-        final DocumentNode fourthLevel = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes, List.of("41", "43", "46",
+        final DocumentTree fourthLevel = getDocumentNodeWithIdAtEachLevel(actualDocumentTrees, List.of("41", "43", "46",
                                                                                                        "49"));
         assertThat(fourthLevel)
                 .extracting("id", "title")
@@ -103,33 +105,34 @@ class DocumentGraphTest {
                 new DocumentRelationship("59", "68")
         );
 
-        final List<DocumentNode> actualDocumentNodes = DocumentGraph.buildGraph(documentList, documentChildList);
+        final List<DocumentTree> actualDocumentTrees = DocumentForestBuilder.buildForest(documentList,
+                                                                                         documentChildList);
 
-        final DocumentNode firstLevelFirstDocument = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes,
+        final DocumentTree firstLevelFirstDocument = getDocumentNodeWithIdAtEachLevel(actualDocumentTrees,
                                                                                       List.of("43"));
         assertThat(firstLevelFirstDocument)
                 .extracting("id", "title")
                 .containsExactly("43", "Test document 43");
-        final DocumentNode firstLevelSecond = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes, List.of("49"));
+        final DocumentTree firstLevelSecond = getDocumentNodeWithIdAtEachLevel(actualDocumentTrees, List.of("49"));
         assertThat(firstLevelSecond)
                 .extracting("id", "title")
                 .containsExactly("49", "Test document 49");
-        final DocumentNode secondLevelFirstDocument = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes,
+        final DocumentTree secondLevelFirstDocument = getDocumentNodeWithIdAtEachLevel(actualDocumentTrees,
                                                                                        List.of("49", "50"));
         assertThat(secondLevelFirstDocument)
                 .extracting("id", "title")
                 .containsExactly("50", "Test document 50");
-        final DocumentNode secondLevelSecondDocument = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes,
+        final DocumentTree secondLevelSecondDocument = getDocumentNodeWithIdAtEachLevel(actualDocumentTrees,
                                                                                         List.of("49", "59"));
         assertThat(secondLevelSecondDocument)
                 .extracting("id", "title")
                 .containsExactly("59", "Test document 59");
-        final DocumentNode thirdLevelFirstDocument = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes,
+        final DocumentTree thirdLevelFirstDocument = getDocumentNodeWithIdAtEachLevel(actualDocumentTrees,
                                                                                       List.of("49", "50", "66"));
         assertThat(thirdLevelFirstDocument)
                 .extracting("id", "title")
                 .containsExactly("66", "Test document 66");
-        final DocumentNode thirdLevelSecondDocument = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes,
+        final DocumentTree thirdLevelSecondDocument = getDocumentNodeWithIdAtEachLevel(actualDocumentTrees,
                                                                                        List.of("49", "59", "68"));
         assertThat(thirdLevelSecondDocument)
                 .extracting("id", "title")
@@ -146,22 +149,23 @@ class DocumentGraphTest {
                 new DocumentRelationship(parentId, childId)
         );
 
-        final List<DocumentNode> actualDocumentNodes = DocumentGraph.buildGraph(documentList, documentChildList);
+        final List<DocumentTree> actualDocumentTrees = DocumentForestBuilder.buildForest(documentList,
+                                                                                         documentChildList);
 
-        assertThat(actualDocumentNodes.size()).isEqualTo(1);
-        final DocumentNode firstLevelFirstDocument = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes,
+        assertThat(actualDocumentTrees.size()).isEqualTo(1);
+        final DocumentTree firstLevelFirstDocument = getDocumentNodeWithIdAtEachLevel(actualDocumentTrees,
                                                                                       List.of("41"));
         assertThat(firstLevelFirstDocument.getChildren().size()).isEqualTo(1);
         assertThat(firstLevelFirstDocument)
                 .extracting("id", "title")
                 .containsExactly("41", "Test document 41");
-        final DocumentNode firstLevelSecond = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes,
+        final DocumentTree firstLevelSecond = getDocumentNodeWithIdAtEachLevel(actualDocumentTrees,
                                                                                List.of("41", "42"));
         assertThat(firstLevelSecond.getChildren().size()).isEqualTo(1);
         assertThat(firstLevelSecond)
                 .extracting("id", "title")
                 .containsExactly("42", "Test document 42");
-        final DocumentNode secondLevelFirstDocument = getDocumentNodeWithIdAtEachLevel(actualDocumentNodes,
+        final DocumentTree secondLevelFirstDocument = getDocumentNodeWithIdAtEachLevel(actualDocumentTrees,
                                                                                        List.of("41",
                                                                                                "42",
                                                                                                "43"));
@@ -178,20 +182,20 @@ class DocumentGraphTest {
         );
     }
 
-    private DocumentNode getDocumentNodeWithIdAtEachLevel(final List<DocumentNode> documentNodes,
+    private DocumentTree getDocumentNodeWithIdAtEachLevel(final List<DocumentTree> documentTrees,
             final List<String> levelIds) {
         if (levelIds.size() == 1) {
-            return getDocumentNodeWithId(documentNodes, levelIds.getFirst());
+            return getDocumentNodeWithId(documentTrees, levelIds.getFirst());
         } else {
             return getDocumentNodeWithIdAtEachLevel(
-                    getDocumentNodeWithId(documentNodes, levelIds.getFirst()).getChildren(),
+                    getDocumentNodeWithId(documentTrees, levelIds.getFirst()).getChildren(),
                     levelIds.subList(1, levelIds.size()));
         }
     }
 
-    private DocumentNode getDocumentNodeWithId(final List<DocumentNode> documentNodes, final String id) {
-        final Optional<DocumentNode> first =
-                documentNodes.stream().filter(documentNode -> documentNode.getId().equals(id)).findFirst();
+    private DocumentTree getDocumentNodeWithId(final List<DocumentTree> documentTrees, final String id) {
+        final Optional<DocumentTree> first =
+                documentTrees.stream().filter(documentNode -> documentNode.getId().equals(id)).findFirst();
         if (first.isEmpty()) {
             fail("The document with ID \"" + id + "\" was not present at this level of the document tree.");
         }

@@ -17,17 +17,17 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class CommentGraphTest {
+class CommentForestBuilderTest {
 
     @Test
     public void noComments() {
         final List<Comment> emptyCommentList = Collections.emptyList();
         final List<CommentRelationship> emptyCommentRelationshipList = Collections.emptyList();
 
-        final List<CommentNode> actualCommentNodes = CommentGraph.buildGraph(emptyCommentList,
-                                                                             emptyCommentRelationshipList);
+        final List<CommentTree> actualCommentTrees =
+                CommentForestBuilder.buildForest(emptyCommentList, emptyCommentRelationshipList);
 
-        assertThat(actualCommentNodes.size()).isEqualTo(0);
+        assertThat(actualCommentTrees.size()).isEqualTo(0);
     }
 
     @Test
@@ -35,14 +35,14 @@ class CommentGraphTest {
         final List<Comment> oneCommentList = createCommentList("41");
         final List<CommentRelationship> emptyCommentRelationshipList = Collections.emptyList();
 
-        final List<CommentNode> actualCommentNodes = CommentGraph.buildGraph(oneCommentList,
-                                                                             emptyCommentRelationshipList);
+        final List<CommentTree> actualCommentTrees =
+                CommentForestBuilder.buildForest(oneCommentList, emptyCommentRelationshipList);
 
-        assertThat(actualCommentNodes.size()).isEqualTo(1);
-        assertThat(actualCommentNodes.getFirst().getComment())
+        assertThat(actualCommentTrees.size()).isEqualTo(1);
+        assertThat(actualCommentTrees.getFirst().getComment())
                 .extracting("id", "body", "documentId")
                 .containsExactly("41", "Test comment 41", "97");
-        assertThat(actualCommentNodes.getFirst().getChildren().size()).isEqualTo(0);
+        assertThat(actualCommentTrees.getFirst().getChildren().size()).isEqualTo(0);
     }
 
     @Test
@@ -51,14 +51,15 @@ class CommentGraphTest {
         final var singleCommentChildList =
                 List.of(new CommentRelationship("97", "41", "42"));
 
-        final List<CommentNode> actualCommentNodes = CommentGraph.buildGraph(commentList, singleCommentChildList);
+        final List<CommentTree> actualCommentTrees =
+                CommentForestBuilder.buildForest(commentList, singleCommentChildList);
 
-        assertThat(actualCommentNodes.size()).isEqualTo(1);
-        assertThat(actualCommentNodes.getFirst().getComment())
+        assertThat(actualCommentTrees.size()).isEqualTo(1);
+        assertThat(actualCommentTrees.getFirst().getComment())
                 .extracting("id", "body", "documentId")
                 .containsExactly("41", "Test comment 41", "97");
-        assertThat(actualCommentNodes.getFirst().getChildren().size()).isEqualTo(1);
-        assertThat(actualCommentNodes.getFirst().getChildren().getFirst().getComment())
+        assertThat(actualCommentTrees.getFirst().getChildren().size()).isEqualTo(1);
+        assertThat(actualCommentTrees.getFirst().getChildren().getFirst().getComment())
                 .extracting("id", "body", "documentId")
                 .containsExactly("42", "Test comment 42", "97");
     }
@@ -72,24 +73,24 @@ class CommentGraphTest {
                 new CommentRelationship("97", "46", "49")
         );
 
-        final List<CommentNode> actualCommentNodes = CommentGraph.buildGraph(commentList, commentChildList);
+        final List<CommentTree> actualCommentTrees = CommentForestBuilder.buildForest(commentList, commentChildList);
 
-        final Comment firstLevel = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("41")).getComment();
+        final Comment firstLevel = getCommentNodeWithIdAtEachLevel(actualCommentTrees, List.of("41")).getComment();
         assertThat(firstLevel)
                 .extracting("id", "body", "documentId")
                 .containsExactly("41", "Test comment 41", "97");
-        final Comment secondLevel = getCommentNodeWithIdAtEachLevel(actualCommentNodes,
+        final Comment secondLevel = getCommentNodeWithIdAtEachLevel(actualCommentTrees,
                                                                     List.of("41", "43")).getComment();
         assertThat(secondLevel)
                 .extracting("id", "body", "documentId")
                 .containsExactly("43", "Test comment 43", "97");
         final Comment thirdLevel =
-                getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("41", "43", "46")).getComment();
+                getCommentNodeWithIdAtEachLevel(actualCommentTrees, List.of("41", "43", "46")).getComment();
         assertThat(thirdLevel)
                 .extracting("id", "body", "documentId")
                 .containsExactly("46", "Test comment 46", "97");
         final Comment fourthLevel =
-                getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("41", "43", "46", "49")).getComment();
+                getCommentNodeWithIdAtEachLevel(actualCommentTrees, List.of("41", "43", "46", "49")).getComment();
         assertThat(fourthLevel)
                 .extracting("id", "body", "documentId")
                 .containsExactly("49", "Test comment 49", "97");
@@ -105,34 +106,34 @@ class CommentGraphTest {
                 new CommentRelationship("97", "59", "68")
         );
 
-        final List<CommentNode> actualCommentNodes = CommentGraph.buildGraph(commentList, commentChildList);
+        final List<CommentTree> actualCommentTrees = CommentForestBuilder.buildForest(commentList, commentChildList);
 
         final Comment firstLevelFirstComment =
-                getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("43")).getComment();
+                getCommentNodeWithIdAtEachLevel(actualCommentTrees, List.of("43")).getComment();
         assertThat(firstLevelFirstComment)
                 .extracting("id", "body", "documentId")
                 .containsExactly("43", "Test comment 43", "97");
-        final Comment firstLevelSecond = getCommentNodeWithIdAtEachLevel(actualCommentNodes,
+        final Comment firstLevelSecond = getCommentNodeWithIdAtEachLevel(actualCommentTrees,
                                                                          List.of("49")).getComment();
         assertThat(firstLevelSecond)
                 .extracting("id", "body", "documentId")
                 .containsExactly("49", "Test comment 49", "97");
         final Comment secondLevelFirstComment =
-                getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("49", "50")).getComment();
+                getCommentNodeWithIdAtEachLevel(actualCommentTrees, List.of("49", "50")).getComment();
         assertThat(secondLevelFirstComment)
                 .extracting("id", "body", "documentId")
                 .containsExactly("50", "Test comment 50", "97");
         final Comment secondLevelSecondComment =
-                getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("49", "59")).getComment();
+                getCommentNodeWithIdAtEachLevel(actualCommentTrees, List.of("49", "59")).getComment();
         assertThat(secondLevelSecondComment)
                 .extracting("id", "body", "documentId")
                 .containsExactly("59", "Test comment 59", "97");
-        final Comment thirdLevelFirstComment = getCommentNodeWithIdAtEachLevel(actualCommentNodes,
+        final Comment thirdLevelFirstComment = getCommentNodeWithIdAtEachLevel(actualCommentTrees,
                                                                                List.of("49", "50", "66")).getComment();
         assertThat(thirdLevelFirstComment)
                 .extracting("id", "body", "documentId")
                 .containsExactly("66", "Test comment 66", "97");
-        final Comment thirdLevelSecondComment = getCommentNodeWithIdAtEachLevel(actualCommentNodes,
+        final Comment thirdLevelSecondComment = getCommentNodeWithIdAtEachLevel(actualCommentTrees,
                                                                                 List.of("49", "59", "68")).getComment();
         assertThat(thirdLevelSecondComment)
                 .extracting("id", "body", "documentId")
@@ -149,20 +150,20 @@ class CommentGraphTest {
                 new CommentRelationship("97", parentId, childId)
         );
 
-        final List<CommentNode> actualCommentNodes = CommentGraph.buildGraph(commentList, commentChildList);
+        final List<CommentTree> actualCommentTrees = CommentForestBuilder.buildForest(commentList, commentChildList);
 
-        assertThat(actualCommentNodes.size()).isEqualTo(1);
-        final CommentNode firstLevelFirstComment = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("41"));
+        assertThat(actualCommentTrees.size()).isEqualTo(1);
+        final CommentTree firstLevelFirstComment = getCommentNodeWithIdAtEachLevel(actualCommentTrees, List.of("41"));
         assertThat(firstLevelFirstComment.getChildren().size()).isEqualTo(1);
         assertThat(firstLevelFirstComment.getComment())
                 .extracting("id", "body", "documentId")
                 .containsExactly("41", "Test comment 41", "97");
-        final CommentNode firstLevelSecond = getCommentNodeWithIdAtEachLevel(actualCommentNodes, List.of("41", "42"));
+        final CommentTree firstLevelSecond = getCommentNodeWithIdAtEachLevel(actualCommentTrees, List.of("41", "42"));
         assertThat(firstLevelSecond.getChildren().size()).isEqualTo(1);
         assertThat(firstLevelSecond.getComment())
                 .extracting("id", "body", "documentId")
                 .containsExactly("42", "Test comment 42", "97");
-        final CommentNode secondLevelFirstComment = getCommentNodeWithIdAtEachLevel(actualCommentNodes,
+        final CommentTree secondLevelFirstComment = getCommentNodeWithIdAtEachLevel(actualCommentTrees,
                                                                                     List.of("41", "42", "43"));
         assertThat(secondLevelFirstComment.getComment())
                 .extracting("id", "body", "documentId")
@@ -177,20 +178,20 @@ class CommentGraphTest {
         );
     }
 
-    private CommentNode getCommentNodeWithIdAtEachLevel(final List<CommentNode> commentNodes,
+    private CommentTree getCommentNodeWithIdAtEachLevel(final List<CommentTree> commentTrees,
             final List<String> levelIds) {
         if (levelIds.size() == 1) {
-            return getCommentNodeWithId(commentNodes, levelIds.getFirst());
+            return getCommentNodeWithId(commentTrees, levelIds.getFirst());
         } else {
             return getCommentNodeWithIdAtEachLevel(
-                    getCommentNodeWithId(commentNodes, levelIds.getFirst()).getChildren(),
+                    getCommentNodeWithId(commentTrees, levelIds.getFirst()).getChildren(),
                     levelIds.subList(1, levelIds.size()));
         }
     }
 
-    private CommentNode getCommentNodeWithId(final List<CommentNode> commentNodes, final String id) {
-        final Optional<CommentNode> first =
-                commentNodes.stream().filter(commentNode -> commentNode.getComment().getId().equals(id)).findFirst();
+    private CommentTree getCommentNodeWithId(final List<CommentTree> commentTrees, final String id) {
+        final Optional<CommentTree> first =
+                commentTrees.stream().filter(commentNode -> commentNode.getComment().getId().equals(id)).findFirst();
         if (first.isEmpty()) {
             fail("The comment with ID \"" + id + "\" was not present at this level of the comment tree.");
         }

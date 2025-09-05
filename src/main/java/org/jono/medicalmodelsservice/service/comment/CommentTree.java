@@ -6,11 +6,11 @@ import lombok.Data;
 import org.jono.medicalmodelsservice.model.Comment;
 
 @Data
-public class CommentNode {
+public class CommentTree {
     private Comment comment;
-    private List<CommentNode> children;
+    private List<CommentTree> children;
 
-    public CommentNode(final Comment comment) {
+    public CommentTree(final Comment comment) {
         this.comment = comment;
         this.children = new ArrayList<>();
     }

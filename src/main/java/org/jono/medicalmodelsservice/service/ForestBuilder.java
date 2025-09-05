@@ -14,7 +14,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class GraphBuilder<N, R extends NodeRelationship, D extends NodeData> {
+public class ForestBuilder<N, R extends NodeRelationship, D extends NodeData> {
     @Getter
     private final List<N> rootNodes;
     private final Map<String, N> allNodes;
@@ -24,14 +24,14 @@ public class GraphBuilder<N, R extends NodeRelationship, D extends NodeData> {
     private final Function<D, N> nodeConstructorFn;
     private final Function<N, List<N>> getChildrenFn;
 
-    public static <N, R extends NodeRelationship, D extends NodeData> List<N> buildGraph(final List<D> nodeDataList,
+    public static <N, R extends NodeRelationship, D extends NodeData> List<N> buildForest(final List<D> nodeDataList,
             final List<R> relationshipList,
             final Function<D, N> nodeConstructorFn,
             final Function<N, List<N>> getChildrenFn) {
-        return new GraphBuilder<>(nodeDataList, relationshipList, nodeConstructorFn, getChildrenFn).getRootNodes();
+        return new ForestBuilder<>(nodeDataList, relationshipList, nodeConstructorFn, getChildrenFn).getRootNodes();
     }
 
-    private GraphBuilder(final List<D> nodeDataList,
+    private ForestBuilder(final List<D> nodeDataList,
             final List<R> relationshipList,
             final Function<D, N> nodeConstructorFn,
             final Function<N, List<N>> getChildrenFn) {
