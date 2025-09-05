@@ -24,12 +24,16 @@ public class CommentRelationshipRepository {
         return this.commentRelationshipCrudRepository.findAllByDocumentId(documentId);
     }
 
-    public List<CommentRelationship> findByParentCommentId(final String parentCommentId) {
+    public List<CommentRelationship> findOutgoingRelationships(final String parentCommentId) {
         return this.commentRelationshipCrudRepository.findAllByParentCommentId(parentCommentId);
     }
 
-    public List<CommentRelationship> findByChildCommentId(final String childCommentId) {
+    public List<CommentRelationship> findIncomingRelationships(final String childCommentId) {
         return this.commentRelationshipCrudRepository.findAllByChildCommentId(childCommentId);
+    }
+
+    public CommentRelationship findRelationshipToParent(final String childCommentId) {
+        return this.commentRelationshipCrudRepository.findFirstByChildCommentId(childCommentId);
     }
 
     public List<CommentRelationship> findSubtreeRelationships(final String parentCommentId) {
@@ -43,10 +47,6 @@ public class CommentRelationshipRepository {
             allCommentRelationships.addAll(nextCommentRelationships);
         }
         return allCommentRelationships;
-    }
-
-    public CommentRelationship findLeafNodesParentConnection(final String childCommentId) {
-        return this.commentRelationshipCrudRepository.findFirstByChildCommentId(childCommentId);
     }
 
     public List<CommentRelationship> findAncestorRelationships(final String commentId) {
