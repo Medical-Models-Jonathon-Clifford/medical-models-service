@@ -9,6 +9,10 @@ import org.jono.medicalmodelsservice.service.ForestBuilder;
 @Slf4j
 public class CommentForestBuilder {
 
+    private CommentForestBuilder() {
+        // Utility class
+    }
+
     public static List<CommentTree> buildForest(final List<Comment> commentList,
             final List<CommentRelationship> commentRelationshipList) {
         return ForestBuilder.buildForest(commentList, commentRelationshipList, CommentTree::new,
