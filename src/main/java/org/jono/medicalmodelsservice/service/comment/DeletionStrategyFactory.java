@@ -17,13 +17,11 @@ public class DeletionStrategyFactory {
     private NodeType determineNodeType() {
         final boolean hasChildren = !repository.findOutgoingRelationships(targetId).isEmpty();
         final boolean hasParents = !repository.findIncomingRelationships(targetId).isEmpty();
-        if (hasChildren && !hasParents) {
-            return NodeType.ROOT;
-        }
         if (hasChildren && hasParents) {
             return NodeType.INTERNAL;
-        }
-        if (!hasChildren && hasParents) {
+        } else if (hasChildren) {
+            return NodeType.ROOT;
+        } else if (hasParents) {
             return NodeType.LEAF;
         }
         return NodeType.ISOLATED;
