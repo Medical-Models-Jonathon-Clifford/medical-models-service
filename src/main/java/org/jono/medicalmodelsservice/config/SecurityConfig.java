@@ -10,7 +10,7 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import org.jono.medicalmodelsservice.service.MmUserInfoService;
 import org.springframework.context.annotation.Bean;
@@ -46,6 +46,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 public class SecurityConfig {
 
+    public static final String RSA_ALGORITHM = "RSA";
+    public static final int KEY_SIZE = 2048;
+
     @Bean
     @Order(1)
     public SecurityFilterChain asFilterChain(final HttpSecurity http)
@@ -53,7 +56,7 @@ public class SecurityConfig {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 
         http.cors((cors) -> cors
-                .configurationSource(myWebsiteConfigurationSource()));
+                .configurationSource(createCorsConfig()));
 
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
                 .oidc(Customizer.withDefaults());
@@ -67,15 +70,14 @@ public class SecurityConfig {
                 .oauth2ResourceServer((resourceServer) -> resourceServer
                         .jwt(Customizer.withDefaults()));
 
-
         return http.build();
     }
 
-    UrlBasedCorsConfigurationSource myWebsiteConfigurationSource() {
-        final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    UrlBasedCorsConfigurationSource createCorsConfig() {
+        final var configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("*"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        final var source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
@@ -119,7 +121,6 @@ public class SecurityConfig {
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .redirectUris(uris -> uris.add("http://localhost:3000/auth/callback/my_authorization_server"))
-                .redirectUris(uris -> uris.add("http://localhost:3001/auth/callback/my_authorization_server"))
                 .redirectUris(uris -> uris.add("https://www.medicalmodels.net/auth/callback/my_authorization_server"))
                 .scope(OidcScopes.OPENID)
                 .scope(OidcScopes.PROFILE)
@@ -133,17 +134,17 @@ public class SecurityConfig {
 
     @Bean
     public JWKSource<SecurityContext> jwkSource() throws NoSuchAlgorithmException {
-        final KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        keyPairGenerator.initialize(2048);
+        final var keyPairGenerator = KeyPairGenerator.getInstance(RSA_ALGORITHM);
+        keyPairGenerator.initialize(KEY_SIZE);
         final KeyPair keyPair = keyPairGenerator.generateKeyPair();
 
-        final RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
-        final RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-        final RSAKey rsaKey = new RSAKey.Builder(publicKey)
+        final var publicKey = (RSAPublicKey) keyPair.getPublic();
+        final var privateKey = (RSAPrivateKey) keyPair.getPrivate();
+        final var rsaKey = new RSAKey.Builder(publicKey)
                 .privateKey(privateKey)
                 .keyID(UUID.randomUUID().toString())
                 .build();
-        final JWKSet jwkSet = new JWKSet(rsaKey);
+        final var jwkSet = new JWKSet(rsaKey);
         return new ImmutableJWKSet<>(jwkSet);
     }
 
