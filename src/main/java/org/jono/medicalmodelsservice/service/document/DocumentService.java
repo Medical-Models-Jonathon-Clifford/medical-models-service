@@ -6,6 +6,7 @@ import org.jono.medicalmodelsservice.model.Document;
 import org.jono.medicalmodelsservice.model.DocumentRelationship;
 import org.jono.medicalmodelsservice.model.Tuple2;
 import org.jono.medicalmodelsservice.model.dto.DocumentDto;
+import org.jono.medicalmodelsservice.repository.jdbc.DocumentCompanyRelationshipRepository;
 import org.jono.medicalmodelsservice.repository.jdbc.DocumentRelationshipRepository;
 import org.jono.medicalmodelsservice.repository.jdbc.DocumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,20 +18,24 @@ public class DocumentService {
 
     private final DocumentRepository documentRepository;
     private final DocumentRelationshipRepository documentRelationshipRepository;
+    private final DocumentCompanyRelationshipRepository documentCompanyRelationshipRepository;
 
     @Autowired
     public DocumentService(
             final DocumentRepository documentRepository,
-            final DocumentRelationshipRepository documentRelationshipRepository
+            final DocumentRelationshipRepository documentRelationshipRepository,
+            final DocumentCompanyRelationshipRepository documentCompanyRelationshipRepository
     ) {
         this.documentRepository = documentRepository;
         this.documentRelationshipRepository = documentRelationshipRepository;
+        this.documentCompanyRelationshipRepository = documentCompanyRelationshipRepository;
     }
 
-    public Document createDocument(final Optional<String> parentId) {
+    public Document createDocument(final Optional<String> parentId, final String companyId) {
         final Document document = Document.draftDocument();
         final Document newDoc = documentRepository.create(document);
         parentId.ifPresent(id -> documentRelationshipRepository.create(id, newDoc.getId()));
+        documentCompanyRelationshipRepository.create(newDoc.getId(), companyId);
         return newDoc;
     }
 
@@ -42,9 +47,9 @@ public class DocumentService {
         return documentRepository.updateById(id, documentDto);
     }
 
-    public List<DocumentTree> getAllNavigation() {
+    public List<DocumentTree> getAllNavigation(final String companyId) {
         final Tuple2<List<DocumentRelationship>, List<Document>> docsAndDocChildren =
-                documentRepository.getDocsAndDocRelationships();
+                documentRepository.getDocsAndDocRelationships(companyId);
         return DocumentForestBuilder.buildForest(docsAndDocChildren.getT2(), docsAndDocChildren.getT1());
     }
 }

@@ -10,6 +10,7 @@ import org.jono.medicalmodelsservice.service.document.DocumentTree;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,8 +38,12 @@ public class DocumentController {
     @PostMapping(path = "/new",
             produces = "application/json")
     @ResponseBody
-    public Document handleDocumentsNewPost(@RequestParam final Optional<String> parentId) {
-        return documentService.createDocument(parentId);
+    public Document handleDocumentsNewPost(@RequestParam final Optional<String> parentId,
+            final JwtAuthenticationToken authentication) {
+        if (authentication.getToken().getClaims().get("companyId") instanceof String companyId) {
+            return documentService.createDocument(parentId, companyId);
+        }
+        throw new IllegalArgumentException("companyId is required to query for document tree.");
     }
 
     @PutMapping(path = "/{id}",
@@ -61,7 +66,10 @@ public class DocumentController {
     @GetMapping(path = "/all/navigation",
             produces = "application/json")
     @ResponseBody
-    public List<DocumentTree> handleDocumentsGetAllNavigation() {
-        return documentService.getAllNavigation();
+    public List<DocumentTree> handleDocumentsGetAllNavigation(final JwtAuthenticationToken authentication) {
+        if (authentication.getToken().getClaims().get("companyId") instanceof String companyId) {
+            return documentService.getAllNavigation(companyId);
+        }
+        throw new IllegalArgumentException("companyId is required to query for document tree.");
     }
 }

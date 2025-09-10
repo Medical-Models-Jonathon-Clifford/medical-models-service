@@ -51,10 +51,10 @@ public class DocumentRepository {
         return documentCrudRepository.save(existingDocument);
     }
 
-    public Tuple2<List<DocumentRelationship>, List<Document>> getDocsAndDocRelationships() {
+    public Tuple2<List<DocumentRelationship>, List<Document>> getDocsAndDocRelationships(final String companyId) {
         final List<DocumentRelationship> documentRelationships = ImmutableList.copyOf(
                 documentRelationshipCrudRepository.findAll());
-        final List<Document> documents = ImmutableList.copyOf(documentCrudRepository.findAll());
+        final List<Document> documents = ImmutableList.copyOf(documentCrudRepository.findByCompanyId(companyId));
         return new Tuple2<>(documentRelationships, documents);
     }
 }

@@ -347,3 +347,23 @@ VALUES (1, 9, 1, 2),
        (5, 9, 5, 9),
        (6, 2, 6, 7),
        (7, 2, 7, 8);
+
+INSERT IGNORE INTO company (id, name, logo_filename, location_state)
+VALUES (1, 'Medical Models Support Centre', 'medical-models-company-logo.png', 'NSW'),
+       (2, 'Titan Teaching Hospital', 'titan-teaching-hospital-logo-1.jpeg', 'QLD'),
+       (3, 'The Bricko Army Surgical Hospital', 'bricko-army-surgical-hospital-logo-1.jpeg', 'TAS');
+
+INSERT IGNORE INTO document_company_relationship (id, document_id, company_id)
+VALUES (1, 1, 2),
+       (2, 2, 2),
+       (3, 3, 2),
+       (4, 4, 2),
+       (5, 5, 2),
+       (6, 6, 2),
+       (7, 7, 2),
+       (8, 8, 3),
+       (9, 9, 3),
+       (10, 10, 3),
+       (11, 11, 3),
+       (12, 12, 3),
+       (13, 13, 3);

@@ -13,6 +13,7 @@ import org.jono.medicalmodelsservice.model.DocumentRelationship;
 import org.jono.medicalmodelsservice.model.DocumentState;
 import org.jono.medicalmodelsservice.model.Tuple2;
 import org.jono.medicalmodelsservice.model.dto.DocumentDto;
+import org.jono.medicalmodelsservice.repository.jdbc.DocumentCompanyRelationshipRepository;
 import org.jono.medicalmodelsservice.repository.jdbc.DocumentRelationshipRepository;
 import org.jono.medicalmodelsservice.repository.jdbc.DocumentRepository;
 import org.junit.jupiter.api.Nested;
@@ -25,11 +26,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class DocumentServiceTest {
 
+    private static final String TEST_COMPANY_ID = "1";
+
     @Mock
     DocumentRepository documentRepository;
 
     @Mock
     DocumentRelationshipRepository documentRelationshipRepository;
+
+    @Mock
+    DocumentCompanyRelationshipRepository documentCompanyRelationshipRepository;
 
     @InjectMocks
     DocumentService documentService;
@@ -41,7 +47,7 @@ class DocumentServiceTest {
         void shouldCreateChildRelationshipWhenParentIdSupplied() {
             when(documentRepository.create(any())).thenReturn(Document.builder().id("11").build());
 
-            final Document document = documentService.createDocument(Optional.of("1"));
+            final Document document = documentService.createDocument(Optional.of("1"), TEST_COMPANY_ID);
 
             assertThat(document).isNotNull();
             verify(documentRelationshipRepository).create("1", "11");
@@ -51,7 +57,7 @@ class DocumentServiceTest {
         void shouldNotCreateChildRelationshipWhenParentIdIsEmpty() {
             when(documentRepository.create(any())).thenReturn(Document.builder().id("11").build());
 
-            final Document document = documentService.createDocument(Optional.empty());
+            final Document document = documentService.createDocument(Optional.empty(), TEST_COMPANY_ID);
 
             assertThat(document).isNotNull();
             verify(documentRelationshipRepository, times(0)).create(any(), any());
@@ -93,7 +99,7 @@ class DocumentServiceTest {
 
         @Test
         void shouldCallGetAllOnDocRepo() {
-            when(documentRepository.getDocsAndDocRelationships())
+            when(documentRepository.getDocsAndDocRelationships(TEST_COMPANY_ID))
                     .thenReturn(
                             new Tuple2<>(
                                     List.of(new DocumentRelationship("1", "11")),
@@ -101,7 +107,7 @@ class DocumentServiceTest {
                             )
                     );
 
-            final List<DocumentTree> actual = documentService.getAllNavigation();
+            final List<DocumentTree> actual = documentService.getAllNavigation(TEST_COMPANY_ID);
 
             assertThat(actual).isNotNull();
             assertThat(actual).hasSize(1);
