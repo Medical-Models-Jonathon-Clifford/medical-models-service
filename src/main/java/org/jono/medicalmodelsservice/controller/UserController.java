@@ -1,6 +1,7 @@
 package org.jono.medicalmodelsservice.controller;
 
 import java.util.Base64;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.User;
 import org.jono.medicalmodelsservice.service.MmUserInfoService;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,8 +37,26 @@ public class UserController {
 
     @PostMapping(produces = "application/json")
     @ResponseBody
-    public User handleUserPost(@RequestBody final User user) {
+    public User handleUserPost(@RequestBody final User user,
+            final JwtAuthenticationToken authentication) {
+        log.info("New user {} created by {}", user.toString(), authentication.getName());
+        final List<String> roles = castToStringList(authentication.getToken().getClaims().get("roles"));
+        if (!roles.contains("ROLE_ADMIN")) {
+            throw new IllegalArgumentException("Only users with ROLE_ADMIN can create users.");
+        }
         return userService.createUser(user);
+    }
+
+    private List<String> castToStringList(final Object object) {
+        List<String> roles = null;
+
+        if (object instanceof List<?>) {
+            roles = ((List<?>) object).stream()
+                    .filter(item -> item instanceof String)
+                    .map(item -> (String) item)
+                    .toList();
+        }
+        return roles;
     }
 
     @GetMapping(path = "/{id}",

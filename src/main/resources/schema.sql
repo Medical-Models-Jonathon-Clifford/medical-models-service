@@ -51,3 +51,20 @@ CREATE TABLE IF NOT EXISTS comment_relationship
     FOREIGN KEY (parent_comment_id) REFERENCES comment (id),
     FOREIGN KEY (child_comment_id) REFERENCES comment (id)
 );
+
+CREATE TABLE IF NOT EXISTS company
+(
+    id             INT AUTO_INCREMENT PRIMARY KEY,
+    name           VARCHAR(250),
+    logo_filename  VARCHAR(250),
+    location_state VARCHAR(5)
+);
+
+CREATE TABLE IF NOT EXISTS document_company_relationship
+(
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    document_id INT,
+    company_id  INT,
+    FOREIGN KEY (document_id) REFERENCES document (id),
+    FOREIGN KEY (company_id) REFERENCES comment (id)
+);
