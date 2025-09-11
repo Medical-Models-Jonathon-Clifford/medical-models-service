@@ -11,4 +11,9 @@ public interface DocumentCrudRepository extends CrudRepository<Document, String>
             + "WHERE dcr.company_id = :companyId")
     List<Document> findByCompanyId(String companyId);
 
+    @Query("SELECT COUNT(d.id) FROM document d "
+            + "JOIN document_company_relationship dcr ON d.id = dcr.document_id "
+            + "WHERE dcr.company_id = :companyId")
+    long countByCompanyId(String companyId);
+
 }

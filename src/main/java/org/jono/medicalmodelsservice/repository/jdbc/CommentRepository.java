@@ -10,9 +10,13 @@ import org.jono.medicalmodelsservice.model.Comment;
 import org.jono.medicalmodelsservice.model.CommentRelationship;
 import org.jono.medicalmodelsservice.model.DailyResourceCount;
 import org.jono.medicalmodelsservice.model.NewComment;
+import org.jono.medicalmodelsservice.model.UserIdRanking;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.relational.core.sql.SqlIdentifier;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -22,17 +26,25 @@ public class CommentRepository {
     private final CommentCrudRepository commentCrudRepository;
     private final CommentRelationshipRepository commentRelationshipRepository;
     private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
     public CommentRepository(final CommentCrudRepository commentCrudRepository,
-            final CommentRelationshipRepository commentRelationshipRepository, final JdbcTemplate jdbcTemplate) {
+            final CommentRelationshipRepository commentRelationshipRepository,
+            final JdbcTemplate jdbcTemplate,
+            final NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.commentCrudRepository = commentCrudRepository;
         this.commentRelationshipRepository = commentRelationshipRepository;
         this.jdbcTemplate = jdbcTemplate;
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     public long count() {
         return this.commentCrudRepository.count();
+    }
+
+    public long countByCompany(final String companyId) {
+        return this.commentCrudRepository.countByCompanyId(companyId);
     }
 
     public Comment create(final NewComment newComment) {
@@ -113,6 +125,79 @@ public class CommentRepository {
                     rs.getDate("date").toLocalDate(),
                     rs.getLong("new_users"),
                     rs.getLong("total_users")
+            );
+        });
+    }
+
+    public List<UserIdRanking> rankUsersByCommentsCreated(final String companyId) {
+        final String sql = """
+                       SELECT 
+                           c.creator as user_id,
+                           COUNT(c.id) as comment_count
+                       FROM comment c
+                       INNER JOIN document_company_relationship dcr ON c.document_id = dcr.document_id
+                       WHERE dcr.company_id = :companyId
+                       GROUP BY c.creator
+                       ORDER BY comment_count DESC, user_id;
+                       """;
+
+        final SqlParameterSource namedParameters = new MapSqlParameterSource().addValue("companyId", companyId);
+        return namedParameterJdbcTemplate.query(sql, namedParameters, (rs, rowNum) -> {
+            log.debug("Mapping row: {} {}",
+                      rs.getString("user_id"),
+                      rs.getLong("comment_count"));
+
+            return new UserIdRanking(
+                    rs.getString("user_id"),
+                    rs.getLong("comment_count")
+            );
+        });
+    }
+
+    public List<DailyResourceCount> getCommentGrowthDataByCompany(final String companyId) {
+        final String sql = """ 
+                           WITH RECURSIVE dates AS (
+                               SELECT CAST(MIN(c.created_date) AS DATE) as date
+                               FROM comment c
+                               JOIN document_company_relationship dcr ON c.document_id = dcr.document_id
+                               WHERE dcr.company_id = :companyId
+                           
+                               UNION ALL
+                           
+                               SELECT DATE_ADD(date, INTERVAL 1 DAY)
+                               FROM dates
+                               WHERE date < CURRENT_DATE()
+                           ),
+                           daily_counts AS (
+                               SELECT 
+                                   CAST(c.created_date AS DATE) as date,
+                                   COUNT(*) as daily_count
+                               FROM comment c
+                               JOIN document_company_relationship dcr ON c.document_id = dcr.document_id
+                               WHERE dcr.company_id = :companyId
+                               GROUP BY CAST(c.created_date AS DATE)
+                           )
+                           SELECT 
+                               d.date,
+                               COALESCE(dc.daily_count, 0) as new_comments,
+                               SUM(COALESCE(dc.daily_count, 0)) OVER (ORDER BY d.date) as total_comments
+                           FROM dates d
+                           LEFT JOIN daily_counts dc ON d.date = dc.date
+                           ORDER BY d.date
+                           """;
+
+
+        final SqlParameterSource namedParameters = new MapSqlParameterSource().addValue("companyId", companyId);
+        return namedParameterJdbcTemplate.query(sql, namedParameters, (rs, rowNum) -> {
+            log.debug("Mapping row: {} {} {}",
+                      rs.getDate("date"),
+                      rs.getLong("new_comments"),
+                      rs.getLong("total_comments"));
+
+            return new DailyResourceCount(
+                    rs.getDate("date").toLocalDate(),
+                    rs.getLong("new_comments"),
+                    rs.getLong("total_comments")
             );
         });
     }
