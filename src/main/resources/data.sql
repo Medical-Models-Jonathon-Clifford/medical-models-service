@@ -1,21 +1,21 @@
 INSERT IGNORE INTO user (id, email, profile_picture, name, created_date, password, state)
-VALUES (1, 'user1@example.com', 'aGVsbG93b3JsZA==', 'User One', '2023-09-01 12:00:00', 'password1', 'Active'),
-       (2, 'user2@example.com', 'aGVsbG93b3JsZA==', 'User Two', '2023-09-02 12:00:00', 'password2', 'Active'),
-       (3, 'user3@example.com', 'aGVsbG93b3JsZA==', 'User Three', '2023-09-03 12:00:00', 'password3', 'Active'),
-       (4, 'user4@example.com', 'aGVsbG93b3JsZA==', 'User Four', '2023-09-04 12:00:00', 'password4', 'Active'),
-       (5, 'user5@example.com', 'aGVsbG93b3JsZA==', 'User Five', '2023-09-05 12:00:00', 'password5', 'Active'),
-       (6, 'user6@example.com', 'aGVsbG93b3JsZA==', 'User Six', '2023-09-06 12:00:00', 'password6', 'Active'),
-       (7, 'user7@example.com', 'aGVsbG93b3JsZA==', 'User Seven', '2023-09-07 12:00:00', 'password7', 'Active'),
-       (8, 'user8@example.com', 'aGVsbG93b3JsZA==', 'User Eight', '2023-09-08 12:00:00', 'password8', 'Active'),
-       (9, 'user9@example.com', 'aGVsbG93b3JsZA==', 'User Nine', '2023-09-09 12:00:00', 'password9', 'Active'),
-       (10, 'user10@example.com', 'aGVsbG93b3JsZA==', 'User Ten', '2023-09-10 12:00:00', 'password10', 'Active');
+VALUES (1, 'user1@example.com', 'aGVsbG93b3JsZA==', 'User One', '2025-01-01 12:00:00', 'password1', 'Active'),
+       (2, 'user2@example.com', 'aGVsbG93b3JsZA==', 'User Two', '2025-02-15 12:00:00', 'password2', 'Active'),
+       (3, 'user3@example.com', 'aGVsbG93b3JsZA==', 'User Three', '2025-03-22 12:00:00', 'password3', 'Active'),
+       (4, 'user4@example.com', 'aGVsbG93b3JsZA==', 'User Four', '2025-04-30 12:00:00', 'password4', 'Active'),
+       (5, 'user5@example.com', 'aGVsbG93b3JsZA==', 'User Five', '2025-05-18 12:00:00', 'password5', 'Active'),
+       (6, 'user6@example.com', 'aGVsbG93b3JsZA==', 'User Six', '2025-06-25 12:00:00', 'password6', 'Active'),
+       (7, 'user7@example.com', 'aGVsbG93b3JsZA==', 'User Seven', '2025-07-14 12:00:00', 'password7', 'Active'),
+       (8, 'user8@example.com', 'aGVsbG93b3JsZA==', 'User Eight', '2025-08-03 12:00:00', 'password8', 'Active'),
+       (9, 'user9@example.com', 'aGVsbG93b3JsZA==', 'User Nine', '2025-08-28 12:00:00', 'password9', 'Active'),
+       (10, 'user10@example.com', 'aGVsbG93b3JsZA==', 'User Ten', '2025-09-09 12:00:00', 'password10', 'Active');
 
 
 INSERT IGNORE INTO document (id, title, created_date, modified_date, body, creator, state)
 VALUES (1,
         'Raven has no wings left',
-        '2023-09-01 12:00:00',
-        '2023-09-01 12:00:00',
+        '2025-01-01 12:00:00',
+        '2025-01-01 12:00:00',
         '[
           {
             "type": "text",
@@ -32,15 +32,19 @@ VALUES (1,
           {
             "type": "half-life",
             "drug": "Paracetamol",
-            "dose": 1
+            "dose": 1000
+          },
+          {
+            "type": "text",
+            "text": "Prescribing paracetamol at a dose of 1000 mg. This should resolve the acute distress of wing-loss. If it doesn\'t, it doesn\'t. It\'s Raven."
           }
         ]',
         1,
         'ACTIVE'),
        (2,
         'Dr Strange is losing his hair',
-        '2023-09-01 12:00:00',
-        '2023-09-01 12:00:00',
+        '2025-01-25 12:00:00',
+        '2025-01-25 12:00:00',
         '[
           {
             "type": "text",
@@ -49,6 +53,14 @@ VALUES (1,
           {
             "type": "dielectric",
             "tissue": "Skin (Wet)"
+          },
+          {
+            "type": "image",
+            "filename": "ece1794b-21f2-4f41-be29-0caca7334d98_norwoodscale-1296x600.jpg"
+          },
+          {
+            "type": "text",
+            "text": "Prescribing a treatment of Finasteride for male pattern baldness. 1 mg daily."
           },
           {
             "type": "half-life",
@@ -60,8 +72,8 @@ VALUES (1,
         'ACTIVE'),
        (3,
         'Magical Influence?',
-        '2023-09-01 12:00:00',
-        '2023-09-01 12:00:00',
+        '2025-02-15 12:00:00',
+        '2025-02-15 12:00:00',
         '[
           {
             "type": "dielectric",
@@ -81,8 +93,8 @@ VALUES (1,
         'ACTIVE'),
        (4,
         'Just old age?',
-        '2023-09-01 12:00:00',
-        '2023-09-01 12:00:00',
+        '2025-03-20 12:00:00',
+        '2025-03-20 12:00:00',
         '[
           {
             "type": "text",
@@ -102,8 +114,8 @@ VALUES (1,
         'ACTIVE'),
        (5,
         'Cheap Shampoo?',
-        '2023-09-01 12:00:00',
-        '2023-09-01 12:00:00',
+        '2025-04-10 12:00:00',
+        '2025-04-10 12:00:00',
         '[
           {
             "type": "dielectric",
@@ -123,29 +135,49 @@ VALUES (1,
         'ACTIVE'),
        (6,
         'The Green Goblin\'s voice is gone',
-        '2023-09-01 12:00:00',
-        '2023-09-01 12:00:00',
+        '2025-05-05 12:00:00',
+        '2025-05-05 12:00:00',
         '[
           {
             "type": "text",
-            "text": "Diagnosis: Laryngitis due to chronic vocal strain."
+            "text": "Performed laryngoscopy. Inflammation noted. Refer to following image:"
+          },
+          {
+            "type": "image",
+            "filename": "74255f29-73ff-409f-bfab-f18669b2dbb6_laryngitis.jpg"
+          },
+          {
+            "type": "text",
+            "text": "Patient reports cackling menacingly for hours every day."
+          },
+          {
+            "type": "half-life",
+            "drug": "Nicotine",
+            "dose": 240
+          },
+          {
+            "type": "text",
+            "text": "He also smokes up to a pack of cigarettes a day. At 12 mg of Nicotine per cigarette, that is 240 mg of nicotine a day."
+          },
+          {
+            "type": "text",
+            "text": "Smoking has a known link to laryngitis."
           },
           {
             "type": "dielectric",
             "tissue": "Trachea"
           },
           {
-            "type": "half-life",
-            "drug": "Nicotine",
-            "dose": 1
+            "type": "text",
+            "text": "Diagnosis: Laryngitis due to chronic vocal strain and heavy smoking."
           }
         ]',
         1,
         'ACTIVE'),
        (7,
         'Thanos has a shaving rash',
-        '2023-09-01 12:00:00',
-        '2023-09-01 12:00:00',
+        '2025-06-01 12:00:00',
+        '2025-06-01 12:00:00',
         '[
           {
             "type": "text",
@@ -165,8 +197,8 @@ VALUES (1,
         'ACTIVE'),
        (8,
         'Carpel Tunnel in Thor\'s Hammer Hand',
-        '2023-09-01 12:00:00',
-        '2023-09-01 12:00:00',
+        '2025-06-28 12:00:00',
+        '2025-06-28 12:00:00',
         '[
           {
             "type": "text",
@@ -186,8 +218,8 @@ VALUES (1,
         'ACTIVE'),
        (9,
         'Loki has real horns?',
-        '2023-09-01 12:00:00',
-        '2023-09-01 12:00:00',
+        '2025-07-15 12:00:00',
+        '2025-07-15 12:00:00',
         '[
           {
             "type": "text",
@@ -207,8 +239,8 @@ VALUES (1,
         'ACTIVE'),
        (10,
         'A sidekick has shin splints',
-        '2023-09-01 12:00:00',
-        '2023-09-01 12:00:00',
+        '2025-08-01 12:00:00',
+        '2025-08-01 12:00:00',
         '[
           {
             "type": "text",
@@ -232,8 +264,8 @@ VALUES (1,
         'ACTIVE'),
        (11,
         '!!Nick Fury Attacked by another Cat!!',
-        '2023-09-01 12:00:00',
-        '2023-09-01 12:00:00',
+        '2025-08-15 12:00:00',
+        '2025-08-15 12:00:00',
         '[
           {
             "type": "text",
@@ -253,8 +285,8 @@ VALUES (1,
         'ACTIVE'),
        (12,
         'Vision Assessment',
-        '2023-09-01 12:00:00',
-        '2023-09-01 12:00:00',
+        '2025-08-30 12:00:00',
+        '2025-08-30 12:00:00',
         '[
           {
             "type": "text",
@@ -274,8 +306,8 @@ VALUES (1,
         'ACTIVE'),
        (13,
         'Collateral Damage',
-        '2023-09-01 12:00:00',
-        '2023-09-01 12:00:00',
+        '2025-09-09 12:00:00',
+        '2025-09-09 12:00:00',
         '[
           {
             "type": "text",
@@ -302,40 +334,40 @@ VALUES (1, 2, 3),
        (5, 11, 13);
 
 INSERT IGNORE INTO comment (id, document_id, created_date, modified_date, body, creator)
-VALUES (1, 9,'2023-09-01 12:00:00',
-        '2023-09-01 12:00:00',
+VALUES (1, 9,'2025-07-15 13:03:01',
+        '2025-07-15 13:03:01',
         'Mostly I agree with your method and conclusion. I\'d add that given the high heritability of horns that we should check the patient\'s parents for horns.',
         1),
-       (2, 9, '2023-09-01 12:00:00',
-        '2023-09-01 12:00:00',
+       (2, 9, '2025-07-15 13:27:30',
+        '2025-07-15 13:27:30',
         'The patient is Loki, we all know his parents don\'t have horns.',
         2),
-       (3, 9, '2023-09-01 12:00:00',
-        '2023-09-01 12:00:00',
+       (3, 9, '2025-07-15 13:41:14',
+        '2025-07-15 13:41:14',
         'We shouldn\'t be treating celebrities any differently.',
         1),
-       (4, 9, '2023-09-01 12:00:00',
-        '2023-09-01 12:00:00',
+       (4, 9, '2025-07-15 13:59:09',
+        '2025-07-15 13:59:09',
         'Look, fair enough, but his parent\'s are Odin and Gaea. They don\'t have horns.',
         2),
-       (5, 9, '2023-09-01 12:00:00',
-        '2023-09-01 12:00:00',
+       (5, 9, '2025-07-15 14:10:34',
+        '2025-07-15 14:10:34',
         'Loki\'s parents are actually two of those big blue ice people. Who knows what\'s going on with them in regards to horns.',
         1),
-       (6, 2, '2023-09-01 12:00:00',
-        '2023-09-01 12:00:00',
+       (6, 2, '2025-01-25 12:23:40',
+        '2025-01-25 12:23:40',
         'Do we know if The Masters of the Mystic Arts have any research on the influence of magic use on male pattern baldness?',
         3),
-       (7, 2, '2023-09-01 12:00:00',
-        '2023-09-01 12:00:00',
+       (7, 2, '2025-01-25 12:34:05',
+        '2025-01-25 12:34:05',
         'I emailed them and received the following response - "The Masters of the Mystic Arts concern ourselves with matters of interdimensional importance, not vanity."',
         1),
-       (8, 2, '2023-09-01 12:00:00',
-        '2023-09-01 12:00:00',
+       (8, 2, '2025-01-25 12:41:19',
+        '2025-01-25 12:41:19',
         'Ok, just got another response 2 mins later - "If you do find any research or learn of any ways to counteract the effects of magic on male hair loss, please let us know. For purely academic purposes of course."',
         1),
-       (9, 9, '2023-09-01 12:00:00',
-        '2023-09-01 12:00:00',
+       (9, 9, '2025-07-15 14:21:23',
+        '2025-07-15 14:21:23',
         'I do not like it when you are right. Anyway, I pinged Dr Guslaug of the Frost Giants on Slack. I received the response - "Frost Giants are a proud, civilised people. We do not have horns like common beasts. How dare you even ask!.". Happy?',
         2);
 
@@ -348,10 +380,10 @@ VALUES (1, 9, 1, 2),
        (6, 2, 6, 7),
        (7, 2, 7, 8);
 
-INSERT IGNORE INTO company (id, name, logo_filename, location_state)
-VALUES (1, 'Medical Models Support Centre', 'medical-models-company-logo.png', 'NSW'),
-       (2, 'Titan Teaching Hospital', 'titan-teaching-hospital-logo-1.jpeg', 'QLD'),
-       (3, 'The Bricko Army Surgical Hospital', 'bricko-army-surgical-hospital-logo-1.jpeg', 'TAS');
+INSERT IGNORE INTO company (id, name, logo_filename, location_state, created_date, last_modified_date)
+VALUES (1, 'Medical Models Support Centre', 'medical-models-company-logo.png', 'NSW', '2025-08-01 12:00:00', '2025-08-02 12:00:00'),
+       (2, 'Titan Teaching Hospital', 'titan-teaching-hospital-logo-1.jpeg', 'QLD', '2025-08-16 12:00:00', '2025-08-17 12:00:00'),
+       (3, 'The Bricko Army Surgical Hospital', 'bricko-army-surgical-hospital-logo-1.jpeg', 'TAS', '2025-09-04 12:00:00', '2025-09-05 12:00:00');
 
 INSERT IGNORE INTO document_company_relationship (id, document_id, company_id)
 VALUES (1, 1, 2),
