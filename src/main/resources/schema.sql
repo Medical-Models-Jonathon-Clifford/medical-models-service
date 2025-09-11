@@ -70,3 +70,13 @@ CREATE TABLE IF NOT EXISTS document_company_relationship
     FOREIGN KEY (document_id) REFERENCES document (id),
     FOREIGN KEY (company_id) REFERENCES comment (id)
 );
+
+
+CREATE TABLE IF NOT EXISTS user_company_relationship
+(
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    user_id    INT,
+    company_id INT,
+    FOREIGN KEY (user_id) REFERENCES document (id),
+    FOREIGN KEY (company_id) REFERENCES comment (id)
+);

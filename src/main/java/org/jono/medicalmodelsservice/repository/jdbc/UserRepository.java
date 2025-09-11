@@ -1,5 +1,6 @@
 package org.jono.medicalmodelsservice.repository.jdbc;
 
+import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,11 @@ public class UserRepository {
 
     public Optional<User> findById(final String id) {
         return this.userCrudRepository.findById(id);
+    }
+
+    public List<User> findUsersForIds(final List<String> ids) {
+        final Iterable<User> userIterable = this.userCrudRepository.findAllById(ids);
+        return Lists.newArrayList(userIterable);
     }
 
     public long count() {
