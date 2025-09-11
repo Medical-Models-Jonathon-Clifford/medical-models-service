@@ -54,10 +54,12 @@ CREATE TABLE IF NOT EXISTS comment_relationship
 
 CREATE TABLE IF NOT EXISTS company
 (
-    id             INT AUTO_INCREMENT PRIMARY KEY,
-    name           VARCHAR(250),
-    logo_filename  VARCHAR(250),
-    location_state VARCHAR(5)
+    id                 INT AUTO_INCREMENT PRIMARY KEY,
+    name               VARCHAR(250),
+    logo_filename      VARCHAR(250),
+    location_state     VARCHAR(5),
+    created_date       DATETIME,
+    last_modified_date DATETIME
 );
 
 CREATE TABLE IF NOT EXISTS document_company_relationship

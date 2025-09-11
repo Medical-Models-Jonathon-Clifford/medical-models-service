@@ -1,44 +1,34 @@
 package org.jono.medicalmodelsservice.repository.jdbc;
 
 import java.util.List;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.DailyResourceCount;
-import org.jono.medicalmodelsservice.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 @Slf4j
-@Repository
-public class UserRepository {
+@Component
+public class CompanyRepository {
 
-    private final UserCrudRepository userCrudRepository;
+    private final CompanyCrudRepository companyCrudRepository;
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public UserRepository(final UserCrudRepository userCrudRepository, final JdbcTemplate jdbcTemplate) {
-        this.userCrudRepository = userCrudRepository;
+    public CompanyRepository(final CompanyCrudRepository companyCrudRepository, final JdbcTemplate jdbcTemplate) {
+        this.companyCrudRepository = companyCrudRepository;
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public User create(final User user) {
-        return this.userCrudRepository.save(user);
-    }
-
-    public Optional<User> findById(final String id) {
-        return this.userCrudRepository.findById(id);
-    }
-
     public long count() {
-        return this.userCrudRepository.count();
+        return companyCrudRepository.count();
     }
 
-    public List<DailyResourceCount> getUserGrowthData() {
+    public List<DailyResourceCount> getCompanyGrowthData() {
         final String sql = """
                            WITH RECURSIVE dates AS (
                                SELECT CAST(MIN(created_date) AS DATE) as date
-                               FROM user
+                               FROM company
                            
                                UNION ALL
                            
@@ -50,13 +40,13 @@ public class UserRepository {
                                SELECT 
                                    CAST(created_date AS DATE) as date,
                                    COUNT(*) as daily_count
-                               FROM user
+                               FROM company
                                GROUP BY CAST(created_date AS DATE)
                            )
                            SELECT 
                                d.date,
-                               COALESCE(dc.daily_count, 0) as new_users,
-                               SUM(COALESCE(dc.daily_count, 0)) OVER (ORDER BY d.date) as total_users
+                               COALESCE(dc.daily_count, 0) as new_companies,
+                               SUM(COALESCE(dc.daily_count, 0)) OVER (ORDER BY d.date) as total_companies
                            FROM dates d
                            LEFT JOIN daily_counts dc ON d.date = dc.date
                            ORDER BY d.date
@@ -65,13 +55,13 @@ public class UserRepository {
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             log.debug("Mapping row: {} {} {}",
                       rs.getDate("date"),
-                      rs.getLong("new_users"),
-                      rs.getLong("total_users"));
+                      rs.getLong("new_companies"),
+                      rs.getLong("total_companies"));
 
             return new DailyResourceCount(
                     rs.getDate("date").toLocalDate(),
-                    rs.getLong("new_users"),
-                    rs.getLong("total_users")
+                    rs.getLong("new_companies"),
+                    rs.getLong("total_companies")
             );
         });
     }
