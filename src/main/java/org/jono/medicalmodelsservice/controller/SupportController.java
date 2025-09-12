@@ -2,12 +2,18 @@ package org.jono.medicalmodelsservice.controller;
 
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.jono.medicalmodelsservice.model.CompanySupportSearchParams;
 import org.jono.medicalmodelsservice.model.ModelRanking;
 import org.jono.medicalmodelsservice.model.TotalResourceMetrics;
+import org.jono.medicalmodelsservice.model.UserSupportSearchParams;
+import org.jono.medicalmodelsservice.model.dto.CompanyDto;
+import org.jono.medicalmodelsservice.model.dto.UserDto;
 import org.jono.medicalmodelsservice.service.SupportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,5 +64,19 @@ public class SupportController {
     @ResponseBody
     public List<ModelRanking> getModelRankings() {
         return supportService.getModelTypeFrequency();
+    }
+
+    @PostMapping(path = "/companies/search",
+            produces = "application/json")
+    @ResponseBody
+    public List<CompanyDto> searchCompanies(@RequestBody final CompanySupportSearchParams searchParams) {
+        return supportService.searchCompaniesWithParams(searchParams);
+    }
+
+    @PostMapping(path = "/users/search",
+            produces = "application/json")
+    @ResponseBody
+    public List<UserDto> searchUsers(@RequestBody final UserSupportSearchParams searchParams) {
+        return supportService.searchUsersWithParams(searchParams);
     }
 }

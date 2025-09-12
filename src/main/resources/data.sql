@@ -1,13 +1,13 @@
-INSERT IGNORE INTO user (id, email, profile_picture, name, created_date, password, state)
-VALUES (1, 'user1@example.com', 'aGVsbG93b3JsZA==', 'Mr. Roy Trenneman', '2025-01-01 12:00:00', 'password1', 'Active'),
-       (2, 'user2@example.com', 'aGVsbG93b3JsZA==', 'Mr. Maurice Moss', '2025-02-15 12:00:00', 'password2', 'Active'),
-       (3, 'user3@example.com', 'aGVsbG93b3JsZA==', 'Ms. Jen Barber', '2025-03-22 12:00:00', 'password3', 'Active'),
-       (4, 'user4@example.com', 'aGVsbG93b3JsZA==', 'Dr. Lisa Cuddy', '2025-04-30 12:00:00', 'password4', 'Active'),
-       (5, 'user5@example.com', 'aGVsbG93b3JsZA==', 'Dr. Gregory House', '2025-05-18 12:00:00', 'password5', 'Active'),
-       (6, 'user6@example.com', 'aGVsbG93b3JsZA==', 'Dr. James Wilson', '2025-06-25 12:00:00', 'password6', 'Active'),
-       (7, 'user7@example.com', 'aGVsbG93b3JsZA==', 'Col. Sherman T. Potter', '2025-07-14 12:00:00', 'password7', 'Active'),
-       (8, 'user8@example.com', 'aGVsbG93b3JsZA==', 'Cap. "Hawkeye" Pierce', '2025-08-03 12:00:00', 'password8', 'Active'),
-       (9, 'user9@example.com', 'aGVsbG93b3JsZA==', 'Priv. Walter "Radar" O’Reilly', '2025-08-28 12:00:00', 'password9', 'Active');
+INSERT IGNORE INTO user (id, email, picture_filename, name, created_date, password, state)
+VALUES (1, 'rtrenneman@medicalmodels.net', 'rtrenneman.png', 'Mr. Roy Trenneman', '2025-01-01 12:00:00', 'password1', 'Active'),
+       (2, 'mmoss@medicalmodels.net', 'mmoss.png', 'Mr. Maurice Moss', '2025-02-15 12:00:00', 'password2', 'Active'),
+       (3, 'jbarber@medicalmodels.net', 'jbarber.png', 'Ms. Jen Barber', '2025-03-22 12:00:00', 'password3', 'Active'),
+       (4, 'lcuddy@princetonplainsboro.org', 'lcuddy.png', 'Dr. Lisa Cuddy', '2025-04-30 12:00:00', 'password4', 'Active'),
+       (5, 'ghouse@princetonplainsboro.org', 'ghouse.png', 'Dr. Gregory House', '2025-05-18 12:00:00', 'password5', 'Active'),
+       (6, 'jwilson@princetonplainsboro.org', 'jwilson.png', 'Dr. James Wilson', '2025-06-25 12:00:00', 'password6', 'Active'),
+       (7, 'spotter@mash.gov', 'spotter.png', 'Col. Sherman T. Potter', '2025-07-14 12:00:00', 'password7', 'Active'),
+       (8, 'bpierce@mash.gov', 'bpierce.png', 'Cap. "Hawkeye" Pierce', '2025-08-03 12:00:00', 'password8', 'Active'),
+       (9, 'woreilly@mash.gov', 'woreilly.png', 'Priv. Walter "Radar" O’Reilly', '2025-08-28 12:00:00', 'password9', 'Active');
 
 INSERT IGNORE INTO document (id, title, created_date, modified_date, body, creator, state)
 VALUES (1,
@@ -379,9 +379,9 @@ VALUES (1, 9, 1, 2),
        (7, 2, 7, 8);
 
 INSERT IGNORE INTO company (id, name, logo_filename, location_state, created_date, last_modified_date)
-VALUES (1, 'Medical Models Support Centre', 'medical-models-company-logo.png', 'NSW', '2025-08-01 12:00:00', '2025-08-02 12:00:00'),
-       (2, 'Titan Teaching Hospital', 'titan-teaching-hospital-logo-1.jpeg', 'QLD', '2025-08-16 12:00:00', '2025-08-17 12:00:00'),
-       (3, 'The Bricko Army Surgical Hospital', 'bricko-army-surgical-hospital-logo-1.jpeg', 'TAS', '2025-09-04 12:00:00', '2025-09-05 12:00:00');
+VALUES (1, 'Medical Models IT Support Crowd', 'medical-models-company-logo.png', 'NSW', '2025-08-01 12:00:00', '2025-08-02 12:00:00'),
+       (2, 'House MD Centre for Superheroes', 'house-md-logo-1.png', 'QLD', '2025-08-16 12:00:00', '2025-08-17 12:00:00'),
+       (3, 'Old Action Heroes M*A*S*H', 'mash-tv-logo-1.jpg', 'TAS', '2025-09-04 12:00:00', '2025-09-05 12:00:00');
 
 INSERT IGNORE INTO document_company_relationship (id, document_id, company_id)
 VALUES (1, 1, 2),

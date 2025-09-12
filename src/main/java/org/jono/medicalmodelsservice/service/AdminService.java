@@ -1,6 +1,9 @@
 package org.jono.medicalmodelsservice.service;
 
 import static java.util.stream.Collectors.toMap;
+import static org.jono.medicalmodelsservice.utils.DtoAdapters.companyToViewDto;
+import static org.jono.medicalmodelsservice.utils.DtoAdapters.userToDto;
+import static org.jono.medicalmodelsservice.utils.SearchParamUtils.isSet;
 
 import java.util.List;
 import java.util.Map;
@@ -11,6 +14,9 @@ import org.jono.medicalmodelsservice.model.NamedUserRanking;
 import org.jono.medicalmodelsservice.model.TotalResourceMetrics;
 import org.jono.medicalmodelsservice.model.User;
 import org.jono.medicalmodelsservice.model.UserIdRanking;
+import org.jono.medicalmodelsservice.model.UserSupportSearchParams;
+import org.jono.medicalmodelsservice.model.dto.UserDto;
+import org.jono.medicalmodelsservice.model.dto.ViewCompanyDetailsDto;
 import org.jono.medicalmodelsservice.repository.jdbc.CommentRepository;
 import org.jono.medicalmodelsservice.repository.jdbc.CompanyRepository;
 import org.jono.medicalmodelsservice.repository.jdbc.DocumentRepository;
@@ -70,5 +76,22 @@ public class AdminService {
     public TotalResourceMetrics getCompanyCommentMetrics(final String companyId) {
         return new TotalResourceMetrics(commentRepository.countByCompany(companyId),
                                         commentRepository.getCommentGrowthDataByCompany(companyId));
+    }
+
+    public List<UserDto> searchUsersWithCompanyIdAndName(final String companyId,
+            final UserSupportSearchParams searchParams) {
+        return userToDto(searchUsers(companyId, searchParams));
+    }
+
+    private List<User> searchUsers(final String companyId, final UserSupportSearchParams searchParams) {
+        if (isSet(searchParams.nameSearchTerm())) {
+            return userRepository.findByCompanyAndName(companyId, searchParams.nameSearchTerm());
+        } else {
+            return userRepository.findByCompanyId(companyId);
+        }
+    }
+
+    public ViewCompanyDetailsDto getCompany(final String companyId) {
+        return companyToViewDto(companyRepository.findById(companyId));
     }
 }

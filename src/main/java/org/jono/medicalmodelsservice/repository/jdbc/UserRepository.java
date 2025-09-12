@@ -27,8 +27,24 @@ public class UserRepository {
         return this.userCrudRepository.save(user);
     }
 
+    public List<User> findAll() {
+        return Lists.newArrayList(this.userCrudRepository.findAll());
+    }
+
     public Optional<User> findById(final String id) {
         return this.userCrudRepository.findById(id);
+    }
+
+    public List<User> findByName(final String name) {
+        return this.userCrudRepository.findByNameIsLikeIgnoreCase('%' + name + '%');
+    }
+
+    public List<User> findByCompanyId(final String companyId) {
+        return this.userCrudRepository.findByCompanyId(companyId);
+    }
+
+    public List<User> findByCompanyAndName(final String companyId, final String name) {
+        return this.userCrudRepository.findByCompanyAndNameIsLikeIgnoreCase(companyId, name);
     }
 
     public List<User> findUsersForIds(final List<String> ids) {

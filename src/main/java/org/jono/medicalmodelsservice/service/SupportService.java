@@ -1,10 +1,17 @@
 package org.jono.medicalmodelsservice.service;
 
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jono.medicalmodelsservice.model.Company;
+import org.jono.medicalmodelsservice.model.CompanySupportSearchParams;
 import org.jono.medicalmodelsservice.model.ModelRanking;
 import org.jono.medicalmodelsservice.model.TotalResourceMetrics;
+import org.jono.medicalmodelsservice.model.User;
+import org.jono.medicalmodelsservice.model.UserSupportSearchParams;
+import org.jono.medicalmodelsservice.model.dto.CompanyDto;
+import org.jono.medicalmodelsservice.model.dto.UserDto;
 import org.jono.medicalmodelsservice.repository.jdbc.CommentRepository;
 import org.jono.medicalmodelsservice.repository.jdbc.CompanyRepository;
 import org.jono.medicalmodelsservice.repository.jdbc.DocumentRepository;
@@ -39,5 +46,57 @@ public class SupportService {
 
     public List<ModelRanking> getModelTypeFrequency() {
         return documentRepository.getModelTypeFrequency();
+    }
+
+    public List<CompanyDto> searchCompaniesWithParams(final CompanySupportSearchParams searchParams) {
+        return companyToDto(searchCompanies(searchParams));
+    }
+
+    private List<Company> searchCompanies(final CompanySupportSearchParams searchParams) {
+        if (notSet(searchParams.nameSearchTerm()) && notSet(searchParams.locationStateFilter())) {
+            return companyRepository.findAll();
+        } else if (isSet(searchParams.nameSearchTerm()) && isSet(searchParams.locationStateFilter())) {
+            return companyRepository.findByNameAndState(searchParams.nameSearchTerm(),
+                                                        searchParams.locationStateFilter());
+        } else if (isSet(searchParams.nameSearchTerm())) {
+            return companyRepository.findByName(searchParams.nameSearchTerm());
+        } else {
+            return companyRepository.findByState(searchParams.locationStateFilter());
+        }
+    }
+
+    public List<UserDto> searchUsersWithParams(final UserSupportSearchParams searchParams) {
+        return userToDto(searchUsers(searchParams));
+    }
+
+    private List<User> searchUsers(final UserSupportSearchParams searchParams) {
+        if (isSet(searchParams.nameSearchTerm())) {
+            return userRepository.findByName(searchParams.nameSearchTerm());
+        }
+        return userRepository.findAll();
+    }
+
+    private boolean notSet(final String param) {
+        return Objects.isNull(param) || param.isBlank();
+    }
+
+    private boolean isSet(final String param) {
+        return Objects.nonNull(param) && !param.isBlank();
+    }
+
+    private List<CompanyDto> companyToDto(final List<Company> companies) {
+        return companies.stream()
+                .map(company -> new CompanyDto(company.getId(),
+                                               company.getName(),
+                                               company.getLocationState()))
+                .toList();
+    }
+
+    private List<UserDto> userToDto(final List<User> users) {
+        return users.stream()
+                .map(user -> new UserDto(user.getId(),
+                                               user.getName(),
+                                               user.getEmail()))
+                .toList();
     }
 }

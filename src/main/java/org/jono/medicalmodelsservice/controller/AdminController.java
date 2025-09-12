@@ -5,11 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.ModelRanking;
 import org.jono.medicalmodelsservice.model.NamedUserRanking;
 import org.jono.medicalmodelsservice.model.TotalResourceMetrics;
+import org.jono.medicalmodelsservice.model.UserSupportSearchParams;
+import org.jono.medicalmodelsservice.model.dto.UserDto;
+import org.jono.medicalmodelsservice.model.dto.ViewCompanyDetailsDto;
 import org.jono.medicalmodelsservice.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -75,5 +80,26 @@ public class AdminController {
             return adminService.getCompanyCommentMetrics(companyId);
         }
         throw new IllegalArgumentException("companyId is required to query for company comment metrics.");
+    }
+
+    @PostMapping(path = "/companies/users/search",
+            produces = "application/json")
+    @ResponseBody
+    public List<UserDto> searchUsers(@RequestBody final UserSupportSearchParams searchParams,
+            final JwtAuthenticationToken authentication) {
+        if (authentication.getToken().getClaims().get("companyId") instanceof String companyId) {
+            return adminService.searchUsersWithCompanyIdAndName(companyId, searchParams);
+        }
+        throw new IllegalArgumentException("companyId is required to search for users.");
+    }
+
+    @GetMapping(path = "/company/details",
+            produces = "application/json")
+    @ResponseBody
+    public ViewCompanyDetailsDto getCompanyDetails(final JwtAuthenticationToken authentication) {
+        if (authentication.getToken().getClaims().get("companyId") instanceof String companyId) {
+            return adminService.getCompany(companyId);
+        }
+        throw new IllegalArgumentException("companyId is required to search for users.");
     }
 }
