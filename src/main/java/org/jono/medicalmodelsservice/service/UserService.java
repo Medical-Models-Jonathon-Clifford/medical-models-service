@@ -2,6 +2,7 @@ package org.jono.medicalmodelsservice.service;
 
 import java.util.Optional;
 import org.jono.medicalmodelsservice.model.User;
+import org.jono.medicalmodelsservice.model.dto.ViewUserDetailsDto;
 import org.jono.medicalmodelsservice.repository.jdbc.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,5 +22,17 @@ public class UserService {
 
     public Optional<User> getById(final String id) {
         return userRepository.findById(id);
+    }
+
+    public Optional<ViewUserDetailsDto> getUserDetailsById(final String id) {
+        return userToViewDto(userRepository.findById(id));
+    }
+
+    private Optional<ViewUserDetailsDto> userToViewDto(final Optional<User> optionalUser) {
+        return optionalUser.map(user ->
+                                        new ViewUserDetailsDto(user.getId(),
+                                                               user.getName(),
+                                                               user.getEmail(),
+                                                               user.getPictureFilename()));
     }
 }

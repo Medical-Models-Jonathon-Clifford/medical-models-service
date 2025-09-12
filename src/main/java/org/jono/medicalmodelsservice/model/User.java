@@ -13,7 +13,7 @@ public class User {
     @Id
     private String id;
     private String email;
-    private String profilePicture;
+    private String pictureFilename;
     private String name;
     private LocalDateTime createdDate;
     private String password;

@@ -1,11 +1,16 @@
 package org.jono.medicalmodelsservice.repository.jdbc;
 
+import com.google.common.collect.Lists;
 import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.jono.medicalmodelsservice.model.Company;
 import org.jono.medicalmodelsservice.model.DailyResourceCount;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
 @Component
@@ -22,6 +27,31 @@ public class CompanyRepository {
 
     public long count() {
         return companyCrudRepository.count();
+    }
+
+    public Company findById(final String companyId) {
+        final Optional<Company> optionalCompany = companyCrudRepository.findById(companyId);
+        if (optionalCompany.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Company not found with id: " + companyId);
+        }
+        return optionalCompany.get();
+    }
+
+    public List<Company> findAll() {
+        return Lists.newArrayList(companyCrudRepository.findAll());
+    }
+
+    public List<Company> findByNameAndState(final String nameSearchTerm, final String stateFilter) {
+        return companyCrudRepository.findByNameIsLikeIgnoreCaseAndLocationStateEqualsIgnoreCase(
+                '%' + nameSearchTerm + '%', stateFilter);
+    }
+
+    public List<Company> findByName(final String nameSearchTerm) {
+        return companyCrudRepository.findByNameIsLikeIgnoreCase('%' + nameSearchTerm + '%');
+    }
+
+    public List<Company> findByState(final String stateFilter) {
+        return companyCrudRepository.findByLocationStateEqualsIgnoreCase(stateFilter);
     }
 
     public List<DailyResourceCount> getCompanyGrowthData() {

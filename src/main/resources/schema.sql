@@ -1,12 +1,12 @@
 CREATE TABLE IF NOT EXISTS user
 (
-    id              INT AUTO_INCREMENT PRIMARY KEY,
-    email           VARCHAR(255),
-    profile_picture TEXT,
-    name            VARCHAR(250),
-    created_date    DATETIME,
-    password        VARCHAR(250),
-    state           VARCHAR(20)
+    id               INT AUTO_INCREMENT PRIMARY KEY,
+    email            VARCHAR(255),
+    picture_filename VARCHAR(255),
+    name             VARCHAR(250),
+    created_date     DATETIME,
+    password         VARCHAR(250),
+    state            VARCHAR(20)
 );
 
 CREATE TABLE IF NOT EXISTS document
