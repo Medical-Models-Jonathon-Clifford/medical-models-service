@@ -1,18 +1,24 @@
 package org.jono.medicalmodelsservice.utils;
 
 import java.util.List;
+import java.util.Optional;
 import org.jono.medicalmodelsservice.model.Company;
 import org.jono.medicalmodelsservice.model.User;
 import org.jono.medicalmodelsservice.model.dto.UserDto;
 import org.jono.medicalmodelsservice.model.dto.ViewCompanyDetailsDto;
+import org.jono.medicalmodelsservice.model.dto.ViewUserDetailsDto;
 
 public class DtoAdapters {
     public static List<UserDto> userToDto(final List<User> users) {
         return users.stream()
                 .map(user -> new UserDto(user.getId(),
-                                         user.getName(),
+                                         fullNameOfUser(user),
                                          user.getEmail()))
                 .toList();
+    }
+
+    public static String fullNameOfUser(final User user) {
+        return String.format("%s %s %s", user.getHonorific(), user.getGivenName(), user.getFamilyName());
     }
 
     public static ViewCompanyDetailsDto companyToViewDto(final Company company) {
@@ -20,5 +26,13 @@ public class DtoAdapters {
                                          company.getName(),
                                          company.getLocationState(),
                                          company.getLogoFilename());
+    }
+
+    public static Optional<ViewUserDetailsDto> userToViewDto(final Optional<User> optionalUser) {
+        return optionalUser.map(user ->
+                                        new ViewUserDetailsDto(user.getId(),
+                                                               fullNameOfUser(user),
+                                                               user.getEmail(),
+                                                               user.getPictureFilename()));
     }
 }

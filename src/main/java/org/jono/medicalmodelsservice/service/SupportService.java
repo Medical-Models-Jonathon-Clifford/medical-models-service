@@ -1,5 +1,7 @@
 package org.jono.medicalmodelsservice.service;
 
+import static org.jono.medicalmodelsservice.utils.DtoAdapters.userToDto;
+
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -89,14 +91,6 @@ public class SupportService {
                 .map(company -> new CompanyDto(company.getId(),
                                                company.getName(),
                                                company.getLocationState()))
-                .toList();
-    }
-
-    private List<UserDto> userToDto(final List<User> users) {
-        return users.stream()
-                .map(user -> new UserDto(user.getId(),
-                                               user.getName(),
-                                               user.getEmail()))
                 .toList();
     }
 }

@@ -2,6 +2,7 @@ package org.jono.medicalmodelsservice.service;
 
 import static java.util.stream.Collectors.toMap;
 import static org.jono.medicalmodelsservice.utils.DtoAdapters.companyToViewDto;
+import static org.jono.medicalmodelsservice.utils.DtoAdapters.fullNameOfUser;
 import static org.jono.medicalmodelsservice.utils.DtoAdapters.userToDto;
 import static org.jono.medicalmodelsservice.utils.SearchParamUtils.isSet;
 
@@ -41,7 +42,7 @@ public class AdminService {
         final Map<String, User> idToUserMap = createIdToUserMap(users);
         return creatorFrequencyForDocument.stream()
                 .map(userIdRanking ->
-                             new NamedUserRanking(idToUserMap.get(userIdRanking.userId()).getName(),
+                             new NamedUserRanking(fullNameOfUser(idToUserMap.get(userIdRanking.userId())),
                                                   userIdRanking.frequency()))
                 .toList();
     }
@@ -53,7 +54,7 @@ public class AdminService {
         final Map<String, User> idToUserMap = createIdToUserMap(users);
         return creatorFrequencyForComments.stream()
                 .map(userIdRanking ->
-                             new NamedUserRanking(idToUserMap.get(userIdRanking.userId()).getName(),
+                             new NamedUserRanking(fullNameOfUser(idToUserMap.get(userIdRanking.userId())),
                                                   userIdRanking.frequency()))
                 .toList();
     }

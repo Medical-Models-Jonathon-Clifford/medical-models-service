@@ -1,5 +1,7 @@
 package org.jono.medicalmodelsservice.service;
 
+import static org.jono.medicalmodelsservice.utils.DtoAdapters.userToViewDto;
+
 import java.util.Optional;
 import org.jono.medicalmodelsservice.model.User;
 import org.jono.medicalmodelsservice.model.dto.ViewUserDetailsDto;
@@ -26,13 +28,5 @@ public class UserService {
 
     public Optional<ViewUserDetailsDto> getUserDetailsById(final String id) {
         return userToViewDto(userRepository.findById(id));
-    }
-
-    private Optional<ViewUserDetailsDto> userToViewDto(final Optional<User> optionalUser) {
-        return optionalUser.map(user ->
-                                        new ViewUserDetailsDto(user.getId(),
-                                                               user.getName(),
-                                                               user.getEmail(),
-                                                               user.getPictureFilename()));
     }
 }
