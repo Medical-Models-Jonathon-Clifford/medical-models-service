@@ -40,8 +40,9 @@ public class DocumentController {
     @ResponseBody
     public Document handleDocumentsNewPost(@RequestParam final Optional<String> parentId,
             final JwtAuthenticationToken authentication) {
-        if (authentication.getToken().getClaims().get("companyId") instanceof String companyId) {
-            return documentService.createDocument(parentId, companyId);
+        if (authentication.getToken().getClaims().get("companyId") instanceof String companyId
+                && authentication.getToken().getClaims().get("userId") instanceof String userId) {
+            return documentService.createDocument(parentId, companyId, userId);
         }
         throw new IllegalArgumentException("companyId is required to query for document tree.");
     }

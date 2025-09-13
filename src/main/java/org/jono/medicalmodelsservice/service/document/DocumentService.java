@@ -31,8 +31,9 @@ public class DocumentService {
         this.documentCompanyRelationshipRepository = documentCompanyRelationshipRepository;
     }
 
-    public Document createDocument(final Optional<String> parentId, final String companyId) {
+    public Document createDocument(final Optional<String> parentId, final String companyId, final String userId) {
         final Document document = Document.draftDocument();
+        document.setCreator(userId);
         final Document newDoc = documentRepository.create(document);
         parentId.ifPresent(id -> documentRelationshipRepository.create(id, newDoc.getId()));
         documentCompanyRelationshipRepository.create(newDoc.getId(), companyId);
