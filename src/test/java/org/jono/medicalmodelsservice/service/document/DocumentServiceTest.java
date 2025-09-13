@@ -27,6 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class DocumentServiceTest {
 
     private static final String TEST_COMPANY_ID = "1";
+    private static final String TEST_USER_ID = "1";
 
     @Mock
     DocumentRepository documentRepository;
@@ -47,7 +48,7 @@ class DocumentServiceTest {
         void shouldCreateChildRelationshipWhenParentIdSupplied() {
             when(documentRepository.create(any())).thenReturn(Document.builder().id("11").build());
 
-            final Document document = documentService.createDocument(Optional.of("1"), TEST_COMPANY_ID);
+            final Document document = documentService.createDocument(Optional.of("1"), TEST_COMPANY_ID, TEST_USER_ID);
 
             assertThat(document).isNotNull();
             verify(documentRelationshipRepository).create("1", "11");
@@ -57,7 +58,7 @@ class DocumentServiceTest {
         void shouldNotCreateChildRelationshipWhenParentIdIsEmpty() {
             when(documentRepository.create(any())).thenReturn(Document.builder().id("11").build());
 
-            final Document document = documentService.createDocument(Optional.empty(), TEST_COMPANY_ID);
+            final Document document = documentService.createDocument(Optional.empty(), TEST_COMPANY_ID, TEST_USER_ID);
 
             assertThat(document).isNotNull();
             verify(documentRelationshipRepository, times(0)).create(any(), any());
