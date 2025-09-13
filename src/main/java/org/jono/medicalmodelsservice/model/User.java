@@ -14,7 +14,10 @@ public class User {
     private String id;
     private String email;
     private String pictureFilename;
-    private String name;
+    private String username;
+    private String honorific;
+    private String givenName;
+    private String familyName;
     private LocalDateTime createdDate;
     private String password;
     private String state;

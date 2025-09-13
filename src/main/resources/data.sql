@@ -1,13 +1,13 @@
-INSERT IGNORE INTO user (id, email, picture_filename, name, created_date, password, state)
-VALUES (1, 'rtrenneman@medicalmodels.net', 'rtrenneman.png', 'Mr. Roy Trenneman', '2025-01-01 12:00:00', 'password1', 'Active'),
-       (2, 'mmoss@medicalmodels.net', 'mmoss.png', 'Mr. Maurice Moss', '2025-02-15 12:00:00', 'password2', 'Active'),
-       (3, 'jbarber@medicalmodels.net', 'jbarber.png', 'Ms. Jen Barber', '2025-03-22 12:00:00', 'password3', 'Active'),
-       (4, 'lcuddy@princetonplainsboro.org', 'lcuddy.png', 'Dr. Lisa Cuddy', '2025-04-30 12:00:00', 'password4', 'Active'),
-       (5, 'ghouse@princetonplainsboro.org', 'ghouse.png', 'Dr. Gregory House', '2025-05-18 12:00:00', 'password5', 'Active'),
-       (6, 'jwilson@princetonplainsboro.org', 'jwilson.png', 'Dr. James Wilson', '2025-06-25 12:00:00', 'password6', 'Active'),
-       (7, 'spotter@mash.gov', 'spotter.png', 'Col. Sherman T. Potter', '2025-07-14 12:00:00', 'password7', 'Active'),
-       (8, 'bpierce@mash.gov', 'bpierce.png', 'Cap. "Hawkeye" Pierce', '2025-08-03 12:00:00', 'password8', 'Active'),
-       (9, 'woreilly@mash.gov', 'woreilly.png', 'Priv. Walter "Radar" O’Reilly', '2025-08-28 12:00:00', 'password9', 'Active');
+INSERT IGNORE INTO user (id, email, picture_filename, username, honorific, given_name, family_name, created_date, password, state)
+VALUES (1, 'rtrenneman@medicalmodels.net', 'rtrenneman.png', 'rtrenneman', 'Mr.', 'Roy', 'Trenneman', '2025-01-01 12:00:00', 'password1', 'Active'),
+       (2, 'mmoss@medicalmodels.net', 'mmoss.png', 'mmoss', 'Mr.', 'Maurice', 'Moss', '2025-02-15 12:00:00', 'password2', 'Active'),
+       (3, 'jbarber@medicalmodels.net', 'jbarber.png', 'jbarber', 'Ms.', 'Jen', 'Barber', '2025-03-22 12:00:00', 'password3', 'Active'),
+       (4, 'lcuddy@princetonplainsboro.org', 'lcuddy.png', 'lcuddy', 'Dr.', 'Lisa', 'Cuddy', '2025-04-30 12:00:00', 'password4', 'Active'),
+       (5, 'ghouse@princetonplainsboro.org', 'ghouse.png', 'ghouse', 'Dr.', 'Gregory', 'House', '2025-05-18 12:00:00', 'password5', 'Active'),
+       (6, 'jwilson@princetonplainsboro.org', 'jwilson.png', 'jwilson', 'Dr.', 'James', 'Wilson', '2025-06-25 12:00:00', 'password6', 'Active'),
+       (7, 'spotter@mash.gov', 'spotter.png', 'spotter', 'Col.', 'Sherman T.', 'Potter', '2025-07-14 12:00:00', 'password7', 'Active'),
+       (8, 'bpierce@mash.gov', 'bpierce.png', 'bpierce', 'Cap.', '"Hawkeye"', 'Pierce', '2025-08-03 12:00:00', 'password8', 'Active'),
+       (9, 'woreilly@mash.gov', 'woreilly.png', 'woreilly', 'Priv.', 'Walter "Radar"', 'O’Reilly', '2025-08-28 12:00:00', 'password9', 'Active');
 
 INSERT IGNORE INTO document (id, title, created_date, modified_date, body, creator, state)
 VALUES (1,

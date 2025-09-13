@@ -3,7 +3,10 @@ CREATE TABLE IF NOT EXISTS user
     id               INT AUTO_INCREMENT PRIMARY KEY,
     email            VARCHAR(255),
     picture_filename VARCHAR(255),
-    name             VARCHAR(250),
+    username         VARCHAR(250),
+    honorific        VARCHAR(20),
+    given_name       VARCHAR(250),
+    family_name      VARCHAR(250),
     created_date     DATETIME,
     password         VARCHAR(250),
     state            VARCHAR(20)
