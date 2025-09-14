@@ -10,7 +10,7 @@ import org.jono.medicalmodelsservice.model.DocumentRelationship;
 import org.jono.medicalmodelsservice.model.ModelRanking;
 import org.jono.medicalmodelsservice.model.Tuple2;
 import org.jono.medicalmodelsservice.model.UserIdRanking;
-import org.jono.medicalmodelsservice.model.dto.DocumentDto;
+import org.jono.medicalmodelsservice.model.dto.UpdateDocumentDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -52,18 +52,18 @@ public class DocumentRepository {
         return documentCrudRepository.findById(id);
     }
 
-    public Document updateById(final String id, final DocumentDto documentDto) {
+    public Document updateById(final String id, final UpdateDocumentDto updateDocumentDto) {
         final Document existingDocument = documentCrudRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Document with id " + id + " not found"));
 
-        if (documentDto.getTitle() != null) {
-            existingDocument.setTitle(documentDto.getTitle());
+        if (updateDocumentDto.getTitle() != null) {
+            existingDocument.setTitle(updateDocumentDto.getTitle());
         }
-        if (documentDto.getBody() != null) {
-            existingDocument.setBody(documentDto.getBody());
+        if (updateDocumentDto.getBody() != null) {
+            existingDocument.setBody(updateDocumentDto.getBody());
         }
-        if (documentDto.getState() != null) {
-            existingDocument.setState(documentDto.getState());
+        if (updateDocumentDto.getState() != null) {
+            existingDocument.setState(updateDocumentDto.getState());
         }
         return documentCrudRepository.save(existingDocument);
     }

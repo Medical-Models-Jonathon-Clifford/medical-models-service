@@ -12,10 +12,12 @@ import org.jono.medicalmodelsservice.model.Document;
 import org.jono.medicalmodelsservice.model.DocumentRelationship;
 import org.jono.medicalmodelsservice.model.DocumentState;
 import org.jono.medicalmodelsservice.model.Tuple2;
-import org.jono.medicalmodelsservice.model.dto.DocumentDto;
+import org.jono.medicalmodelsservice.model.dto.UpdateDocumentDto;
+import org.jono.medicalmodelsservice.model.dto.ViewDocumentDto;
 import org.jono.medicalmodelsservice.repository.jdbc.DocumentCompanyRelationshipRepository;
 import org.jono.medicalmodelsservice.repository.jdbc.DocumentRelationshipRepository;
 import org.jono.medicalmodelsservice.repository.jdbc.DocumentRepository;
+import org.jono.medicalmodelsservice.repository.jdbc.UserRepository;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,6 +39,9 @@ class DocumentServiceTest {
 
     @Mock
     DocumentCompanyRelationshipRepository documentCompanyRelationshipRepository;
+
+    @Mock
+    UserRepository userRepository;
 
     @InjectMocks
     DocumentService documentService;
@@ -72,7 +77,7 @@ class DocumentServiceTest {
         void shouldCallReadByIdOnDocRepo() {
             when(documentRepository.findById(any())).thenReturn(Optional.of(new Document()));
 
-            final Optional<Document> document = documentService.readDocument("1");
+            final Optional<ViewDocumentDto> document = documentService.readDocument("1");
 
             assertThat(document).isNotNull();
             verify(documentRepository).findById("1");
@@ -86,12 +91,13 @@ class DocumentServiceTest {
         void shouldCallUpdateByIdOnDocRepo() {
             when(documentRepository.updateById(any(), any())).thenReturn(new Document());
 
-            final DocumentDto testDocumentDto = new DocumentDto("test title", "test body", DocumentState.ACTIVE);
+            final UpdateDocumentDto testUpdateDocumentDto = new UpdateDocumentDto("test title", "test body",
+                                                                                  DocumentState.ACTIVE);
             final Document document =
-                    documentService.updateDocument("1", testDocumentDto);
+                    documentService.updateDocument("1", testUpdateDocumentDto);
 
             assertThat(document).isNotNull();
-            verify(documentRepository).updateById("1", testDocumentDto);
+            verify(documentRepository).updateById("1", testUpdateDocumentDto);
         }
     }
 
