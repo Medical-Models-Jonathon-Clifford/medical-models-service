@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.Document;
-import org.jono.medicalmodelsservice.model.dto.DocumentDto;
+import org.jono.medicalmodelsservice.model.dto.UpdateDocumentDto;
+import org.jono.medicalmodelsservice.model.dto.ViewDocumentDto;
 import org.jono.medicalmodelsservice.service.document.DocumentService;
 import org.jono.medicalmodelsservice.service.document.DocumentTree;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,14 +52,14 @@ public class DocumentController {
             produces = "application/json")
     @ResponseBody
     public Document handleDocumentsPut(@PathVariable final String id,
-            @RequestBody final DocumentDto documentDto) {
-        return documentService.updateDocument(id, documentDto);
+            @RequestBody final UpdateDocumentDto updateDocumentDto) {
+        return documentService.updateDocument(id, updateDocumentDto);
     }
 
     @GetMapping(path = "/{id}",
             produces = "application/json")
     @ResponseBody
-    public ResponseEntity<Document> handleDocumentsGet(@PathVariable final String id) {
+    public ResponseEntity<ViewDocumentDto> handleDocumentsGet(@PathVariable final String id) {
         return documentService.readDocument(id)
                 .map(ResponseEntity::ok) // If document is present, return 200 with the document
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build()); // If empty, return 404

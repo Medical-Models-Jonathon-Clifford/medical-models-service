@@ -6,7 +6,7 @@ import org.jono.medicalmodelsservice.model.DocumentState;
 
 @AllArgsConstructor
 @Data
-public class DocumentDto {
+public class UpdateDocumentDto {
     private String title;
     private String body;
     private DocumentState state;
