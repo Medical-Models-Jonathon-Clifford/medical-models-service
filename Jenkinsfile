@@ -8,7 +8,7 @@ pipeline {
         stage('Secret check with Trufflehog') {
             steps {
                 echo '------ Trufflehog Version ------'
-                sh 'trufflehog -version'
+                sh 'trufflehog --version'
                 echo '------ Running Trufflehog secret scan ------'
                 sh 'trufflehog git file://. --since-commit main --branch ${env.BRANCH_NAME} --fail'
             }
