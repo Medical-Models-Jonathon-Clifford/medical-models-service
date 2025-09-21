@@ -9,6 +9,8 @@ pipeline {
             steps {
                 echo '------ Trufflehog Version ------'
                 sh 'trufflehog --version'
+                echo '------ Fetching main branch ------'
+                sh 'git fetch origin main'
                 echo '------ Running Trufflehog secret scan ------'
                 sh 'trufflehog git file://. --since-commit main --branch "$BRANCH_NAME" --fail --no-update'
             }
