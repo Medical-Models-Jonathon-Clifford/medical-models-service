@@ -14,7 +14,7 @@ pipeline {
                 echo '------ Trufflehog Version ------'
                 sh 'trufflehog --version'
                 echo '------ Running Trufflehog secret scan ------'
-                sh 'trufflehog git file://. --since-commit main --branch "$BRANCH_NAME" --fail --no-update'
+                sh 'trufflehog git file://. --fail --no-update'
             }
         }
 //         stage('Build medical-models-service') {
