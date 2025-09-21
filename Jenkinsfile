@@ -7,10 +7,10 @@ pipeline {
     stages {
         stage('Secret check with Trufflehog') {
             steps {
-                echo '------ Printing remotes ------'
-                sh 'git remote -v'
-                echo '------ Fetching main branch ------'
-                sh 'git fetch origin main'
+//                 echo '------ Printing remotes ------'
+//                 sh 'git remote -v'
+//                 echo '------ Fetching main branch ------'
+//                 sh 'git fetch origin main'
                 echo '------ Trufflehog Version ------'
                 sh 'trufflehog --version'
                 echo '------ Running Trufflehog secret scan ------'
