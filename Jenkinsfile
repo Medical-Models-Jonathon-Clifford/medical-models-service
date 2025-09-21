@@ -5,6 +5,14 @@ pipeline {
         MY_KUBECONFIG = credentials('kubeConfigFile')
     }
     stages {
+        stage('Secret check with Trufflehog') {
+            steps {
+                echo '------ Trufflehog Version ------'
+                sh 'trufflehog --version'
+                echo '------ Running Trufflehog secret scan ------'
+                sh 'trufflehog git file://. --fail --no-update'
+            }
+        }
         stage('Build medical-models-service') {
             steps {
                 echo '------ Java Version ------'
