@@ -1,6 +1,6 @@
 # Medical Models Service
 
-Java Spring Boot service for the Medical Models application. Handles the backend business logic for Medical Models.
+Java Spring Boot service for the Medical Models application. Handles the backend business logic.
 
 If you're interested in the architecture of Medical Models at a high level. Look
 here - [medical-models-system-documentation](https://github.com/Medical-Models-Jonathon-Clifford/medical-models-system-documentation).
@@ -68,17 +68,32 @@ reloading and other features useful for efficient development - https://www.jetb
 
 4. After making a code change, kill the spring boot process, e.g. with ctrl-c in its terminal, and re-run it.
 
+### Skip Tests
+
+Failing tests will fail the build. To skip tests when you run the maven build, use the following:
+```bash
+./mvnw clean install -DskipTests=true
+```
+
+### Skip Checkstyle
+
+Checkstyle is configured to fail the build if it detects a violation. To skip checkstyle when you run the maven build, use the following:
+```bash
+./mvnw clean install -Dcheckstyle.skip=true
+```
+
+
 ## Tooling
 
-| Tool            | Notes                                                                                                              | Docs                                                         |
-|-----------------|--------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------|
-| Java            | Robust programming language. High-level, statically typed, just-in-time compiled, memory safe and object oriented. | https://docs.oracle.com/en/java/javase/25/                   |
-| Spring          | Inversion of control container for Java.                                                                           | https://docs.spring.io/spring-framework/reference/index.html |
-| Spring Boot     | Opinionated framework for creating production-grade Java applications.                                             | https://docs.spring.io/spring-boot/index.html                |
-| JUnit           | De facto standard for automated testing in Java.                                                                   | https://docs.junit.org/current/user-guide/                   |
-| AssertJ         | Rich assertions for JUnit tests.                                                                                   | https://assertj.github.io/doc/                               |
-| Thymeleaf       | Server-side template engine for Java.                                                                              | https://www.thymeleaf.org/documentation.html                 |
-| Google Guava    | Library of useful collections and utilities for Java.                                                              | https://github.com/google/guava/wiki                         |
-| Lombok          | Generates Java boilerplate with annotations.                                                                       | https://projectlombok.org/features/                          |
-| Docker Compose  | Useful for running infrastructure dependencies locally. e.g. Databases, Object stores, etc.                        | https://docs.docker.com/compose/                             |
-
+| Tool           | Notes                                                                                                              | Docs                                                                |
+|----------------|--------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------|
+| Java           | Robust programming language. High-level, statically typed, just-in-time compiled, memory safe and object oriented. | https://docs.oracle.com/en/java/javase/25/                          |
+| Spring         | Inversion of control container for Java.                                                                           | https://docs.spring.io/spring-framework/reference/index.html        |
+| Spring Boot    | Opinionated framework for creating production-grade Java applications.                                             | https://docs.spring.io/spring-boot/index.html                       |
+| JUnit          | De facto standard for automated testing in Java.                                                                   | https://docs.junit.org/current/user-guide/                          |
+| AssertJ        | Rich assertions for JUnit tests.                                                                                   | https://assertj.github.io/doc/                                      |
+| Checkstyle     | Generates a report on violations of code style.                                                                    | https://maven.apache.org/plugins/maven-checkstyle-plugin/index.html |
+| Thymeleaf      | Server-side template engine for Java.                                                                              | https://www.thymeleaf.org/documentation.html                        |
+| Google Guava   | Library of useful collections and utilities for Java.                                                              | https://github.com/google/guava/wiki                                |
+| Lombok         | Generates Java boilerplate with annotations.                                                                       | https://projectlombok.org/features/                                 |
+| Docker Compose | Useful for running infrastructure dependencies locally. e.g. Databases, Object stores, etc.                        | https://docs.docker.com/compose/                                    |
