@@ -61,12 +61,20 @@ reloading and other features useful for efficient development - https://www.jetb
 ```bash
 ./mvnw clean install
 ```
-3. Run the application.
+3. Run MySQL locally
+```bash
+docker compose up
+```
+4. Run the application.
 ```bash
 ./mvnw spring-boot:run
 ```
 
-4. After making a code change, kill the spring boot process, e.g. with ctrl-c in its terminal, and re-run it.
+5. After making a code change, kill the spring boot process, e.g. with ctrl-c in its terminal, and re-run it.
+6. To stop the local MySQL database.
+```bash
+docker compose down
+```
 
 ### Skip Tests
 
