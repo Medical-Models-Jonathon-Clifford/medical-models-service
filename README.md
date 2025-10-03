@@ -105,3 +105,84 @@ Checkstyle is configured to fail the build if it detects a violation. To skip ch
 | Google Guava   | Library of useful collections and utilities for Java.                                                              | https://github.com/google/guava/wiki                                |
 | Lombok         | Generates Java boilerplate with annotations.                                                                       | https://projectlombok.org/features/                                 |
 | Docker Compose | Useful for running infrastructure dependencies locally. e.g. Databases, Object stores, etc.                        | https://docs.docker.com/compose/                                    |
+
+
+```mermaid
+erDiagram
+    user {
+        int id PK
+        varchar email
+        varchar picture_filename
+        varchar username
+        varchar honorific
+        varchar given_name
+        varchar family_name
+        datetime created_date
+        varchar password
+        varchar state
+    }
+    
+    document {
+        int id PK
+        varchar title
+        datetime created_date
+        datetime modified_date
+        json body
+        int creator FK
+        varchar state
+    }
+    
+    document_relationship {
+        int id PK
+        int parent_document_id FK
+        int child_document_id FK
+    }
+    
+    comment {
+        int id PK
+        int document_id FK
+        datetime created_date
+        datetime modified_date
+        varchar body
+        int creator FK
+    }
+    
+    comment_relationship {
+        int id PK
+        int document_id FK
+        int parent_comment_id FK
+        int child_comment_id FK
+    }
+    
+    company {
+        int id PK
+        varchar name
+        varchar logo_filename
+        varchar location_state
+        datetime created_date
+        datetime last_modified_date
+    }
+    
+    document_company_relationship {
+        int id PK
+        int document_id FK
+        int company_id FK
+    }
+    
+    user_company_relationship {
+        int id PK
+        int user_id FK
+        int company_id FK
+    }
+
+    user ||--o{ document : "creates"
+    document ||--o{ document_relationship : "has"
+    document ||--o{ comment : "has"
+    comment ||--o{ comment_relationship : "has"
+    document ||--o{ document_company_relationship : "has"
+    company ||--o{ document_company_relationship : "has"
+    user ||--o{ user_company_relationship : "has"
+    company ||--o{ user_company_relationship : "has"
+    document }o--o{ document : "relates to"
+    comment }o--o{ comment : "relates to"
+```
