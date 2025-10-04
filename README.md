@@ -4,7 +4,7 @@ Java Spring Boot service for the Medical Models application. Handles the backend
 
 If you're interested in the architecture of Medical Models at a high level. Look
 here - [medical-models-system-documentation](https://github.com/Medical-Models-Jonathon-Clifford/medical-models-system-documentation).
-You'll find system diagrams, descriptions and only one UML diagram!
+You'll find system diagrams, descriptions and only one entity-relationship diagram!
 
 If you want to see the other services, find them here:
 
