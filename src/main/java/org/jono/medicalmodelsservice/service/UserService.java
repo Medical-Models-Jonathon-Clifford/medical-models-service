@@ -1,11 +1,10 @@
 package org.jono.medicalmodelsservice.service;
 
-import static org.jono.medicalmodelsservice.utils.DtoAdapters.userToViewDto;
-
 import java.util.Optional;
 import org.jono.medicalmodelsservice.model.User;
 import org.jono.medicalmodelsservice.model.dto.ViewUserDetailsDto;
 import org.jono.medicalmodelsservice.repository.jdbc.UserRepository;
+import org.jono.medicalmodelsservice.utils.DtoAdapters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +22,6 @@ public class UserService {
     }
 
     public Optional<ViewUserDetailsDto> getUserDetailsById(final String id) {
-        return userToViewDto(userRepository.findById(id));
+        return userRepository.findById(id).map(DtoAdapters::userToViewDto);
     }
 }

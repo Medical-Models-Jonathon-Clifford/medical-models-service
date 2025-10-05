@@ -25,9 +25,9 @@ public class Comment implements NodeData {
     private LocalDateTime modifiedDate;
 
     public Comment(final NewComment newComment) {
-        this.documentId = newComment.getDocumentId();
-        this.body = newComment.getBody();
-        this.creator = newComment.getCreator();
+        this.documentId = newComment.documentId();
+        this.body = newComment.body();
+        this.creator = newComment.creator();
         this.createdDate = LocalDateTime.now();
         this.modifiedDate = this.createdDate;
     }

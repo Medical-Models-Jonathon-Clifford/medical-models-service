@@ -86,7 +86,7 @@ public class CommentService {
 
     public Optional<Comment> updateComment(final String id, final EditCommentDto editCommentDto) {
         final Map<SqlIdentifier, Object> updateMap = new LinkedHashMap<>();
-        updateMap.put(SqlIdentifier.unquoted("body"), editCommentDto.getBody());
+        updateMap.put(SqlIdentifier.unquoted("body"), editCommentDto.body());
         updateMap.put(SqlIdentifier.unquoted("modified_date"), LocalDateTime.now());
         return commentRepository.updateById(id, updateMap);
     }

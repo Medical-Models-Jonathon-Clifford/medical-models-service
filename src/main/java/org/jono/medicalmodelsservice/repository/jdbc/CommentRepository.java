@@ -50,9 +50,9 @@ public class CommentRepository {
     public Comment create(final NewComment newComment) {
         final var comment = new Comment(newComment);
         final Comment savedComment = this.commentCrudRepository.save(comment);
-        if (newComment.getParentCommentId() != null) {
+        if (newComment.parentCommentId() != null) {
             final var newCommentRelationship = new CommentRelationship(savedComment.getDocumentId(),
-                                                                       newComment.getParentCommentId(),
+                                                                       newComment.parentCommentId(),
                                                                        savedComment.getId());
             this.commentRelationshipRepository.save(newCommentRelationship);
         }

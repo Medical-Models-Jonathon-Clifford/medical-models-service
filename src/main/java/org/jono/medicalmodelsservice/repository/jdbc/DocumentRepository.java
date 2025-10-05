@@ -56,14 +56,14 @@ public class DocumentRepository {
         final Document existingDocument = documentCrudRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Document with id " + id + " not found"));
 
-        if (updateDocumentDto.getTitle() != null) {
-            existingDocument.setTitle(updateDocumentDto.getTitle());
+        if (updateDocumentDto.title() != null) {
+            existingDocument.setTitle(updateDocumentDto.title());
         }
-        if (updateDocumentDto.getBody() != null) {
-            existingDocument.setBody(updateDocumentDto.getBody());
+        if (updateDocumentDto.body() != null) {
+            existingDocument.setBody(updateDocumentDto.body());
         }
-        if (updateDocumentDto.getState() != null) {
-            existingDocument.setState(updateDocumentDto.getState());
+        if (updateDocumentDto.state() != null) {
+            existingDocument.setState(updateDocumentDto.state());
         }
         return documentCrudRepository.save(existingDocument);
     }

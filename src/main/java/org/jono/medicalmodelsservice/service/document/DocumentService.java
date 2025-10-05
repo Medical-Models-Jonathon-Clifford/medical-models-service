@@ -79,6 +79,6 @@ public class DocumentService {
     public List<DocumentTree> getAllNavigation(final String companyId) {
         final Tuple2<List<DocumentRelationship>, List<Document>> docsAndDocChildren =
                 documentRepository.getDocsAndDocRelationships(companyId);
-        return DocumentForestBuilder.buildForest(docsAndDocChildren.getT2(), docsAndDocChildren.getT1());
+        return DocumentForestBuilder.buildForest(docsAndDocChildren.t2(), docsAndDocChildren.t1());
     }
 }
