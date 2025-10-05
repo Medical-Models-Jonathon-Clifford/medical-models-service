@@ -23,10 +23,6 @@ public class UserRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public User create(final User user) {
-        return this.userCrudRepository.save(user);
-    }
-
     public List<User> findAll() {
         return Lists.newArrayList(this.userCrudRepository.findAll());
     }
