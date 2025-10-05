@@ -18,10 +18,6 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User createUser(final User user) {
-        return userRepository.create(user);
-    }
-
     public Optional<User> getById(final String id) {
         return userRepository.findById(id);
     }
