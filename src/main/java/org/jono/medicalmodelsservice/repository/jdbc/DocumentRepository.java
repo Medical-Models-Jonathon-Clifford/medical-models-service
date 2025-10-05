@@ -3,6 +3,7 @@ package org.jono.medicalmodelsservice.repository.jdbc;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.DailyResourceCount;
 import org.jono.medicalmodelsservice.model.Document;
@@ -11,7 +12,6 @@ import org.jono.medicalmodelsservice.model.ModelRanking;
 import org.jono.medicalmodelsservice.model.Tuple2;
 import org.jono.medicalmodelsservice.model.UserIdRanking;
 import org.jono.medicalmodelsservice.model.dto.UpdateDocumentDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -20,25 +20,13 @@ import org.springframework.stereotype.Repository;
 
 @Slf4j
 @Repository
+@RequiredArgsConstructor
 public class DocumentRepository {
 
     private final DocumentCrudRepository documentCrudRepository;
     private final DocumentRelationshipCrudRepository documentRelationshipCrudRepository;
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    @Autowired
-    public DocumentRepository(
-            final DocumentCrudRepository documentCrudRepository,
-            final DocumentRelationshipCrudRepository documentRelationshipCrudRepository,
-            final JdbcTemplate jdbcTemplate,
-            final NamedParameterJdbcTemplate namedParameterJdbcTemplate
-    ) {
-        this.documentCrudRepository = documentCrudRepository;
-        this.documentRelationshipCrudRepository = documentRelationshipCrudRepository;
-        this.jdbcTemplate = jdbcTemplate;
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
-    }
 
     public long count() {
         return documentCrudRepository.count();

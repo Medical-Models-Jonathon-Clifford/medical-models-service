@@ -7,18 +7,15 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import lombok.RequiredArgsConstructor;
 import org.jono.medicalmodelsservice.model.CommentRelationship;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class CommentRelationshipRepository {
-    private final CommentRelationshipCrudRepository commentRelationshipCrudRepository;
 
-    @Autowired
-    public CommentRelationshipRepository(final CommentRelationshipCrudRepository commentRelationshipCrudRepository) {
-        this.commentRelationshipCrudRepository = commentRelationshipCrudRepository;
-    }
+    private final CommentRelationshipCrudRepository commentRelationshipCrudRepository;
 
     public CommentRelationship save(final CommentRelationship commentRelationship) {
         return this.commentRelationshipCrudRepository.save(commentRelationship);

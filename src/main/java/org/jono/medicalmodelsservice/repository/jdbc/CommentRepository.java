@@ -5,13 +5,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.Comment;
 import org.jono.medicalmodelsservice.model.CommentRelationship;
 import org.jono.medicalmodelsservice.model.DailyResourceCount;
 import org.jono.medicalmodelsservice.model.NewComment;
 import org.jono.medicalmodelsservice.model.UserIdRanking;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.relational.core.sql.SqlIdentifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -21,23 +21,13 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class CommentRepository {
 
     private final CommentCrudRepository commentCrudRepository;
     private final CommentRelationshipRepository commentRelationshipRepository;
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    @Autowired
-    public CommentRepository(final CommentCrudRepository commentCrudRepository,
-            final CommentRelationshipRepository commentRelationshipRepository,
-            final JdbcTemplate jdbcTemplate,
-            final NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.commentCrudRepository = commentCrudRepository;
-        this.commentRelationshipRepository = commentRelationshipRepository;
-        this.jdbcTemplate = jdbcTemplate;
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
-    }
 
     public long count() {
         return this.commentCrudRepository.count();

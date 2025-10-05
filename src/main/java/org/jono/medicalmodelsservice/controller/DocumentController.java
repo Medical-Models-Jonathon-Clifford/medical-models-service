@@ -1,14 +1,16 @@
 package org.jono.medicalmodelsservice.controller;
 
+import static org.jono.medicalmodelsservice.utils.AuthenticationUtils.extractCompanyId;
+import static org.jono.medicalmodelsservice.utils.AuthenticationUtils.extractUserId;
+
 import java.util.List;
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.jono.medicalmodelsservice.model.Document;
 import org.jono.medicalmodelsservice.model.dto.UpdateDocumentDto;
 import org.jono.medicalmodelsservice.model.dto.ViewDocumentDto;
 import org.jono.medicalmodelsservice.service.document.DocumentService;
 import org.jono.medicalmodelsservice.service.document.DocumentTree;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
@@ -23,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@Slf4j
+@RequiredArgsConstructor
 @CrossOrigin
 @RestController
 @RequestMapping("/documents")
@@ -31,21 +33,14 @@ public class DocumentController {
 
     private final DocumentService documentService;
 
-    @Autowired
-    public DocumentController(final DocumentService documentService) {
-        this.documentService = documentService;
-    }
-
     @PostMapping(path = "/new",
             produces = "application/json")
     @ResponseBody
     public Document handleDocumentsNewPost(@RequestParam final Optional<String> parentId,
             final JwtAuthenticationToken authentication) {
-        if (authentication.getToken().getClaims().get("companyId") instanceof String companyId
-                && authentication.getToken().getClaims().get("userId") instanceof String userId) {
-            return documentService.createDocument(parentId, companyId, userId);
-        }
-        throw new IllegalArgumentException("companyId is required to query for document tree.");
+        final String companyId = extractCompanyId(authentication, "query for document tree");
+        final String userId = extractUserId(authentication, "query for document tree");
+        return documentService.createDocument(parentId, companyId, userId);
     }
 
     @PutMapping(path = "/{id}",
@@ -61,17 +56,15 @@ public class DocumentController {
     @ResponseBody
     public ResponseEntity<ViewDocumentDto> handleDocumentsGet(@PathVariable final String id) {
         return documentService.readDocument(id)
-                .map(ResponseEntity::ok) // If document is present, return 200 with the document
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build()); // If empty, return 404
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @GetMapping(path = "/all/navigation",
             produces = "application/json")
     @ResponseBody
     public List<DocumentTree> handleDocumentsGetAllNavigation(final JwtAuthenticationToken authentication) {
-        if (authentication.getToken().getClaims().get("companyId") instanceof String companyId) {
-            return documentService.getAllNavigation(companyId);
-        }
-        throw new IllegalArgumentException("companyId is required to query for document tree.");
+        final String companyId = extractCompanyId(authentication, "query for document tree");
+        return documentService.getAllNavigation(companyId);
     }
 }

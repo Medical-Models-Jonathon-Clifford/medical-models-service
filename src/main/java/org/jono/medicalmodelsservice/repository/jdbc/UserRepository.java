@@ -3,25 +3,20 @@ package org.jono.medicalmodelsservice.repository.jdbc;
 import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.DailyResourceCount;
 import org.jono.medicalmodelsservice.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Slf4j
 @Repository
+@RequiredArgsConstructor
 public class UserRepository {
 
     private final UserCrudRepository userCrudRepository;
     private final JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    public UserRepository(final UserCrudRepository userCrudRepository, final JdbcTemplate jdbcTemplate) {
-        this.userCrudRepository = userCrudRepository;
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     public List<User> findAll() {
         return Lists.newArrayList(this.userCrudRepository.findAll());

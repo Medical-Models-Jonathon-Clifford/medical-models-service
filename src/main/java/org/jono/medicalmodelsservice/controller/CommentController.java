@@ -1,13 +1,12 @@
 package org.jono.medicalmodelsservice.controller;
 
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.jono.medicalmodelsservice.model.Comment;
 import org.jono.medicalmodelsservice.model.NewComment;
 import org.jono.medicalmodelsservice.model.dto.CommentTreeDto;
 import org.jono.medicalmodelsservice.model.dto.EditCommentDto;
 import org.jono.medicalmodelsservice.service.comment.CommentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,18 +19,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@Slf4j
+@RequiredArgsConstructor
 @CrossOrigin
 @RestController
 @RequestMapping("/comments")
 public class CommentController {
 
     private final CommentService commentService;
-
-    @Autowired
-    public CommentController(final CommentService commentService) {
-        this.commentService = commentService;
-    }
 
     @PostMapping(produces = "application/json")
     @ResponseBody

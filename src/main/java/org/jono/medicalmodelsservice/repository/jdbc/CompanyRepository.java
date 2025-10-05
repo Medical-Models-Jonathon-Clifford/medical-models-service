@@ -3,10 +3,10 @@ package org.jono.medicalmodelsservice.repository.jdbc;
 import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.Company;
 import org.jono.medicalmodelsservice.model.DailyResourceCount;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -14,16 +14,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class CompanyRepository {
 
     private final CompanyCrudRepository companyCrudRepository;
     private final JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    public CompanyRepository(final CompanyCrudRepository companyCrudRepository, final JdbcTemplate jdbcTemplate) {
-        this.companyCrudRepository = companyCrudRepository;
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     public long count() {
         return companyCrudRepository.count();
