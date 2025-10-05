@@ -2,16 +2,13 @@ package org.jono.medicalmodelsservice.repository;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.jono.medicalmodelsservice.model.LoginCompanies;
-import org.jono.medicalmodelsservice.model.LoginUser;
 import org.jono.medicalmodelsservice.model.MmUser;
 import org.jono.medicalmodelsservice.model.MmUserBuilder;
 import org.jono.medicalmodelsservice.utils.ResourceUtils;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -19,22 +16,6 @@ public class UserInfoRepository {
 
     private final Map<String, MmUser> userInfo = new HashMap<>();
     private final List<LoginCompanies> companyInfo = new ArrayList<>();
-
-    public MmUser findByUsername(final String username) {
-        return this.userInfo.get(username);
-    }
-
-    public List<LoginUser> getLoginUsers() {
-        return userInfo.values().stream().map(MmUser::getLoginUser).toList();
-    }
-
-    public Collection<UserDetails> getUserDetails() {
-        return userInfo.values().stream().map(MmUser::getUserDetails).toList();
-    }
-
-    public List<LoginCompanies> getLoginCompanies() {
-        return companyInfo;
-    }
 
     public String getBase64Picture(final String username) {
         return userInfo.get(username).getBase64Picture();

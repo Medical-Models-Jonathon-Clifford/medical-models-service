@@ -143,6 +143,7 @@
                 <configuration>
                     <excludes>
                         <exclude>**/model/**</exclude>
+                        <exclude>**/MedicalModelsServiceApplication.*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
