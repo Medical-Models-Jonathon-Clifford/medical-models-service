@@ -63,7 +63,7 @@ public class CommentService {
     private CommentDto commentToDto(final Comment comment) {
         final Optional<User> user = findUser(comment.getCreator());
         final String profilePicture = user
-                .map(u -> String.format("/users/picture/%s", u.getPictureFilename()))
+                .map(u -> String.format("/users/picture/%s.webp", u.getUsername()))
                 .orElse(null);
         final String fullName = user
                 .map(DtoAdapters::fullNameOfUser)
