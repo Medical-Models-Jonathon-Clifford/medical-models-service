@@ -33,6 +33,6 @@ public class DtoAdapters {
                                         new ViewUserDetailsDto(user.getId(),
                                                                fullNameOfUser(user),
                                                                user.getEmail(),
-                                                               user.getPictureFilename()));
+                                                               String.format("%s.webp", user.getUsername())));
     }
 }
