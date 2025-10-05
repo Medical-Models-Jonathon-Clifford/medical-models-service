@@ -1,11 +1,11 @@
 package org.jono.medicalmodelsservice.service;
 
 import static org.jono.medicalmodelsservice.utils.DtoAdapters.userToDto;
+import static org.jono.medicalmodelsservice.utils.SearchParamUtils.isSet;
+import static org.jono.medicalmodelsservice.utils.SearchParamUtils.notSet;
 
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.Company;
 import org.jono.medicalmodelsservice.model.CompanySupportSearchParams;
 import org.jono.medicalmodelsservice.model.ModelRanking;
@@ -18,9 +18,9 @@ import org.jono.medicalmodelsservice.repository.jdbc.CommentRepository;
 import org.jono.medicalmodelsservice.repository.jdbc.CompanyRepository;
 import org.jono.medicalmodelsservice.repository.jdbc.DocumentRepository;
 import org.jono.medicalmodelsservice.repository.jdbc.UserRepository;
+import org.jono.medicalmodelsservice.utils.DtoAdapters;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SupportService {
@@ -51,7 +51,7 @@ public class SupportService {
     }
 
     public List<CompanyDto> searchCompaniesWithParams(final CompanySupportSearchParams searchParams) {
-        return companyToDto(searchCompanies(searchParams));
+        return DtoAdapters.companyToDto(searchCompanies(searchParams));
     }
 
     private List<Company> searchCompanies(final CompanySupportSearchParams searchParams) {
@@ -78,19 +78,4 @@ public class SupportService {
         return userRepository.findAll();
     }
 
-    private boolean notSet(final String param) {
-        return Objects.isNull(param) || param.isBlank();
-    }
-
-    private boolean isSet(final String param) {
-        return Objects.nonNull(param) && !param.isBlank();
-    }
-
-    private List<CompanyDto> companyToDto(final List<Company> companies) {
-        return companies.stream()
-                .map(company -> new CompanyDto(company.getId(),
-                                               company.getName(),
-                                               company.getLocationState()))
-                .toList();
-    }
 }

@@ -1,15 +1,14 @@
 package org.jono.medicalmodelsservice.service;
 
-import static java.util.stream.Collectors.toMap;
 import static org.jono.medicalmodelsservice.utils.DtoAdapters.companyToViewDto;
 import static org.jono.medicalmodelsservice.utils.DtoAdapters.fullNameOfUser;
 import static org.jono.medicalmodelsservice.utils.DtoAdapters.userToDto;
 import static org.jono.medicalmodelsservice.utils.SearchParamUtils.isSet;
+import static org.jono.medicalmodelsservice.utils.UserAdapters.createIdToUserMap;
 
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.ModelRanking;
 import org.jono.medicalmodelsservice.model.NamedUserRanking;
 import org.jono.medicalmodelsservice.model.TotalResourceMetrics;
@@ -24,7 +23,6 @@ import org.jono.medicalmodelsservice.repository.jdbc.DocumentRepository;
 import org.jono.medicalmodelsservice.repository.jdbc.UserRepository;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AdminService {
@@ -57,12 +55,6 @@ public class AdminService {
                              new NamedUserRanking(fullNameOfUser(idToUserMap.get(userIdRanking.userId())),
                                                   userIdRanking.frequency()))
                 .toList();
-    }
-
-    private Map<String, User> createIdToUserMap(final List<User> users) {
-        return users.stream()
-                .map(user -> Map.entry(user.getId(), user))
-                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     public List<ModelRanking> getModelTypeFrequency(final String companyId) {
