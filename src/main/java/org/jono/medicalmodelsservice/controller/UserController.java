@@ -1,15 +1,11 @@
 package org.jono.medicalmodelsservice.controller;
 
-import java.util.Base64;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.jono.medicalmodelsservice.model.User;
 import org.jono.medicalmodelsservice.model.dto.ViewUserDetailsDto;
-import org.jono.medicalmodelsservice.service.MmUserInfoService;
 import org.jono.medicalmodelsservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -28,12 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
-    private final MmUserInfoService mmUserInfoService;
 
     @Autowired
-    public UserController(final UserService userService, final MmUserInfoService mmUserInfoService) {
+    public UserController(final UserService userService) {
         this.userService = userService;
-        this.mmUserInfoService = mmUserInfoService;
     }
 
     @PostMapping(produces = "application/json")
@@ -74,24 +68,5 @@ public class UserController {
     public ResponseEntity<ViewUserDetailsDto> getUserDetails(@PathVariable final String id) {
         return userService.getUserDetailsById(id).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
-    }
-
-    @GetMapping(value = "/picture/{username}.png", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<byte[]> getImage(@PathVariable final String username) {
-        try {
-            final String base64Image = getBase64ImageFromStorage(username);
-            final byte[] imageBytes = Base64.getDecoder().decode(base64Image);
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + username + ".png\"")
-                    .body(imageBytes);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
-    }
-
-    private String getBase64ImageFromStorage(final String imageId) {
-        return mmUserInfoService.getBase64Picture(imageId);
     }
 }
