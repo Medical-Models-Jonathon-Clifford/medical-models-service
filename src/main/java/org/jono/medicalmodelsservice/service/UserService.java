@@ -1,7 +1,6 @@
 package org.jono.medicalmodelsservice.service;
 
 import java.util.Optional;
-import org.jono.medicalmodelsservice.model.User;
 import org.jono.medicalmodelsservice.model.dto.ViewUserDetailsDto;
 import org.jono.medicalmodelsservice.repository.jdbc.UserRepository;
 import org.jono.medicalmodelsservice.utils.DtoAdapters;
@@ -15,10 +14,6 @@ public class UserService {
     @Autowired
     public UserService(final UserRepository userRepository) {
         this.userRepository = userRepository;
-    }
-
-    public Optional<User> getById(final String id) {
-        return userRepository.findById(id);
     }
 
     public Optional<ViewUserDetailsDto> getUserDetailsById(final String id) {

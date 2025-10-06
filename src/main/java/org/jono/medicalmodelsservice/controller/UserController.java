@@ -1,7 +1,6 @@
 package org.jono.medicalmodelsservice.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.jono.medicalmodelsservice.model.User;
 import org.jono.medicalmodelsservice.model.dto.ViewUserDetailsDto;
 import org.jono.medicalmodelsservice.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -19,14 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
-
-    @GetMapping(path = "/{id}",
-            produces = "application/json")
-    @ResponseBody
-    public ResponseEntity<User> handleUserGet(@PathVariable final String id) {
-        return userService.getById(id).map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
 
     @GetMapping(path = "/{id}/details",
             produces = "application/json")
