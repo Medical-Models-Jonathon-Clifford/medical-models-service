@@ -367,6 +367,18 @@ VALUES (1, 9,'2025-07-15 13:03:01',
        (9, 9, '2025-07-15 14:21:23',
         '2025-07-15 14:21:23',
         'I do not like it when you are right. Anyway, I pinged Dr Guslaug of the Frost Giants on Slack. I received the response - "Frost Giants are a proud, civilised people. We do not have horns like common beasts. How dare you even ask!.". Happy?',
+        8),
+       (9, 9, '2025-07-15 14:21:23',
+        '2025-07-15 14:21:23',
+        'I do not like it when you are right. Anyway, I pinged Dr Guslaug of the Frost Giants on Slack. I received the response - "Frost Giants are a proud, civilised people. We do not have horns like common beasts. How dare you even ask!.". Happy?',
+        8),
+       (10, 11, '2025-07-15 14:21:23',
+        '2025-07-15 14:21:23',
+        'Earth or extraterrestrial?',
+        9),
+       (11, 11, '2025-07-15 14:21:23',
+        '2025-07-15 14:21:23',
+        'What\'s the depth of the wound? Is there evidence of corneal abrasion?',
         8);
 
 INSERT IGNORE INTO comment_relationship (id, document_id, parent_comment_id, child_comment_id)
