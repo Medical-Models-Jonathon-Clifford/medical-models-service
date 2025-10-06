@@ -1,8 +1,6 @@
 
 package org.jono.medicalmodelsservice.controller;
 
-import static org.jono.medicalmodelsservice.utils.AuthenticationUtils.extractCompanyId;
-
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.jono.medicalmodelsservice.model.ModelRanking;
@@ -12,6 +10,7 @@ import org.jono.medicalmodelsservice.model.UserSupportSearchParams;
 import org.jono.medicalmodelsservice.model.dto.UserDto;
 import org.jono.medicalmodelsservice.model.dto.ViewCompanyDetailsDto;
 import org.jono.medicalmodelsservice.service.AdminService;
+import org.jono.medicalmodelsservice.utils.AuthenticationUtils;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,13 +27,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminController {
 
     private final AdminService adminService;
+    private final AuthenticationUtils authUtils;
 
     @GetMapping(path = "/users/documents/ranking",
             produces = "application/json")
     @ResponseBody
     public List<NamedUserRanking> getUserDocumentRankings(final JwtAuthenticationToken authentication) {
-        final String companyId = extractCompanyId(authentication,
-                                                                      "query for user document creation rankings");
+        final String companyId = authUtils.extractCompanyId(authentication,
+                                                            "query for user document creation rankings");
         return adminService.getUserDocumentCreatorRankings(companyId);
     }
 
@@ -42,7 +42,7 @@ public class AdminController {
             produces = "application/json")
     @ResponseBody
     public List<NamedUserRanking> getUserCommentRankings(final JwtAuthenticationToken authentication) {
-        final String companyId = extractCompanyId(authentication,
+        final String companyId = authUtils.extractCompanyId(authentication,
                                                                       "query for user comment creation rankings");
         return adminService.getUserCommentCreatorRankings(companyId);
     }
@@ -51,7 +51,7 @@ public class AdminController {
             produces = "application/json")
     @ResponseBody
     public List<ModelRanking> getModelRankings(final JwtAuthenticationToken authentication) {
-        final String companyId = extractCompanyId(authentication,
+        final String companyId = authUtils.extractCompanyId(authentication,
                                                                       "query for company model rankings");
         return adminService.getModelTypeFrequency(companyId);
     }
@@ -60,7 +60,7 @@ public class AdminController {
             produces = "application/json")
     @ResponseBody
     public TotalResourceMetrics getCompanyDocumentMetrics(final JwtAuthenticationToken authentication) {
-        final String companyId = extractCompanyId(authentication,
+        final String companyId = authUtils.extractCompanyId(authentication,
                                                                       "query for company document metrics");
         return adminService.getCompanyDocumentMetrics(companyId);
     }
@@ -69,7 +69,7 @@ public class AdminController {
             produces = "application/json")
     @ResponseBody
     public TotalResourceMetrics getCompanyCommentMetrics(final JwtAuthenticationToken authentication) {
-        final String companyId = extractCompanyId(authentication,
+        final String companyId = authUtils.extractCompanyId(authentication,
                                                                       "query for company comment metrics");
         return adminService.getCompanyCommentMetrics(companyId);
     }
@@ -79,7 +79,7 @@ public class AdminController {
     @ResponseBody
     public List<UserDto> searchUsers(@RequestBody final UserSupportSearchParams searchParams,
             final JwtAuthenticationToken authentication) {
-        final String companyId = extractCompanyId(authentication, "search for users");
+        final String companyId = authUtils.extractCompanyId(authentication, "search for users");
         return adminService.searchUsersWithCompanyIdAndName(companyId, searchParams);
     }
 
@@ -87,7 +87,7 @@ public class AdminController {
             produces = "application/json")
     @ResponseBody
     public ViewCompanyDetailsDto getCompanyDetails(final JwtAuthenticationToken authentication) {
-        final String companyId = extractCompanyId(authentication, "retrieve company details");
+        final String companyId = authUtils.extractCompanyId(authentication, "retrieve company details");
         return adminService.getCompany(companyId);
     }
 }

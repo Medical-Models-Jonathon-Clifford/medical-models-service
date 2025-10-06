@@ -1,8 +1,5 @@
 package org.jono.medicalmodelsservice.controller;
 
-import static org.jono.medicalmodelsservice.utils.AuthenticationUtils.extractCompanyId;
-import static org.jono.medicalmodelsservice.utils.AuthenticationUtils.extractUserId;
-
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +8,7 @@ import org.jono.medicalmodelsservice.model.dto.UpdateDocumentDto;
 import org.jono.medicalmodelsservice.model.dto.ViewDocumentDto;
 import org.jono.medicalmodelsservice.service.document.DocumentService;
 import org.jono.medicalmodelsservice.service.document.DocumentTree;
+import org.jono.medicalmodelsservice.utils.AuthenticationUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
@@ -32,14 +30,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class DocumentController {
 
     private final DocumentService documentService;
+    private final AuthenticationUtils authUtils;
 
     @PostMapping(path = "/new",
             produces = "application/json")
     @ResponseBody
     public Document handleDocumentsNewPost(@RequestParam final Optional<String> parentId,
             final JwtAuthenticationToken authentication) {
-        final String companyId = extractCompanyId(authentication, "query for document tree");
-        final String userId = extractUserId(authentication, "query for document tree");
+        final String companyId = authUtils.extractCompanyId(authentication, "query for document tree");
+        final String userId = authUtils.extractUserId(authentication, "query for document tree");
         return documentService.createDocument(parentId, companyId, userId);
     }
 
@@ -64,7 +63,7 @@ public class DocumentController {
             produces = "application/json")
     @ResponseBody
     public List<DocumentTree> handleDocumentsGetAllNavigation(final JwtAuthenticationToken authentication) {
-        final String companyId = extractCompanyId(authentication, "query for document tree");
+        final String companyId = authUtils.extractCompanyId(authentication, "query for document tree");
         return documentService.getAllNavigation(companyId);
     }
 }
