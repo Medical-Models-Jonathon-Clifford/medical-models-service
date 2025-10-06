@@ -1,11 +1,13 @@
 package org.jono.medicalmodelsservice.config;
 
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -16,6 +18,9 @@ public class SecurityConfig {
     @Value("${keySetURI}")
     private String keySetUri;
 
+    @Autowired(required = false)
+    private JwtDecoder customJwtDecoder;
+
     @Bean
     @Order(1)
     public SecurityFilterChain asFilterChain(final HttpSecurity http)
@@ -24,7 +29,14 @@ public class SecurityConfig {
                 .configurationSource(createCorsConfig()));
 
         http.oauth2ResourceServer(resourceServer -> resourceServer
-                .jwt(jwt -> jwt.jwkSetUri(keySetUri)));
+                .jwt(jwt -> {
+                    if (customJwtDecoder != null) {
+                        jwt.decoder(customJwtDecoder);
+                    } else {
+                        jwt.jwkSetUri(keySetUri);
+                    }
+                }));
+
 
         http.authorizeHttpRequests(authz -> authz
                 .anyRequest().authenticated());

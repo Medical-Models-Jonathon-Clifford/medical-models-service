@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -35,23 +36,17 @@ import org.testcontainers.containers.MySQLContainer;
 @TestPropertySource(locations = "classpath:application-test.properties")
 @AutoConfigureMockMvc
 @Sql(scripts = {"/schema.sql", "/data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Import(IntegrationTestConfig.class)
 class AdminControllerIntTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
-    public static final String TEST_JWT = "Bearer "
-            + "eyJraWQiOiIyN2Q1YTk3ZC0yM2E2LTRlYWMtOGZmNy0zYmMzZGM2Y2UyZDciLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJsY3VkZHkiLC"
-            + "JlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYmlydGhkYXRlIjoiMTk3MC0wMS0wMSIsImdlbmRlciI6ImZlbWFsZSIsInByb2ZpbGUiOiJod"
-            + "HRwOi8vbG9jYWxob3N0OjMwMDAvbGN1ZGR5Iiwicm9sZXMiOlsiUk9MRV9BRE1JTiJdLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0Ojcw"
-            + "NzEiLCJnaXZlbl9uYW1lIjoiTGlzYSIsInVzZXJJZCI6IjQiLCJwaWN0dXJlIjoiaHR0cDovL2xvY2FsaG9zdDozMDAwL3VzZXJzL3B"
-            + "pY3R1cmUvbGN1ZGR5LndlYnAiLCJzaWQiOiJCR0lNM19vME5SRWVRZzFZYVU3QjZCTUZYb28xSWtzNXBBVnpDd1Q2QjVVIiwiYXVkIj"
-            + "oibmV4dC1hdXRoLWNsaWVudCIsImNvbXBhbnlJZCI6IjIiLCJ1cGRhdGVkX2F0IjoiMTk3MC0wMS0wMVQwMDowMDowMFoiLCJhenAiO"
-            + "iJuZXh0LWF1dGgtY2xpZW50IiwiYXV0aF90aW1lIjoxNzU5NzIwNjYxLCJuYW1lIjoiRHIuIExpc2EgQ3VkZHkiLCJleHAiOjE3NTk3"
-            + "MjI0NjEsImlhdCI6MTc1OTcyMDY2MSwiZmFtaWx5X25hbWUiOiJDdWRkeSIsImp0aSI6ImI3NDlmNDE0LTQ0ZmEtNDQ4MS05MjExLWY"
-            + "4Yjc0NGNmNWMwYiIsImVtYWlsIjoibGN1ZGR5QGV4YW1wbGUuY29tIiwiaG9ub3JpZmljIjoiRHIuIn0.OX2ujs1S13Yd2dCrBNGjw1"
-            + "E-8XaOJyGYadlyJZtez7OokOYUPlZLHceIZ2AGHbfB4R3lmFGEQfFs3Un2s4oeasZ85GlHn9yItuzjkenLp8iZ004zc5v22cw0cPnSN"
-            + "C42L327Kd23sLebq2ImTtiPpRaSwO75dls5K0q8Una6GUzE7hHVteAFocQUJcctyrSiti4Ca63G8zRK9kAGsSe8TgGxDB9fJqdYOX5b"
-            + "WvVQchZI4ScuzS8Fzchom61piTCZh9kxfxqdVOrlSirTI6Q2E8LnBmE0nyUEa7WwYxEXk8LB85q0oSBGovwoFZUZVUv5XJyeCbsne3g"
-            + "HINWfQTcvYw";
+
+    private static final String TEST_JWT = "Bearer " + TestJwtUtils.createTestJwtToken(
+            "lcuddy",
+            "lcuddy@example.com",
+            "2"
+    );
+
 
     static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.0.36");
     static MinIOContainer minio = new MinIOContainer("minio/minio:RELEASE.2023-09-04T19-57-37Z");

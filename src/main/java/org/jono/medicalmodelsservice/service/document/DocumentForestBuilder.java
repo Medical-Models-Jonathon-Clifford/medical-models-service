@@ -5,7 +5,11 @@ import org.jono.medicalmodelsservice.model.Document;
 import org.jono.medicalmodelsservice.model.DocumentRelationship;
 import org.jono.medicalmodelsservice.service.ForestBuilder;
 
-public class DocumentForestBuilder {
+public final class DocumentForestBuilder {
+
+    private DocumentForestBuilder() {
+        // Utility class
+    }
 
     public static List<DocumentTree> buildForest(final List<Document> documentList,
             final List<DocumentRelationship> documentRelationshipList) {
