@@ -34,7 +34,7 @@ import org.testcontainers.containers.MySQLContainer;
 @TestPropertySource(locations = "classpath:application-test.properties")
 @AutoConfigureMockMvc
 @Sql(scripts = {"/schema.sql", "/data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-class CommentControllerItTest {
+class CommentControllerIntTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
